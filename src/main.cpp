@@ -1,13 +1,13 @@
-#include <QApplication>
-#include <QLabel>
+#include <QtWidgets/QApplication>
+
+#include "widgets/AppWindow.h"
 
 int main(int argc, char **argv)
 {
     auto app = QApplication{argc, argv};
 
-    auto label = QLabel("Hello, from particle-view!");
-    label.setContentsMargins(24, 16, 24, 16);
-    label.show();
+    auto appWindow = new AppWindow{};
+    appWindow->show();
 
     return app.exec();
 }

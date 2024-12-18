@@ -5,17 +5,17 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_PREFIX_PATH "build/Release/generators")
 
 find_package(Qt6 REQUIRED COMPONENTS
-  Core
-  Gui
   Widgets
-  OpenGLWidgets
 )
+
+add_subdirectory(src/widgets)
 
 add_executable(main src/main.cpp)
 
 target_link_libraries(main PRIVATE
-  Qt6::Core
-  Qt6::Gui
+  widgets
+)
+
+target_link_libraries(main PRIVATE
   Qt6::Widgets
-  Qt6::OpenGLWidgets
 )
