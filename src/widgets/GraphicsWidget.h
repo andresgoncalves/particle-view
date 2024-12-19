@@ -4,6 +4,8 @@
 #include <QtGui/QOpenGLFunctions>
 #include <QtOpenGLWidgets/QOpenGLWidget>
 
+#include "../graphics/ParticleRenderer.h"
+
 class GraphicsWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
 public:
@@ -13,6 +15,9 @@ protected:
   void initializeGL() override;
   void resizeGL(int width, int height) override;
   void paintGL() override;
+
+private:
+  std::unique_ptr<ParticleRenderer> particleRenderer;
 };
 
 #endif
