@@ -10,6 +10,7 @@ find_package(Qt6 REQUIRED COMPONENTS
   Widgets
 )
 
+add_subdirectory(src/controllers)
 add_subdirectory(src/graphics)
 add_subdirectory(src/models)
 add_subdirectory(src/widgets)
@@ -17,6 +18,7 @@ add_subdirectory(src/widgets)
 add_executable(main src/main.cpp)
 
 target_link_libraries(main PRIVATE
+  controllers
   graphics
   models
   widgets

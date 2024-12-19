@@ -5,14 +5,15 @@
 #include <QtOpenGL/QOpenGLShaderProgram>
 #include <QtOpenGL/QOpenGLVertexArrayObject>
 
+#include "Renderer.h"
 #include "../models/Particle.h"
 
-class ParticleRenderer
+class ParticleRenderer : public Renderer<Particle>
 {
 public:
   ParticleRenderer();
 
-  void render(Particle &particle);
+  void render(Particle &particle, RenderController &renderController) override;
 
 private:
   void loadShader();

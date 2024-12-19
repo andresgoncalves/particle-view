@@ -3,6 +3,8 @@
 
 #include <QtWidgets/QMainWindow>
 
+#include "../controllers/RenderController.h"
+
 class AppWindow : public QMainWindow
 {
 public:

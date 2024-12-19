@@ -4,6 +4,7 @@ find_package(Qt6 REQUIRED COMPONENTS
 
 add_library(graphics STATIC
   ParticleRenderer.cpp
+  SceneRenderer.cpp
 )
 
 target_link_libraries(graphics PRIVATE

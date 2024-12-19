@@ -1,6 +1,3 @@
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QVBoxLayout>
-
 #include "AppWidget.h"
 #include "AppWindow.h"
 

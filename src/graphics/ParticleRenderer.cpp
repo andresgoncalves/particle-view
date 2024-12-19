@@ -27,17 +27,19 @@ ParticleRenderer::ParticleRenderer()
   loadBuffers();
 }
 
-void ParticleRenderer::render(Particle &particle)
+void ParticleRenderer::render(Particle &particle, RenderController &renderController)
 {
   auto modelMatrix = QMatrix4x4{};
   modelMatrix.translate(particle.position);
   modelMatrix.scale(particle.radius);
 
+  auto modelViewProjectionMatrix = renderController.getViewProjectionMatrix() * modelMatrix;
+
   shaderProgram.bind();
   vertexArray.bind();
 
   shaderProgram.setUniformValue("color", particle.color);
-  shaderProgram.setUniformValue("modelViewProjectionMatrix", modelMatrix);
+  shaderProgram.setUniformValue("modelViewProjectionMatrix", modelViewProjectionMatrix);
   glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
 
   vertexArray.release();

@@ -4,6 +4,7 @@ find_package(Qt6 REQUIRED COMPONENTS
 
 add_library(models STATIC
   Particle.cpp
+  Scene.cpp
 )
 
 target_link_libraries(models PRIVATE

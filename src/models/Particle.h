@@ -3,7 +3,7 @@
 
 #include <QtGui/QVector3D>
 
-class Particle
+struct Particle
 {
 public:
   Particle();

@@ -1,13 +1,17 @@
 #include "GraphicsWidget.h"
 #include "../models/Particle.h"
+#include "../models/Scene.h"
 
-GraphicsWidget::GraphicsWidget(QWidget *parent) : QOpenGLWidget{parent} {}
+GraphicsWidget::GraphicsWidget(QWidget *parent) : QOpenGLWidget{parent}
+{
+  renderController = std::make_unique<RenderController>();
+}
 
 void GraphicsWidget::initializeGL()
 {
   initializeOpenGLFunctions();
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-  particleRenderer = std::make_unique<ParticleRenderer>();
+  sceneRenderer = std::make_unique<SceneRenderer>();
 }
 
 void GraphicsWidget::resizeGL(int width, int height)
@@ -19,16 +23,24 @@ void GraphicsWidget::paintGL()
 {
   glClear(GL_COLOR_BUFFER_BIT);
 
-  auto particle1 = Particle{};
-  particle1.position = {0.5f, 0.5f, 0.0f};
-  particle1.color = {0.0f, 1.0f, 0.0f};
-  particle1.radius = 0.1f;
+  auto scene = Scene{};
 
-  auto particle2 = Particle{};
-  particle2.position = {-0.5f, 0.0f, 0.0f};
-  particle2.color = {1.0f, 0.0f, 0.0f};
-  particle2.radius = 0.1f;
+  auto particle = Particle{};
+  particle.position = {0.5f, 0.0f, 0.0f};
+  particle.color = {0.0f, 1.0f, 0.0f};
+  particle.radius = 0.1f;
+  scene.particles.push_back(particle);
 
-  particleRenderer->render(particle1);
-  particleRenderer->render(particle2);
+  particle.position = {-0.5f, 0.0f, 0.0f};
+  particle.color = {1.0f, 0.0f, 0.0f};
+  particle.radius = 0.1f;
+  scene.particles.push_back(particle);
+
+  sceneRenderer->render(scene, *renderController);
 }
+
+void GraphicsWidget::mousePressEvent(QMouseEvent *event) {}
+
+void GraphicsWidget::mouseReleaseEvent(QMouseEvent *event) {}
+
+void GraphicsWidget::mouseMoveEvent(QMouseEvent *event) {}
