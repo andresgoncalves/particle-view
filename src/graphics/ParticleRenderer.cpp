@@ -1,6 +1,6 @@
 #include "ParticleRenderer.h"
 
-const char *vertexShaderSource =
+inline const char *vertexShaderSource =
     "#version 330 core\n"
     "layout (location = 0) in vec3 position;\n"
     "uniform vec3 color;\n"
@@ -12,7 +12,7 @@ const char *vertexShaderSource =
     "    vertexColor = vec4(color, 1.0f);\n"
     "}\n";
 
-const char *fragmentShaderSource =
+inline const char *fragmentShaderSource =
     "#version 330 core\n"
     "in vec4 vertexColor;\n"
     "out vec4 fragmentColor;\n"
@@ -90,7 +90,7 @@ void ParticleRenderer::loadVertices(std::vector<float> &vertices, size_t divisio
 
     for (int longitude = 0; longitude <= divisions; longitude++)
     {
-      float phi = longitude * 2 * M_PI / divisions;
+      float phi = 2 * longitude * M_PI / divisions;
       float sinPhi = std::sin(phi);
       float cosPhi = std::cos(phi);
 

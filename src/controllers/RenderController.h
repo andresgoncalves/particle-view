@@ -14,12 +14,12 @@ public:
 
   RenderController();
 
-  void rotate(QVector3D angles, ReferenceFrame referenceFrame = Model);
-  void translate(QVector3D vector, ReferenceFrame referenceFrame = Model);
+  void rotate(const QVector3D &angles, ReferenceFrame referenceFrame = Model);
+  void translate(const QVector3D &vector, ReferenceFrame referenceFrame = Model);
   void scale(float factor, ReferenceFrame referenceFrame = Model);
 
-  void setRotation(QVector3D angles);
-  void setTranslation(QVector3D vector);
+  void setRotation(const QVector3D &angles);
+  void setTranslation(const QVector3D &vector);
   void setScale(float factor);
 
   void rotateX(float angle, ReferenceFrame referenceFrame = Model);

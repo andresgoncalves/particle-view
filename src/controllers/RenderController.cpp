@@ -4,7 +4,7 @@
 
 RenderController::RenderController() {}
 
-void RenderController::rotate(QVector3D angles, ReferenceFrame referenceFrame)
+void RenderController::rotate(const QVector3D &angles, ReferenceFrame referenceFrame)
 {
   if (referenceFrame == Projection)
   {
@@ -19,9 +19,9 @@ void RenderController::rotate(QVector3D angles, ReferenceFrame referenceFrame)
   }
 }
 
-void RenderController::translate(QVector3D vector, ReferenceFrame referenceFrame)
+void RenderController::translate(const QVector3D &vector, ReferenceFrame referenceFrame)
 {
-  if (referenceFrame == Projection)
+  if (referenceFrame == Model)
   {
     translationVector += scaleFactor * getRotationMatrix().inverted().mapVector(vector);
   }
@@ -44,12 +44,12 @@ void RenderController::scale(float factor, ReferenceFrame referenceFrame)
   scaleFactor = std::max(scaleFactor, minScaleFactor);
 }
 
-void RenderController::setRotation(QVector3D angles)
+void RenderController::setRotation(const QVector3D &angles)
 {
   rotationAngles = angles;
 };
 
-void RenderController::setTranslation(QVector3D vector)
+void RenderController::setTranslation(const QVector3D &vector)
 {
   translationVector = vector;
 };
@@ -121,10 +121,11 @@ void RenderController::setTranslationZ(float distance)
 
 void RenderController::updateViewProjectionMatrix()
 {
-  /* Rotate */
-  viewProjectionMatrix = getRotationMatrix();
+  viewProjectionMatrix.setToIdentity();
   /* Translate */
   viewProjectionMatrix.translate(translationVector);
+  /* Rotate */
+  viewProjectionMatrix *= getRotationMatrix();
   /* Scale */
   viewProjectionMatrix.scale(scaleFactor);
 }

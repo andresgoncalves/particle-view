@@ -9,6 +9,7 @@
 
 #include "../controllers/RenderController.h"
 #include "../controllers/TransformController.h"
+#include "../graphics/AxisRenderer.h"
 #include "../graphics/SceneRenderer.h"
 
 class GraphicsWidget : public QOpenGLWidget, protected QOpenGLFunctions
@@ -41,11 +42,13 @@ private:
     std::set<int> pressedKeys;
   };
 
-  QVector2D screenToView(QVector2D point);
+  QVector2D screenToView(const QVector2D &point) const;
 
   EventFilter eventFilter;
   RenderController renderController;
   TransformController transformController;
+  std::unique_ptr<AxisRenderer>
+      axisRenderer;
   std::unique_ptr<SceneRenderer>
       sceneRenderer;
 };

@@ -2,13 +2,13 @@
 
 TransformController::TransformController(RenderController *renderController) : renderController{renderController} {}
 
-void TransformController::start(QVector2D point)
+void TransformController::start(const QVector2D &point)
 {
   transforming = true;
   startPoint = lastPoint = point;
 }
 
-void TransformController::move(QVector2D point, TransformType type)
+void TransformController::move(const QVector2D &point, TransformType type)
 {
   switch (type)
   {
@@ -39,7 +39,7 @@ void TransformController::scroll(int delta)
   renderController->scale(scaleFactor, RenderController::Model);
 }
 
-void TransformController::translate(QVector2D point)
+void TransformController::translate(const QVector2D &point)
 {
   auto distance = point - lastPoint;
 
@@ -50,7 +50,7 @@ void TransformController::translate(QVector2D point)
   renderController->translate({translation.x(), translation.y(), 0.0f}, RenderController::Projection);
 }
 
-void TransformController::rotateXY(QVector2D point)
+void TransformController::rotateXY(const QVector2D &point)
 {
   auto distance = point - lastPoint;
 
@@ -61,7 +61,7 @@ void TransformController::rotateXY(QVector2D point)
   renderController->rotate({rotation.y(), -rotation.x(), 0.0f}, RenderController::Projection);
 }
 
-void TransformController::rotateZ(QVector2D point)
+void TransformController::rotateZ(const QVector2D &point)
 {
   float startAngle = atan2(lastPoint.y(), lastPoint.x());
 
@@ -74,7 +74,7 @@ void TransformController::rotateZ(QVector2D point)
   renderController->rotateZ(rotation, RenderController::Projection);
 }
 
-void TransformController::scale(QVector2D point)
+void TransformController::scale(const QVector2D &point)
 {
   auto distance = point - lastPoint;
 

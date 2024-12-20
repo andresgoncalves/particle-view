@@ -7,8 +7,6 @@
 
 #include "RenderController.h"
 
-class Point;
-
 class TransformController
 {
 public:
@@ -22,8 +20,8 @@ public:
 
   TransformController(RenderController *renderController);
 
-  void start(QVector2D point);
-  void move(QVector2D point, TransformType type);
+  void start(const QVector2D &point);
+  void move(const QVector2D &point, TransformType type);
   void end();
 
   void scroll(int delta);
@@ -31,10 +29,10 @@ public:
   bool isTransforming() const;
 
 private:
-  void translate(QVector2D point);
-  void rotateXY(QVector2D point);
-  void rotateZ(QVector2D point);
-  void scale(QVector2D point);
+  void translate(const QVector2D &point);
+  void rotateXY(const QVector2D &point);
+  void rotateZ(const QVector2D &point);
+  void scale(const QVector2D &point);
 
   bool transforming = false;
   QVector2D startPoint;

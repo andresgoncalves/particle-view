@@ -20,6 +20,7 @@ void GraphicsWidget::initializeGL()
   glEnable(GL_DEPTH_TEST);
   glDepthFunc(GL_LESS);
   sceneRenderer = std::make_unique<SceneRenderer>();
+  axisRenderer = std::make_unique<AxisRenderer>();
 }
 
 void GraphicsWidget::resizeGL(int width, int height)
@@ -29,8 +30,6 @@ void GraphicsWidget::resizeGL(int width, int height)
 
 void GraphicsWidget::paintGL()
 {
-  glClear(GL_COLOR_BUFFER_BIT);
-
   auto scene = Scene{};
 
   auto particle = Particle{};
@@ -44,7 +43,15 @@ void GraphicsWidget::paintGL()
   particle.radius = 0.1f;
   scene.particles.push_back(particle);
 
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
   sceneRenderer->render(scene, renderController);
+
+  glClear(GL_DEPTH_BUFFER_BIT);
+
+  axisRenderer->render(Axis::X, renderController);
+  axisRenderer->render(Axis::Y, renderController);
+  axisRenderer->render(Axis::Z, renderController);
 }
 
 void GraphicsWidget::mousePressEvent(QMouseEvent *event)
@@ -96,7 +103,7 @@ void GraphicsWidget::wheelEvent(QWheelEvent *event)
   update();
 }
 
-QVector2D GraphicsWidget::screenToView(QVector2D screenPoint)
+QVector2D GraphicsWidget::screenToView(const QVector2D &screenPoint) const
 {
   auto viewPoint = QVector2D{(screenPoint.x() / window()->width()) * 2.0f - 1.0f,
                              1.0f - (screenPoint.y() / window()->height()) * 2.0f};
