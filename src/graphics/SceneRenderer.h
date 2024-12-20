@@ -11,7 +11,7 @@ class SceneRenderer : public Renderer<Scene>
 public:
   SceneRenderer();
 
-  void render(Scene &scene, RenderController &renderController) override;
+  void render(const Scene &scene, const RenderController &renderController) override;
 
 private:
   std::unique_ptr<ParticleRenderer> particleRenderer;

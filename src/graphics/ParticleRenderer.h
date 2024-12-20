@@ -13,7 +13,7 @@ class ParticleRenderer : public Renderer<Particle>
 public:
   ParticleRenderer();
 
-  void render(Particle &particle, RenderController &renderController) override;
+  void render(const Particle &particle, const RenderController &renderController) override;
 
 private:
   void loadShader();

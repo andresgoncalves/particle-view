@@ -7,7 +7,7 @@ SceneRenderer::SceneRenderer()
   particleRenderer = std::make_unique<ParticleRenderer>();
 }
 
-void SceneRenderer::render(Scene &scene, RenderController &renderController)
+void SceneRenderer::render(const Scene &scene, const RenderController &renderController)
 {
   for (auto &particle : scene.particles)
   {

@@ -27,7 +27,7 @@ ParticleRenderer::ParticleRenderer()
   loadBuffers();
 }
 
-void ParticleRenderer::render(Particle &particle, RenderController &renderController)
+void ParticleRenderer::render(const Particle &particle, const RenderController &renderController)
 {
   auto modelMatrix = QMatrix4x4{};
   modelMatrix.translate(particle.position);
