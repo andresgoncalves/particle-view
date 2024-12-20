@@ -1,10 +1,11 @@
+#include <algorithm>
+
 #include "RenderController.h"
 
 RenderController::RenderController() {}
 
 void RenderController::rotate(QVector3D angles, ReferenceFrame referenceFrame)
 {
-  dirtyViewProjectionMatrix = true;
   if (referenceFrame == Projection)
   {
     auto currentRotationMatrix = QQuaternion::fromEulerAngles(rotationAngles).toRotationMatrix();
@@ -20,12 +21,9 @@ void RenderController::rotate(QVector3D angles, ReferenceFrame referenceFrame)
 
 void RenderController::translate(QVector3D vector, ReferenceFrame referenceFrame)
 {
-  dirtyViewProjectionMatrix = true;
   if (referenceFrame == Projection)
   {
-    auto currentRotationMatrix = QMatrix4x4{QQuaternion::fromEulerAngles(rotationAngles).toRotationMatrix()};
-
-    translationVector += scaleFactor * currentRotationMatrix.inverted().mapVector(vector);
+    translationVector += scaleFactor * getRotationMatrix().inverted().mapVector(vector);
   }
   else
   {
@@ -35,7 +33,6 @@ void RenderController::translate(QVector3D vector, ReferenceFrame referenceFrame
 
 void RenderController::scale(float factor, ReferenceFrame referenceFrame)
 {
-  dirtyViewProjectionMatrix = true;
   if (referenceFrame == Projection)
   {
     scaleFactor *= factor;
@@ -44,24 +41,22 @@ void RenderController::scale(float factor, ReferenceFrame referenceFrame)
   {
     scaleFactor += factor;
   }
+  scaleFactor = std::max(scaleFactor, minScaleFactor);
 }
 
 void RenderController::setRotation(QVector3D angles)
 {
-  dirtyViewProjectionMatrix = true;
   rotationAngles = angles;
 };
 
 void RenderController::setTranslation(QVector3D vector)
 {
-  dirtyViewProjectionMatrix = true;
   translationVector = vector;
 };
 
 void RenderController::setScale(float factor)
 {
-  dirtyViewProjectionMatrix = true;
-  scaleFactor = factor;
+  scaleFactor = std::max(factor, minScaleFactor);
 };
 
 void RenderController::rotateX(float angle, ReferenceFrame referenceFrame)
@@ -96,68 +91,65 @@ void RenderController::translateZ(float distance, ReferenceFrame referenceFrame)
 
 void RenderController::setRotationX(float angle)
 {
-  dirtyViewProjectionMatrix = true;
   rotationAngles.setX(angle);
 }
 
 void RenderController::setRotationY(float angle)
 {
-  dirtyViewProjectionMatrix = true;
   rotationAngles.setY(angle);
 }
 
 void RenderController::setRotationZ(float angle)
 {
-  dirtyViewProjectionMatrix = true;
   rotationAngles.setZ(angle);
 }
 
 void RenderController::setTranslationX(float distance)
 {
-  dirtyViewProjectionMatrix = true;
   translationVector.setX(distance);
 }
 
 void RenderController::setTranslationY(float distance)
 {
-  dirtyViewProjectionMatrix = true;
   translationVector.setY(distance);
 }
 
 void RenderController::setTranslationZ(float distance)
 {
-  dirtyViewProjectionMatrix = true;
   translationVector.setZ(distance);
 }
 
-QVector3D RenderController::getRotation()
+void RenderController::updateViewProjectionMatrix()
+{
+  /* Rotate */
+  viewProjectionMatrix = getRotationMatrix();
+  /* Translate */
+  viewProjectionMatrix.translate(translationVector);
+  /* Scale */
+  viewProjectionMatrix.scale(scaleFactor);
+}
+
+QVector3D RenderController::getRotation() const
 {
   return rotationAngles;
 };
 
-QVector3D RenderController::getTranslation()
+QVector3D RenderController::getTranslation() const
 {
   return translationVector;
 };
 
-float RenderController::getScale()
+float RenderController::getScale() const
 {
   return scaleFactor;
 };
 
-QMatrix4x4 RenderController::getViewProjectionMatrix()
+QMatrix4x4 RenderController::getRotationMatrix() const
 {
-  if (dirtyViewProjectionMatrix)
-  {
-    dirtyViewProjectionMatrix = false;
+  return QMatrix4x4{QQuaternion::fromEulerAngles(rotationAngles).toRotationMatrix()};
+}
 
-    /* Rotate */
-    viewProjectionMatrix = QMatrix4x4{QQuaternion::fromEulerAngles(rotationAngles).toRotationMatrix()};
-    /* Translate */
-    viewProjectionMatrix.translate(translationVector);
-    /* Scale */
-    viewProjectionMatrix.scale(scaleFactor);
-  }
-
+QMatrix4x4 RenderController::getViewProjectionMatrix() const
+{
   return viewProjectionMatrix;
 }

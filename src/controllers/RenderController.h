@@ -38,19 +38,23 @@ public:
   void setTranslationY(float distance);
   void setTranslationZ(float distance);
 
-  QVector3D getRotation();
-  QVector3D getTranslation();
-  float getScale();
+  void updateViewProjectionMatrix();
 
-  QMatrix4x4 getViewProjectionMatrix();
+  QVector3D getRotation() const;
+  QVector3D getTranslation() const;
+  float getScale() const;
+
+  QMatrix4x4 getRotationMatrix() const;
+  QMatrix4x4 getViewProjectionMatrix() const;
 
 private:
-  bool dirtyViewProjectionMatrix = true;
-  QMatrix4x4 viewProjectionMatrix;
-
   QVector3D rotationAngles;
   QVector3D translationVector;
   float scaleFactor = 1.0f;
+
+  QMatrix4x4 viewProjectionMatrix;
+
+  const float minScaleFactor = 0.1f;
 };
 
 #endif
