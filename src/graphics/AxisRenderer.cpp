@@ -50,9 +50,9 @@ void AxisRenderer::render(const Axis &axis, const RenderController &renderContro
   modelMatrix.scale(0.2f);
 
   auto translationMatrix = QMatrix4x4{};
-  translationMatrix.translate({-0.8f, -0.8f, 0.0f});
+  translationMatrix.translate(QVector3D{-renderController.getViewport() + QVector2D{0.2f, 0.2f}});
 
-  auto modelViewProjectionMatrix = translationMatrix * renderController.getRotationMatrix() * modelMatrix;
+  auto modelViewProjectionMatrix = renderController.getViewportMatrix() * translationMatrix * renderController.getRotationMatrix() * modelMatrix;
 
   shaderProgram.bind();
   vertexArray.bind();

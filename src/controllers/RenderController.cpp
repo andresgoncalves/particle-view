@@ -6,40 +6,45 @@ RenderController::RenderController() {}
 
 void RenderController::rotate(const QVector3D &angles, ReferenceFrame referenceFrame)
 {
-  if (referenceFrame == Projection)
+  switch (referenceFrame)
+  {
+  case Model:
+    rotationAngles += angles;
+    break;
+  case Projection:
   {
     auto currentRotationMatrix = QQuaternion::fromEulerAngles(rotationAngles).toRotationMatrix();
     auto newRotationMatrix = QQuaternion::fromEulerAngles(angles).toRotationMatrix();
 
     rotationAngles = QQuaternion::fromRotationMatrix(newRotationMatrix * currentRotationMatrix).toEulerAngles();
+    break;
   }
-  else
-  {
-    rotationAngles += angles;
   }
 }
 
 void RenderController::translate(const QVector3D &vector, ReferenceFrame referenceFrame)
 {
-  if (referenceFrame == Model)
+  switch (referenceFrame)
   {
-    translationVector += scaleFactor * getRotationMatrix().inverted().mapVector(vector);
-  }
-  else
-  {
+  case Model:
+    translationVector += getViewProjectionMatrix().inverted().mapVector(vector);
+    break;
+  case Projection:
     translationVector += vector;
+    break;
   }
 }
 
 void RenderController::scale(float factor, ReferenceFrame referenceFrame)
 {
-  if (referenceFrame == Projection)
+  switch (referenceFrame)
   {
-    scaleFactor *= factor;
-  }
-  else
-  {
+  case Model:
     scaleFactor += factor;
+    break;
+  case Projection:
+    scaleFactor *= factor;
+    break;
   }
   scaleFactor = std::max(scaleFactor, minScaleFactor);
 }
@@ -119,15 +124,14 @@ void RenderController::setTranslationZ(float distance)
   translationVector.setZ(distance);
 }
 
+void RenderController::setViewport(const QVector2D &scale)
+{
+  viewport = scale;
+}
+
 void RenderController::updateViewProjectionMatrix()
 {
-  viewProjectionMatrix.setToIdentity();
-  /* Translate */
-  viewProjectionMatrix.translate(translationVector);
-  /* Rotate */
-  viewProjectionMatrix *= getRotationMatrix();
-  /* Scale */
-  viewProjectionMatrix.scale(scaleFactor);
+  viewProjectionMatrix = getViewportMatrix() * getTranslationMatrix() * getRotationMatrix() * getScaleMatrix();
 }
 
 QVector3D RenderController::getRotation() const
@@ -145,9 +149,36 @@ float RenderController::getScale() const
   return scaleFactor;
 };
 
+QVector2D RenderController::getViewport() const
+{
+  return viewport;
+}
+
+QMatrix4x4 RenderController::getViewportMatrix() const
+{
+  auto viewportMatrix = QMatrix4x4{};
+  viewportMatrix.scale(1.0f / viewport.x(), 1.0f / viewport.y(), 1.0f);
+  return viewportMatrix;
+}
+
+QMatrix4x4 RenderController::getTranslationMatrix() const
+{
+  auto translationMatrix = QMatrix4x4{};
+  translationMatrix.translate(translationVector);
+  return translationMatrix;
+}
+
+QMatrix4x4 RenderController::getScaleMatrix() const
+{
+  auto scaleMatrix = QMatrix4x4{};
+  scaleMatrix.scale(scaleFactor);
+  return scaleMatrix;
+}
+
 QMatrix4x4 RenderController::getRotationMatrix() const
 {
-  return QMatrix4x4{QQuaternion::fromEulerAngles(rotationAngles).toRotationMatrix()};
+  auto rotationMatrix = QMatrix4x4{QQuaternion::fromEulerAngles(rotationAngles).toRotationMatrix()};
+  return rotationMatrix;
 }
 
 QMatrix4x4 RenderController::getViewProjectionMatrix() const

@@ -1,8 +1,6 @@
 #ifndef Transform_CONTROLLER_H
 #define Transform_CONTROLLER_H
 
-#include <memory>
-
 #include <QtGui/QVector2D>
 
 #include "RenderController.h"

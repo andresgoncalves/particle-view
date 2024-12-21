@@ -26,6 +26,13 @@ void GraphicsWidget::initializeGL()
 void GraphicsWidget::resizeGL(int width, int height)
 {
   glViewport(0, 0, width, height);
+
+  if (width > height)
+    renderController.setViewport({1.0f, static_cast<float>(height) / width});
+  else
+    renderController.setViewport({static_cast<float>(width) / height, 1.0f});
+
+  update();
 }
 
 void GraphicsWidget::paintGL()
@@ -99,14 +106,16 @@ void GraphicsWidget::mouseMoveEvent(QMouseEvent *event)
 
 void GraphicsWidget::wheelEvent(QWheelEvent *event)
 {
-  transformController.scroll(event->angleDelta().y());
+  transformController.scroll(-event->angleDelta().y());
   update();
 }
 
 QVector2D GraphicsWidget::screenToView(const QVector2D &screenPoint) const
 {
-  auto viewPoint = QVector2D{(screenPoint.x() / window()->width()) * 2.0f - 1.0f,
-                             1.0f - (screenPoint.y() / window()->height()) * 2.0f};
+  auto viewPoint = renderController.getViewport() *
+                   QVector2D{
+                       (screenPoint.x() / window()->width()) * 2.0f - 1.0f,
+                       1.0f - (screenPoint.y() / window()->height()) * 2.0f};
   return viewPoint;
 }
 
