@@ -18,8 +18,11 @@ void TransformController::move(const QVector2D &point, TransformType type)
   case RotationZ:
     rotateZ(point);
     break;
-  case Translation:
-    translate(point);
+  case TranslationXY:
+    translateXY(point);
+    break;
+  case TranslationZ:
+    translateZ(point);
     break;
   case Scale:
     scale(point);
@@ -39,7 +42,7 @@ void TransformController::scroll(int delta)
   renderController->scale(scaleFactor, RenderController::Model);
 }
 
-void TransformController::translate(const QVector2D &point)
+void TransformController::translateXY(const QVector2D &point)
 {
   auto distance = point - lastPoint;
 
@@ -50,6 +53,17 @@ void TransformController::translate(const QVector2D &point)
   renderController->translate({translation.x(), translation.y(), 0.0f}, RenderController::Projection);
 }
 
+void TransformController::translateZ(const QVector2D &point)
+{
+  auto distance = point - lastPoint;
+
+  lastPoint = point;
+
+  auto translation = distance.y() * translationSensitivity;
+
+  renderController->translate({0.0f, 0.0f, translation}, RenderController::Projection);
+}
+
 void TransformController::rotateXY(const QVector2D &point)
 {
   auto distance = point - lastPoint;
@@ -58,7 +72,7 @@ void TransformController::rotateXY(const QVector2D &point)
 
   auto rotation = distance * rotationSensitivity;
 
-  renderController->rotate({rotation.y(), -rotation.x(), 0.0f}, RenderController::Projection);
+  renderController->rotate({-rotation.y(), rotation.x(), 0.0f}, RenderController::Projection);
 }
 
 void TransformController::rotateZ(const QVector2D &point)

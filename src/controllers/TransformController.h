@@ -10,7 +10,8 @@ class TransformController
 public:
   enum TransformType
   {
-    Translation,
+    TranslationXY,
+    TranslationZ,
     RotationXY,
     RotationZ,
     Scale
@@ -27,7 +28,8 @@ public:
   bool isTransforming() const;
 
 private:
-  void translate(const QVector2D &point);
+  void translateXY(const QVector2D &point);
+  void translateZ(const QVector2D &point);
   void rotateXY(const QVector2D &point);
   void rotateZ(const QVector2D &point);
   void scale(const QVector2D &point);

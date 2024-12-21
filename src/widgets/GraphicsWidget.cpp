@@ -40,13 +40,24 @@ void GraphicsWidget::paintGL()
   auto scene = Scene{};
 
   auto particle = Particle{};
+
   particle.position = {0.5f, 0.0f, 0.0f};
+  particle.color = {1.0f, 0.0f, 0.0f};
+  particle.radius = 0.1f;
+  scene.particles.push_back(particle);
+
+  particle.position = {0.0f, 0.5f, 0.0f};
   particle.color = {0.0f, 1.0f, 0.0f};
   particle.radius = 0.1f;
   scene.particles.push_back(particle);
 
-  particle.position = {-0.5f, 0.0f, 0.0f};
-  particle.color = {1.0f, 0.0f, 0.0f};
+  particle.position = {0.0f, 0.0f, 0.5f};
+  particle.color = {0.0f, 0.0f, 1.0f};
+  particle.radius = 0.1f;
+  scene.particles.push_back(particle);
+
+  particle.position = {0.0f, 0.0f, 0.0f};
+  particle.color = {1.0f, 1.0f, 1.0f};
   particle.radius = 0.1f;
   scene.particles.push_back(particle);
 
@@ -84,19 +95,15 @@ void GraphicsWidget::mouseMoveEvent(QMouseEvent *event)
     TransformController::TransformType transformType;
     if (eventFilter.isKeyPressed(Qt::Key_T))
     {
-      transformType = TransformController::Translation;
+      transformType = eventFilter.isKeyPressed(Qt::Key_Control) ? TransformController::TranslationZ : TransformController::TranslationXY;
     }
     else if (eventFilter.isKeyPressed(Qt::Key_S))
     {
       transformType = TransformController::Scale;
     }
-    else if (eventFilter.isKeyPressed(Qt::Key_Control))
-    {
-      transformType = TransformController::RotationZ;
-    }
     else
     {
-      transformType = TransformController::RotationXY;
+      transformType = eventFilter.isKeyPressed(Qt::Key_Control) ? TransformController::RotationZ : TransformController::RotationXY;
     }
 
     transformController.move(screenToView(QVector2D{event->position()}), transformType);
