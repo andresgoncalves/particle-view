@@ -187,18 +187,21 @@ QMatrix4x4 RenderController::getViewMatrix() const
   return viewMatrix;
 }
 
-QMatrix4x4 RenderController::getProjectionMatrix(ProjectionMode projectionMode) const
+QMatrix4x4 RenderController::getProjectionMatrix() const
+{
+  return getProjectionMatrix(projectionMode);
+}
+
+QMatrix4x4 RenderController::getProjectionMatrix(ProjectionMode mode) const
 {
   auto projectionMatrix = QMatrix4x4{};
-  switch (projectionMode == Default ? defaultProjectionMode : projectionMode)
+  switch (mode)
   {
   case Ortho:
     projectionMatrix.ortho(-viewport.x(), viewport.x(), -viewport.y(), viewport.y(), 0.1f, 100.0f);
     break;
   case Perspective:
     projectionMatrix.perspective(45.0f, viewport.x() / viewport.y(), 0.1f, 100.0f);
-    break;
-  case Default:
     break;
   }
   return projectionMatrix;

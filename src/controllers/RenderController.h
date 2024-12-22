@@ -14,9 +14,14 @@ public:
 
   enum ProjectionMode
   {
-    Default,
     Ortho,
     Perspective
+  };
+
+  enum ParticleShape
+  {
+    Solid,
+    Skeleton,
   };
 
   RenderController();
@@ -59,8 +64,12 @@ public:
   QMatrix4x4 getTranslationMatrix() const;
 
   QMatrix4x4 getViewMatrix() const;
-  QMatrix4x4 getProjectionMatrix(ProjectionMode projectionMode = Default) const;
+  QMatrix4x4 getProjectionMatrix() const;
+  QMatrix4x4 getProjectionMatrix(ProjectionMode mode) const;
   QMatrix4x4 getViewProjectionMatrix() const;
+
+  ProjectionMode projectionMode = Perspective;
+  ParticleShape particleShape = Solid;
 
 private:
   QVector3D rotationAngles;
@@ -71,10 +80,8 @@ private:
 
   QMatrix4x4 viewProjectionMatrix;
 
-  const float minScaleFactor = 0.1f;
-  const float maxScaleFactor = 2.0f;
-
-  const ProjectionMode defaultProjectionMode = Perspective;
+  float minScaleFactor = 0.1f;
+  float maxScaleFactor = 2.0f;
 };
 
 #endif
