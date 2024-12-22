@@ -62,7 +62,7 @@ void RenderController::setTranslation(const QVector3D &vector)
 
 void RenderController::setScale(float factor)
 {
-  scaleFactor = std::clamp(scaleFactor, minScaleFactor, maxScaleFactor);
+  scaleFactor = std::clamp(factor, minScaleFactor, maxScaleFactor);
 };
 
 void RenderController::rotateX(float angle, ReferenceFrame referenceFrame)
@@ -132,7 +132,7 @@ void RenderController::setViewport(const QVector2D &scale)
 
 void RenderController::updateViewProjectionMatrix()
 {
-  viewProjectionMatrix = getProjectionMatrix() * getViewMatrix() * getRotationMatrix();
+  viewProjectionMatrix = getProjectionMatrix() * getViewMatrix();
 }
 
 QVector3D RenderController::getRotation() const
@@ -177,12 +177,10 @@ QMatrix4x4 RenderController::getRotationMatrix() const
 
 QMatrix4x4 RenderController::getViewMatrix() const
 {
-  auto eye = QVector3D{0.0f, 0.0f, 1.0f};
-  auto center = QVector3D{0.0f, 0.0f, 0.0f};
-  auto up = QVector3D{0.0f, 1.0f, 0.0f};
-
   auto viewMatrix = QMatrix4x4{};
-  viewMatrix.lookAt(eye / scaleFactor - translationVector, center - translationVector, up);
+  viewMatrix.translate({0.0f, 0.0f, -1.0f});
+
+  viewMatrix *= getTranslationMatrix() * getRotationMatrix() * getScaleMatrix();
 
   return viewMatrix;
 }

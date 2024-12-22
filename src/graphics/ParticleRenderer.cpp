@@ -54,14 +54,23 @@ void ParticleRenderer::render(const Particle &particle, const RenderController &
 
 bool ParticleRenderer::shouldRender(const Particle &particle, const RenderController &renderController)
 {
-  auto viewProjectionMatrix = renderController.getViewProjectionMatrix();
 
-  auto nearPlane = viewProjectionMatrix.row(3) + viewProjectionMatrix.row(2);
-  nearPlane /= nearPlane.toVector3D().length();
+  switch (renderController.projectionMode)
+  {
+  case RenderController::Perspective:
+  {
+    auto viewProjectionMatrix = renderController.getViewProjectionMatrix();
 
-  float distance = QVector3D::dotProduct(nearPlane.toVector3D(), particle.position) + nearPlane.w();
+    auto nearPlane = viewProjectionMatrix.row(3) + viewProjectionMatrix.row(2);
+    nearPlane /= nearPlane.toVector3D().length();
 
-  return distance >= particle.radius;
+    float distance = QVector3D::dotProduct(nearPlane.toVector3D(), particle.position) + nearPlane.w();
+
+    return distance >= particle.radius;
+  }
+  default:
+    return true;
+  }
 }
 
 void ParticleRenderer::drawElements(RenderController::ParticleShape mode)

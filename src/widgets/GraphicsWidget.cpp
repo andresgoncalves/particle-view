@@ -102,11 +102,11 @@ void GraphicsWidget::mouseMoveEvent(QMouseEvent *event)
   if (transformController.isTransforming())
   {
     TransformController::TransformType transformType;
-    if (eventFilter.isKeyPressed(Qt::Key_T))
+    if (eventFilter.isKeyPressed(Qt::Key_T) && renderController.projectionMode == RenderController::Perspective)
     {
       transformType = eventFilter.isKeyPressed(Qt::Key_Control) ? TransformController::TranslationZ : TransformController::TranslationXY;
     }
-    else if (eventFilter.isKeyPressed(Qt::Key_S))
+    else if (eventFilter.isKeyPressed(Qt::Key_S) || eventFilter.isKeyPressed(Qt::Key_T) && renderController.projectionMode == RenderController::Ortho)
     {
       transformType = TransformController::Scale;
     }

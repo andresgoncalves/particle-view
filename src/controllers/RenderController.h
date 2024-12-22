@@ -71,6 +71,8 @@ public:
   ProjectionMode projectionMode = Perspective;
   ParticleShape particleShape = Solid;
 
+  float axisSize = 0.2f;
+
 private:
   QVector3D rotationAngles;
   QVector3D translationVector;

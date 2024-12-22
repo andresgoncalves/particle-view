@@ -32,8 +32,6 @@ void AxisRenderer::render(const Axis &axis, const RenderController &renderContro
   auto modelMatrix = QMatrix4x4{};
   auto color = QVector3D{};
 
-  modelMatrix.scale(0.2f);
-
   switch (axis)
   {
   case Axis::X:
@@ -49,10 +47,11 @@ void AxisRenderer::render(const Axis &axis, const RenderController &renderContro
     break;
   }
 
-  auto viewProjectionMatrix = renderController.getProjectionMatrix(RenderController::Ortho);
+  float size = renderController.axisSize;
 
-  viewProjectionMatrix.translate((-renderController.getViewport() + QVector2D{0.2f, 0.2f}).toVector3D());
-  viewProjectionMatrix.lookAt({0.0f, 0.0f, 1.0f}, {}, {0.0f, 1.0f, 0.0f});
+  auto viewProjectionMatrix = renderController.getProjectionMatrix(RenderController::Ortho);
+  viewProjectionMatrix.translate((-renderController.getViewport().toVector3D() + QVector3D{size, size, -1.0f}));
+  viewProjectionMatrix.scale(size);
 
   auto modelViewProjectionMatrix = viewProjectionMatrix * renderController.getRotationMatrix() * modelMatrix;
 
@@ -129,7 +128,6 @@ void AxisRenderer::loadVertices(std::vector<float> &vertices, size_t divisions)
   vertices.push_back(0.0f);
   vertices.push_back(height);
   vertices.push_back(0.0f);
-  int baseIndex = vertices.size() / 3 - 1;
 
   // Vértices de la cabeza de la flecha (cono)
   for (int i = 0; i <= divisions; i++)
