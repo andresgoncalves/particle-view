@@ -1,12 +1,11 @@
 #ifndef GRAPHICS_WIDGET_H
 #define GRAPHICS_WIDGET_H
 
-#include <set>
-
 #include <QtGui/QOpenGLFunctions>
 #include <QtGui/QMouseEvent>
 #include <QtOpenGLWidgets/QOpenGLWidget>
 
+#include "utils/KeyEventFilter.h"
 #include "../controllers/RenderController.h"
 #include "../controllers/TransformController.h"
 #include "../graphics/AxisRenderer.h"
@@ -30,21 +29,9 @@ protected:
   void wheelEvent(QWheelEvent *event) override;
 
 private:
-  class EventFilter : public QObject
-  {
-  public:
-    bool isKeyPressed(int key) const;
-
-  protected:
-    bool eventFilter(QObject *obj, QEvent *event) override;
-
-  private:
-    std::set<int> pressedKeys;
-  };
-
   QVector2D screenToView(const QVector2D &point) const;
 
-  EventFilter eventFilter;
+  KeyEventFilter eventFilter;
   RenderController renderController;
   TransformController transformController;
   std::unique_ptr<AxisRenderer>

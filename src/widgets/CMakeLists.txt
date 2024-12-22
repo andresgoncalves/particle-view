@@ -8,6 +8,7 @@ add_library(widgets STATIC
   AppWidget.cpp
   AppWindow.cpp
   GraphicsWidget.cpp
+  utils/KeyEventFilter.cpp
 )
 
 target_link_libraries(widgets PRIVATE

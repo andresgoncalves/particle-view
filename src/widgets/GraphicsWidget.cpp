@@ -4,7 +4,15 @@
 
 GraphicsWidget::GraphicsWidget(QWidget *parent) : QOpenGLWidget{parent}, transformController{&renderController}
 {
-  qApp->installEventFilter(&eventFilter);
+  eventFilter.addListener(Qt::Key_O, [&]()
+                          { renderController.projectionMode = RenderController::Ortho; update(); });
+  eventFilter.addListener(Qt::Key_P, [&]()
+                          { renderController.projectionMode = RenderController::Perspective; update(); });
+  eventFilter.addListener(Qt::Key_K, [&]()
+                          { renderController.particleShape = RenderController::Skeleton; update(); });
+  eventFilter.addListener(Qt::Key_L, [&]()
+                          { renderController.particleShape = RenderController::Solid; update(); });
+  installEventFilter(&eventFilter);
 }
 
 void GraphicsWidget::update()
@@ -74,6 +82,7 @@ void GraphicsWidget::paintGL()
 
 void GraphicsWidget::mousePressEvent(QMouseEvent *event)
 {
+  setFocus();
   if (event->button() == Qt::MouseButton::LeftButton)
   {
     transformController.start(screenToView(QVector2D{event->position()}));
@@ -125,23 +134,3 @@ QVector2D GraphicsWidget::screenToView(const QVector2D &screenPoint) const
                        1.0f - (screenPoint.y() / window()->height()) * 2.0f};
   return viewPoint;
 }
-
-bool GraphicsWidget::EventFilter::isKeyPressed(int key) const
-{
-  return pressedKeys.contains(key);
-}
-
-bool GraphicsWidget::EventFilter::eventFilter(QObject *obj, QEvent *event)
-{
-  if (event->type() == QEvent::KeyPress)
-  {
-    auto keyEvent = static_cast<QKeyEvent *>(event);
-    pressedKeys.insert(keyEvent->key());
-  }
-  else if (event->type() == QEvent::KeyRelease)
-  {
-    auto keyEvent = static_cast<QKeyEvent *>(event);
-    pressedKeys.erase(keyEvent->key());
-  }
-  return QObject::eventFilter(obj, event);
-};
