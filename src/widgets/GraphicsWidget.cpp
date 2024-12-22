@@ -93,16 +93,18 @@ GraphicsWidget::GraphicsWidget(QWidget *parent) : QOpenGLWidget{parent}, transfo
                           { renderController.particleShape = RenderController::Solid; update(); });
   eventFilter.addListener(Qt::Key_Space, [&]()
                           { if(storyController.isPlaying()) storyController.pause(); else storyController.play(); });
+  eventFilter.addListener(Qt::Key_R, [&]()
+                          { storyController.reset(); update(); });
   eventFilter.addListener(Qt::Key_Left, [&]()
-                          { storyController.skip(-1.0); update(); });
+                          { storyController.skip(-0.1); update(); });
   eventFilter.addListener(Qt::Key_Right, [&]()
-                          { storyController.skip(1.0); update(); });
+                          { storyController.skip(0.1); update(); });
   installEventFilter(&eventFilter);
 
   QTimer *timer = new QTimer(this);
   connect(timer, &QTimer::timeout, this, [&]()
           { update(); });
-  timer->start(100);
+  timer->start(1.0 / 60.0);
 
   storyController.story = _createStoryMock();
 }
