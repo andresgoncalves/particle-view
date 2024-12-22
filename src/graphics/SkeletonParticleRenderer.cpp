@@ -29,11 +29,19 @@ SkeletonParticleRenderer::SkeletonParticleRenderer()
 
 void SkeletonParticleRenderer::render(const Particle &particle, const RenderController &renderController)
 {
+  auto viewProjectionMatrix = renderController.getViewProjectionMatrix();
+
+  auto nearPlane = viewProjectionMatrix.row(3) + viewProjectionMatrix.row(2);
+  nearPlane /= nearPlane.toVector3D().length();
+
+  if (QVector3D::dotProduct(nearPlane.toVector3D(), particle.position) + nearPlane.w() < particle.radius)
+    return;
+
   auto modelMatrix = QMatrix4x4{};
   modelMatrix.translate(particle.position);
   modelMatrix.scale(particle.radius);
 
-  auto modelViewProjectionMatrix = renderController.getViewProjectionMatrix() * modelMatrix;
+  auto modelViewProjectionMatrix = viewProjectionMatrix * modelMatrix;
 
   shaderProgram.bind();
   vertexArray.bind();
