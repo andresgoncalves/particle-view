@@ -27,10 +27,10 @@ void RenderController::translate(const QVector3D &vector, ReferenceFrame referen
   switch (referenceFrame)
   {
   case Model:
-    translationVector += getViewProjectionMatrix().inverted().mapVector(vector);
+    translationVector += vector;
     break;
   case Projection:
-    translationVector += vector;
+    translationVector += getViewProjectionMatrix().inverted().mapVector(vector);
     break;
   }
 }
@@ -46,7 +46,8 @@ void RenderController::scale(float factor, ReferenceFrame referenceFrame)
     scaleFactor *= factor;
     break;
   }
-  scaleFactor = std::max(scaleFactor, minScaleFactor);
+
+  scaleFactor = std::clamp(scaleFactor, minScaleFactor, maxScaleFactor);
 }
 
 void RenderController::setRotation(const QVector3D &angles)
@@ -61,7 +62,7 @@ void RenderController::setTranslation(const QVector3D &vector)
 
 void RenderController::setScale(float factor)
 {
-  scaleFactor = std::max(factor, minScaleFactor);
+  scaleFactor = std::clamp(scaleFactor, minScaleFactor, maxScaleFactor);
 };
 
 void RenderController::rotateX(float angle, ReferenceFrame referenceFrame)
@@ -131,7 +132,7 @@ void RenderController::setViewport(const QVector2D &scale)
 
 void RenderController::updateViewProjectionMatrix()
 {
-  viewProjectionMatrix = getViewportMatrix() * getTranslationMatrix() * getRotationMatrix() * getScaleMatrix();
+  viewProjectionMatrix = getProjectionMatrix() * getViewMatrix();
 }
 
 QVector3D RenderController::getRotation() const
@@ -154,13 +155,6 @@ QVector2D RenderController::getViewport() const
   return viewport;
 }
 
-QMatrix4x4 RenderController::getViewportMatrix() const
-{
-  auto viewportMatrix = QMatrix4x4{};
-  viewportMatrix.scale(1.0f / viewport.x(), 1.0f / viewport.y(), 1.0f);
-  return viewportMatrix;
-}
-
 QMatrix4x4 RenderController::getTranslationMatrix() const
 {
   auto translationMatrix = QMatrix4x4{};
@@ -179,6 +173,35 @@ QMatrix4x4 RenderController::getRotationMatrix() const
 {
   auto rotationMatrix = QMatrix4x4{QQuaternion::fromEulerAngles(rotationAngles).toRotationMatrix()};
   return rotationMatrix;
+}
+
+QMatrix4x4 RenderController::getViewMatrix() const
+{
+  auto invertedRotationMatrix = getRotationMatrix().inverted();
+
+  auto eye = invertedRotationMatrix.mapVector({0.0f, 0.0f, 1.0f});
+  auto center = QVector3D{0.0f, 0.0f, 0.0f};
+  auto up = invertedRotationMatrix.mapVector({0.0f, 1.0f, 0.0f});
+
+  auto viewMatrix = QMatrix4x4{};
+  viewMatrix.lookAt(eye / scaleFactor - translationVector, center - translationVector, up);
+
+  return viewMatrix;
+}
+
+QMatrix4x4 RenderController::getProjectionMatrix(ProjectionMode projectionMode) const
+{
+  auto projectionMatrix = QMatrix4x4{};
+  switch (projectionMode)
+  {
+  case Ortho:
+    projectionMatrix.ortho(-viewport.x(), viewport.x(), -viewport.y(), viewport.y(), 0.1f, 100.0f);
+    break;
+  case Perspective:
+    projectionMatrix.perspective(45.0f, viewport.x() / viewport.y(), 0.1f, 100.0f);
+    break;
+  }
+  return projectionMatrix;
 }
 
 QMatrix4x4 RenderController::getViewProjectionMatrix() const

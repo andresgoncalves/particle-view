@@ -32,27 +32,35 @@ void AxisRenderer::render(const Axis &axis, const RenderController &renderContro
   auto modelMatrix = QMatrix4x4{};
   auto color = QVector3D{};
 
+  modelMatrix.scale(0.2f);
+
   switch (axis)
   {
   case Axis::X:
-    modelMatrix.rotate(-90.0f, {0.0f, 0.0f, 1.0f});
+    modelMatrix.rotate(QQuaternion::rotationTo({0.0f, 1.0f, 0.0f}, {1.0f, 0.0f, 0.0f}));
     color = {1.0f, 0.0f, 0.0f};
     break;
   case Axis::Y:
     color = {0.0f, 1.0f, 0.0f};
     break;
   case Axis::Z:
-    modelMatrix.rotate(-90.0f, {1.0f, 0.0f, 0.0f});
+    modelMatrix.rotate(QQuaternion::rotationTo({0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}));
     color = {0.0f, 0.0f, 1.0f};
     break;
   }
 
-  modelMatrix.scale(0.2f);
+  auto invertedRotationMatrix = renderController.getRotationMatrix().inverted();
 
-  auto translationMatrix = QMatrix4x4{};
-  translationMatrix.translate(QVector3D{-renderController.getViewport() + QVector2D{0.2f, 0.2f}});
+  auto eye = invertedRotationMatrix.mapVector({0.0f, 0.0f, 1.0f});
+  auto center = QVector3D{};
+  auto up = invertedRotationMatrix.mapVector({0.0f, 1.0f, 0.0f});
 
-  auto modelViewProjectionMatrix = renderController.getViewportMatrix() * translationMatrix * renderController.getRotationMatrix() * modelMatrix;
+  auto viewProjectionMatrix = renderController.getProjectionMatrix(RenderController::Ortho);
+
+  viewProjectionMatrix.translate(QVector3D{-renderController.getViewport() + QVector2D{0.2f, 0.2f}});
+  viewProjectionMatrix.lookAt(eye, center, up);
+
+  auto modelViewProjectionMatrix = viewProjectionMatrix * modelMatrix;
 
   shaderProgram.bind();
   vertexArray.bind();

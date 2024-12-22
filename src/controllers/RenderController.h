@@ -12,6 +12,12 @@ public:
     Projection
   };
 
+  enum ProjectionMode
+  {
+    Ortho,
+    Perspective
+  };
+
   RenderController();
 
   void rotate(const QVector3D &angles, ReferenceFrame referenceFrame = Model);
@@ -47,10 +53,12 @@ public:
   QVector3D getTranslation() const;
   float getScale() const;
 
-  QMatrix4x4 getViewportMatrix() const;
+  QMatrix4x4 getScaleMatrix() const;
   QMatrix4x4 getRotationMatrix() const;
   QMatrix4x4 getTranslationMatrix() const;
-  QMatrix4x4 getScaleMatrix() const;
+
+  QMatrix4x4 getViewMatrix() const;
+  QMatrix4x4 getProjectionMatrix(ProjectionMode projectionMode = Perspective) const;
   QMatrix4x4 getViewProjectionMatrix() const;
 
 private:
@@ -63,6 +71,7 @@ private:
   QMatrix4x4 viewProjectionMatrix;
 
   const float minScaleFactor = 0.1f;
+  const float maxScaleFactor = 2.0f;
 };
 
 #endif
