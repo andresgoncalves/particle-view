@@ -27,10 +27,10 @@ void RenderController::translate(const QVector3D &vector, ReferenceFrame referen
   switch (referenceFrame)
   {
   case Model:
-    translationVector += vector;
+    translationVector += getViewProjectionMatrix().inverted().mapVector(vector);
     break;
   case Projection:
-    translationVector += getViewProjectionMatrix().inverted().mapVector(vector);
+    translationVector += vector;
     break;
   }
 }
@@ -132,7 +132,7 @@ void RenderController::setViewport(const QVector2D &scale)
 
 void RenderController::updateViewProjectionMatrix()
 {
-  viewProjectionMatrix = getProjectionMatrix() * getViewMatrix();
+  viewProjectionMatrix = getProjectionMatrix() * getViewMatrix() * getRotationMatrix();
 }
 
 QVector3D RenderController::getRotation() const
@@ -177,11 +177,9 @@ QMatrix4x4 RenderController::getRotationMatrix() const
 
 QMatrix4x4 RenderController::getViewMatrix() const
 {
-  auto invertedRotationMatrix = getRotationMatrix().inverted();
-
-  auto eye = invertedRotationMatrix.mapVector({0.0f, 0.0f, 1.0f});
+  auto eye = QVector3D{0.0f, 0.0f, 1.0f};
   auto center = QVector3D{0.0f, 0.0f, 0.0f};
-  auto up = invertedRotationMatrix.mapVector({0.0f, 1.0f, 0.0f});
+  auto up = QVector3D{0.0f, 1.0f, 0.0f};
 
   auto viewMatrix = QMatrix4x4{};
   viewMatrix.lookAt(eye / scaleFactor - translationVector, center - translationVector, up);
@@ -192,13 +190,15 @@ QMatrix4x4 RenderController::getViewMatrix() const
 QMatrix4x4 RenderController::getProjectionMatrix(ProjectionMode projectionMode) const
 {
   auto projectionMatrix = QMatrix4x4{};
-  switch (projectionMode)
+  switch (projectionMode == Default ? defaultProjectionMode : projectionMode)
   {
   case Ortho:
     projectionMatrix.ortho(-viewport.x(), viewport.x(), -viewport.y(), viewport.y(), 0.1f, 100.0f);
     break;
   case Perspective:
     projectionMatrix.perspective(45.0f, viewport.x() / viewport.y(), 0.1f, 100.0f);
+    break;
+  case Default:
     break;
   }
   return projectionMatrix;

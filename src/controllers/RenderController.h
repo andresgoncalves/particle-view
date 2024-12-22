@@ -14,6 +14,7 @@ public:
 
   enum ProjectionMode
   {
+    Default,
     Ortho,
     Perspective
   };
@@ -58,7 +59,7 @@ public:
   QMatrix4x4 getTranslationMatrix() const;
 
   QMatrix4x4 getViewMatrix() const;
-  QMatrix4x4 getProjectionMatrix(ProjectionMode projectionMode = Perspective) const;
+  QMatrix4x4 getProjectionMatrix(ProjectionMode projectionMode = Default) const;
   QMatrix4x4 getViewProjectionMatrix() const;
 
 private:
@@ -72,6 +73,8 @@ private:
 
   const float minScaleFactor = 0.1f;
   const float maxScaleFactor = 2.0f;
+
+  const ProjectionMode defaultProjectionMode = Perspective;
 };
 
 #endif

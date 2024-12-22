@@ -49,18 +49,12 @@ void AxisRenderer::render(const Axis &axis, const RenderController &renderContro
     break;
   }
 
-  auto invertedRotationMatrix = renderController.getRotationMatrix().inverted();
-
-  auto eye = invertedRotationMatrix.mapVector({0.0f, 0.0f, 1.0f});
-  auto center = QVector3D{};
-  auto up = invertedRotationMatrix.mapVector({0.0f, 1.0f, 0.0f});
-
   auto viewProjectionMatrix = renderController.getProjectionMatrix(RenderController::Ortho);
 
-  viewProjectionMatrix.translate(QVector3D{-renderController.getViewport() + QVector2D{0.2f, 0.2f}});
-  viewProjectionMatrix.lookAt(eye, center, up);
+  viewProjectionMatrix.translate((-renderController.getViewport() + QVector2D{0.2f, 0.2f}).toVector3D());
+  viewProjectionMatrix.lookAt({0.0f, 0.0f, 1.0f}, {}, {0.0f, 1.0f, 0.0f});
 
-  auto modelViewProjectionMatrix = viewProjectionMatrix * modelMatrix;
+  auto modelViewProjectionMatrix = viewProjectionMatrix * renderController.getRotationMatrix() * modelMatrix;
 
   shaderProgram.bind();
   vertexArray.bind();
