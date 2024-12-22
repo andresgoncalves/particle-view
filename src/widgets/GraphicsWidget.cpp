@@ -1,6 +1,85 @@
+#include <QtCore/QTimer>
+
 #include "GraphicsWidget.h"
 #include "../models/Particle.h"
 #include "../models/Scene.h"
+
+inline Story _createStoryMock()
+{
+  auto story = Story{};
+  auto scene = Scene{};
+  auto particle = Particle{};
+
+  particle.position = {0.5f, 0.0f, 0.0f};
+  particle.color = {1.0f, 0.0f, 0.0f};
+  particle.radius = 0.1f;
+  scene.particles.push_back(particle);
+
+  particle.position = {0.0f, 0.5f, 0.0f};
+  particle.color = {0.0f, 1.0f, 0.0f};
+  particle.radius = 0.1f;
+  scene.particles.push_back(particle);
+
+  particle.position = {0.0f, 0.0f, 0.5f};
+  particle.color = {0.0f, 0.0f, 1.0f};
+  particle.radius = 0.1f;
+  scene.particles.push_back(particle);
+
+  particle.position = {0.0f, 0.0f, 0.0f};
+  particle.color = {1.0f, 1.0f, 1.0f};
+  particle.radius = 0.1f;
+  scene.particles.push_back(particle);
+
+  story.scenes.insert(std::make_pair(0.0, scene));
+  scene.particles.clear();
+
+  particle.position = {0.2f, 0.0f, 0.0f};
+  particle.color = {1.0f, 0.0f, 0.0f};
+  particle.radius = 0.1f;
+  scene.particles.push_back(particle);
+
+  particle.position = {0.0f, 0.2f, 0.0f};
+  particle.color = {0.0f, 1.0f, 0.0f};
+  particle.radius = 0.1f;
+  scene.particles.push_back(particle);
+
+  particle.position = {0.0f, 0.0f, 0.2f};
+  particle.color = {0.0f, 0.0f, 1.0f};
+  particle.radius = 0.1f;
+  scene.particles.push_back(particle);
+
+  particle.position = {0.0f, 0.0f, 0.0f};
+  particle.color = {1.0f, 1.0f, 1.0f};
+  particle.radius = 0.1f;
+  scene.particles.push_back(particle);
+
+  story.scenes.insert(std::make_pair(1.0, scene));
+  scene.particles.clear();
+
+  particle.position = {0.1f, 0.0f, 0.0f};
+  particle.color = {1.0f, 0.0f, 0.0f};
+  particle.radius = 0.1f;
+  scene.particles.push_back(particle);
+
+  particle.position = {0.0f, 0.1f, 0.0f};
+  particle.color = {0.0f, 1.0f, 0.0f};
+  particle.radius = 0.1f;
+  scene.particles.push_back(particle);
+
+  particle.position = {0.0f, 0.0f, 0.1f};
+  particle.color = {0.0f, 0.0f, 1.0f};
+  particle.radius = 0.1f;
+  scene.particles.push_back(particle);
+
+  particle.position = {0.0f, 0.0f, 0.0f};
+  particle.color = {1.0f, 1.0f, 1.0f};
+  particle.radius = 0.1f;
+  scene.particles.push_back(particle);
+
+  story.scenes.insert(std::make_pair(2.0, scene));
+
+  return story;
+}
 
 GraphicsWidget::GraphicsWidget(QWidget *parent) : QOpenGLWidget{parent}, transformController{&renderController}
 {
@@ -12,7 +91,20 @@ GraphicsWidget::GraphicsWidget(QWidget *parent) : QOpenGLWidget{parent}, transfo
                           { renderController.particleShape = RenderController::Skeleton; update(); });
   eventFilter.addListener(Qt::Key_L, [&]()
                           { renderController.particleShape = RenderController::Solid; update(); });
+  eventFilter.addListener(Qt::Key_Space, [&]()
+                          { if(storyController.isPlaying()) storyController.pause(); else storyController.play(); });
+  eventFilter.addListener(Qt::Key_Left, [&]()
+                          { storyController.skip(-1.0); update(); });
+  eventFilter.addListener(Qt::Key_Right, [&]()
+                          { storyController.skip(1.0); update(); });
   installEventFilter(&eventFilter);
+
+  QTimer *timer = new QTimer(this);
+  connect(timer, &QTimer::timeout, this, [&]()
+          { update(); });
+  timer->start(100);
+
+  storyController.story = _createStoryMock();
 }
 
 void GraphicsWidget::update()
@@ -45,29 +137,7 @@ void GraphicsWidget::resizeGL(int width, int height)
 
 void GraphicsWidget::paintGL()
 {
-  auto scene = Scene{};
-
-  auto particle = Particle{};
-
-  particle.position = {0.5f, 0.0f, 0.0f};
-  particle.color = {1.0f, 0.0f, 0.0f};
-  particle.radius = 0.1f;
-  scene.particles.push_back(particle);
-
-  particle.position = {0.0f, 0.5f, 0.0f};
-  particle.color = {0.0f, 1.0f, 0.0f};
-  particle.radius = 0.1f;
-  scene.particles.push_back(particle);
-
-  particle.position = {0.0f, 0.0f, 0.5f};
-  particle.color = {0.0f, 0.0f, 1.0f};
-  particle.radius = 0.1f;
-  scene.particles.push_back(particle);
-
-  particle.position = {0.0f, 0.0f, 0.0f};
-  particle.color = {1.0f, 1.0f, 1.0f};
-  particle.radius = 0.1f;
-  scene.particles.push_back(particle);
+  auto scene = storyController.getScene();
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

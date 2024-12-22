@@ -7,6 +7,7 @@
 
 #include "utils/KeyEventFilter.h"
 #include "../controllers/RenderController.h"
+#include "../controllers/StoryController.h"
 #include "../controllers/TransformController.h"
 #include "../graphics/AxisRenderer.h"
 #include "../graphics/SceneRenderer.h"
@@ -33,6 +34,7 @@ private:
 
   KeyEventFilter eventFilter;
   RenderController renderController;
+  StoryController storyController;
   TransformController transformController;
   std::unique_ptr<AxisRenderer>
       axisRenderer;

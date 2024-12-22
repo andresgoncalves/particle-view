@@ -5,9 +5,8 @@
 
 #include "Particle.h"
 
-class Scene
+struct Scene
 {
-public:
   Scene();
 
   std::vector<Particle> particles;

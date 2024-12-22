@@ -4,6 +4,7 @@ find_package(Qt6 REQUIRED COMPONENTS
 
 add_library(controllers STATIC
   RenderController.cpp
+  StoryController.cpp
   TransformController.cpp
 )
 

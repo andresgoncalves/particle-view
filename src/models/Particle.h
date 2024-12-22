@@ -5,7 +5,6 @@
 
 struct Particle
 {
-public:
   Particle();
 
   float radius = 1.0f;
