@@ -15,8 +15,13 @@ public:
   void reset();
   void skip(double delta);
 
-  Scene getScene() const;
-  Scene getScene(double time) const;
+  double getTime() const;
+
+  std::pair<double, Scene> getScene() const;
+  std::pair<double, Scene> getScene(double time) const;
+
+  std::pair<double, Scene> getFirstScene() const;
+  std::pair<double, Scene> getLastScene() const;
 
   bool isPlaying() const;
 

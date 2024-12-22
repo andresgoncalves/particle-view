@@ -96,9 +96,9 @@ GraphicsWidget::GraphicsWidget(QWidget *parent) : QOpenGLWidget{parent}, transfo
   eventFilter.addListener(Qt::Key_R, [&]()
                           { storyController.reset(); update(); });
   eventFilter.addListener(Qt::Key_Left, [&]()
-                          { storyController.skip(-0.1); update(); });
+                          { storyController.skip(-0.1); update(); }, KeyEventFilter::Multi);
   eventFilter.addListener(Qt::Key_Right, [&]()
-                          { storyController.skip(0.1); update(); });
+                          { storyController.skip(0.1); update(); }, KeyEventFilter::Multi);
   installEventFilter(&eventFilter);
 
   QTimer *timer = new QTimer(this);
@@ -139,7 +139,7 @@ void GraphicsWidget::resizeGL(int width, int height)
 
 void GraphicsWidget::paintGL()
 {
-  auto scene = storyController.getScene();
+  auto [time, scene] = storyController.getScene();
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -178,7 +178,7 @@ void GraphicsWidget::mouseMoveEvent(QMouseEvent *event)
     {
       transformType = eventFilter.isKeyPressed(Qt::Key_Control) ? TransformController::TranslationZ : TransformController::TranslationXY;
     }
-    else if (eventFilter.isKeyPressed(Qt::Key_S) || eventFilter.isKeyPressed(Qt::Key_T) && renderController.projectionMode == RenderController::Ortho)
+    else if (eventFilter.isKeyPressed(Qt::Key_S) || eventFilter.isKeyPressed(Qt::Key_T) && eventFilter.isKeyPressed(Qt::Key_Control) && renderController.projectionMode == RenderController::Ortho)
     {
       transformType = TransformController::Scale;
     }

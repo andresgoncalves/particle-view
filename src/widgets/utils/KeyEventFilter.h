@@ -11,17 +11,35 @@
 class KeyEventFilter : public QObject
 {
 public:
+  typedef std::function<void()> KeyListener;
+
+  enum KeyListenerType
+  {
+    Single,
+    Multi
+  };
+
   bool isKeyPressed(int key) const;
 
-  void addListener(int key, const std::function<void()> listener);
-  void removeListener(int key, const std::function<void()> listener);
+  void addListener(int key, const KeyListener &listener, KeyListenerType type = Single);
+  void removeListener(int key, const KeyListener &listener, KeyListenerType type = Single);
 
 protected:
   bool eventFilter(QObject *obj, QEvent *event) override;
 
 private:
+  typedef std::multimap<int, KeyListener> KeyListenerMap;
+
+  void addListener(int key, const KeyListener &listener, KeyListenerMap &listeners);
+  void removeListener(int key, const KeyListener &listener, KeyListenerMap &listeners);
+  void notifyListeners(int key, KeyListenerMap &listeners);
+
   std::set<int> pressedKeys;
-  std::multimap<int, std::function<void()>> keyListeners;
+  struct KeyListeners
+  {
+    KeyListenerMap single;
+    KeyListenerMap multi;
+  } keyListeners;
 };
 
 #endif

@@ -5,7 +5,7 @@ StoryController::StoryController() {}
 
 void StoryController::play()
 {
-  startTime = playing ? pauseTime : std::chrono::steady_clock::now();
+  startTime = playing ? startTime : std::chrono::steady_clock::now() - (pauseTime - startTime);
   playing = true;
   pauseTime = {};
 }
@@ -27,37 +27,58 @@ void StoryController::skip(double delta)
   startTime -= duration;
 }
 
-Scene StoryController::getScene() const
+double StoryController::getTime() const
 {
-  auto currentTime = playing ? std::chrono::steady_clock::now() : pauseTime;
+  auto now = playing ? std::chrono::steady_clock::now() : pauseTime;
 
-  double duration = 1e-9 * (currentTime - startTime).count();
+  double duration = 1e-9 * (now - startTime).count();
 
   double time = duration * timeScale;
 
-  return getScene(time);
+  return time;
+};
+
+std::pair<double, Scene> StoryController::getScene() const
+{
+  return getScene(getTime());
 }
 
-Scene StoryController::getScene(double time) const
+std::pair<double, Scene> StoryController::getScene(double time) const
 {
   if (story.scenes.empty())
-    return Scene{};
+    return std::make_pair(std::numeric_limits<double>::min(), Scene{});
 
   auto next = story.scenes.lower_bound(time);
 
   if (next == story.scenes.begin())
-    return next->second;
+    return *next;
 
   auto prev = std::prev(next);
 
   if (next == story.scenes.end())
-    return prev->second;
+    return *prev;
 
   if (next->first == time)
-    return next->second;
+    return *next;
 
-  return interpolateScene(time, *prev, *next);
+  return std::make_pair(time, interpolateScene(time, *prev, *next));
 }
+
+std::pair<double, Scene> StoryController::getFirstScene() const
+{
+  if (story.scenes.empty())
+    return std::make_pair(std::numeric_limits<double>::min(), Scene{});
+
+  return *story.scenes.begin();
+};
+
+std::pair<double, Scene> StoryController::getLastScene() const
+{
+  if (story.scenes.empty())
+    return std::make_pair(std::numeric_limits<double>::min(), Scene{});
+
+  return *std::prev(story.scenes.end());
+};
 
 Scene StoryController::interpolateScene(double time, const std::pair<double, Scene> &prev, const std::pair<double, Scene> &next) const
 {
