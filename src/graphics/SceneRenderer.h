@@ -2,7 +2,6 @@
 #define SCENE_RENDERER_H
 
 #include "Renderer.h"
-#include "ParticleRenderer.h"
 #include "../models/Scene.h"
 #include "../controllers/RenderController.h"
 
@@ -14,7 +13,7 @@ public:
   void render(const Scene &scene, const RenderController &renderController) override;
 
 private:
-  std::unique_ptr<ParticleRenderer> particleRenderer;
+  std::unique_ptr<Renderer<Particle>> particleRenderer;
 };
 
 #endif

@@ -1,4 +1,4 @@
-#include "ParticleRenderer.h"
+#include "SolidParticleRenderer.h"
 
 inline const char *vertexShaderSource =
     "#version 330 core\n"
@@ -21,13 +21,13 @@ inline const char *fragmentShaderSource =
     "    fragmentColor = vertexColor;\n"
     "}\n";
 
-ParticleRenderer::ParticleRenderer()
+SolidParticleRenderer::SolidParticleRenderer()
 {
   loadShader();
   loadBuffers();
 }
 
-void ParticleRenderer::render(const Particle &particle, const RenderController &renderController)
+void SolidParticleRenderer::render(const Particle &particle, const RenderController &renderController)
 {
   auto modelMatrix = QMatrix4x4{};
   modelMatrix.translate(particle.position);
@@ -46,14 +46,14 @@ void ParticleRenderer::render(const Particle &particle, const RenderController &
   shaderProgram.release();
 }
 
-void ParticleRenderer::loadShader()
+void SolidParticleRenderer::loadShader()
 {
   shaderProgram.addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource);
   shaderProgram.addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSource);
   shaderProgram.link();
 }
 
-void ParticleRenderer::loadBuffers()
+void SolidParticleRenderer::loadBuffers()
 {
   vertexArray.create();
   vertexArray.bind();
@@ -80,7 +80,7 @@ void ParticleRenderer::loadBuffers()
   vertexArray.release();
 }
 
-void ParticleRenderer::loadVertices(std::vector<float> &vertices, size_t divisions)
+void SolidParticleRenderer::loadVertices(std::vector<float> &vertices, size_t divisions)
 {
   for (int latitude = 0; latitude <= divisions; latitude++)
   {
@@ -105,7 +105,7 @@ void ParticleRenderer::loadVertices(std::vector<float> &vertices, size_t divisio
   }
 }
 
-void ParticleRenderer::loadIndices(std::vector<uint> &indices, size_t divisions)
+void SolidParticleRenderer::loadIndices(std::vector<uint> &indices, size_t divisions)
 {
   for (int latitude = 0; latitude < divisions; latitude++)
   {

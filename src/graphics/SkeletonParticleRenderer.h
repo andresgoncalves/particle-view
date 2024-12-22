@@ -1,5 +1,5 @@
-#ifndef PARTICLE_RENDERER_H
-#define PARTICLE_RENDERER_H
+#ifndef SKELETON_PARTICLE_RENDERER_H
+#define SKELETON_PARTICLE_RENDERER_H
 
 #include <QtOpenGL/QOpenGLBuffer>
 #include <QtOpenGL/QOpenGLShaderProgram>
@@ -8,10 +8,10 @@
 #include "Renderer.h"
 #include "../models/Particle.h"
 
-class ParticleRenderer : public Renderer<Particle>
+class SkeletonParticleRenderer : public Renderer<Particle>
 {
 public:
-  ParticleRenderer();
+  SkeletonParticleRenderer();
 
   void render(const Particle &particle, const RenderController &renderController) override;
 

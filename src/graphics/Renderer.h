@@ -7,6 +7,8 @@ template <typename T>
 class Renderer
 {
 public:
+  virtual ~Renderer() = default;
+
   virtual void render(const T &element, const RenderController &renderController) = 0;
 };
 

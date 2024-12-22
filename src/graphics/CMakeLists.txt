@@ -4,8 +4,9 @@ find_package(Qt6 REQUIRED COMPONENTS
 
 add_library(graphics STATIC
   AxisRenderer.cpp
-  ParticleRenderer.cpp
   SceneRenderer.cpp
+  SolidParticleRenderer.cpp
+  SkeletonParticleRenderer.cpp
 )
 
 target_link_libraries(graphics PRIVATE

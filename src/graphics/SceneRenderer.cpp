@@ -1,10 +1,11 @@
 #include <QtGui/QMatrix4x4>
 
 #include "SceneRenderer.h"
+#include "SkeletonParticleRenderer.h"
 
 SceneRenderer::SceneRenderer()
 {
-  particleRenderer = std::make_unique<ParticleRenderer>();
+  particleRenderer = std::make_unique<SkeletonParticleRenderer>();
 }
 
 void SceneRenderer::render(const Scene &scene, const RenderController &renderController)
