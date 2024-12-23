@@ -1,6 +1,6 @@
 #include "TransformController.h"
 
-TransformController::TransformController(RenderController *renderController) : renderController{renderController} {}
+TransformController::TransformController(RenderController &renderController) : renderController{renderController} {}
 
 void TransformController::start(const QVector2D &point)
 {
@@ -39,7 +39,7 @@ void TransformController::scroll(int delta)
 {
   auto scaleFactor = delta * scrollScaleSensitivity;
 
-  renderController->scale(scaleFactor, RenderController::Model);
+  renderController.scale(scaleFactor, RenderController::Model);
 }
 
 void TransformController::translateXY(const QVector2D &point)
@@ -50,7 +50,7 @@ void TransformController::translateXY(const QVector2D &point)
 
   auto translation = distance * translationSensitivity;
 
-  renderController->translate({translation.x(), translation.y(), 0.0f}, RenderController::Projection);
+  renderController.translate({translation.x(), translation.y(), 0.0f}, RenderController::Projection);
 }
 
 void TransformController::translateZ(const QVector2D &point)
@@ -61,7 +61,7 @@ void TransformController::translateZ(const QVector2D &point)
 
   auto translation = distance.y() * translationSensitivity;
 
-  renderController->translate({0.0f, 0.0f, translation}, RenderController::Projection);
+  renderController.translate({0.0f, 0.0f, translation}, RenderController::Projection);
 }
 
 void TransformController::rotateXY(const QVector2D &point)
@@ -72,7 +72,7 @@ void TransformController::rotateXY(const QVector2D &point)
 
   auto rotation = distance * rotationSensitivity;
 
-  renderController->rotate({-rotation.y(), rotation.x(), 0.0f}, RenderController::Projection);
+  renderController.rotate({-rotation.y(), rotation.x(), 0.0f}, RenderController::Projection);
 }
 
 void TransformController::rotateZ(const QVector2D &point)
@@ -85,7 +85,7 @@ void TransformController::rotateZ(const QVector2D &point)
 
   float rotation = (endAngle - startAngle) * 180.0f / M_PI;
 
-  renderController->rotateZ(rotation, RenderController::Projection);
+  renderController.rotateZ(rotation, RenderController::Projection);
 }
 
 void TransformController::scale(const QVector2D &point)
@@ -96,7 +96,7 @@ void TransformController::scale(const QVector2D &point)
 
   auto scaleFactor = distance.y() * scaleSensitivity;
 
-  renderController->scale(scaleFactor, RenderController::Model);
+  renderController.scale(scaleFactor, RenderController::Model);
 }
 
 bool TransformController::isTransforming() const

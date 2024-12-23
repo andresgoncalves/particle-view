@@ -27,6 +27,12 @@ void StoryController::skip(double delta)
   startTime -= duration;
 }
 
+void StoryController::setTime(double time)
+{
+  startTime = std::chrono::steady_clock::now() - std::chrono::nanoseconds(static_cast<long long>(1e9 * time / timeScale));
+  pauseTime = playing ? std::chrono::steady_clock::time_point{} : std::chrono::steady_clock::now();
+}
+
 double StoryController::getTime() const
 {
   auto now = playing ? std::chrono::steady_clock::now() : pauseTime;
@@ -78,6 +84,14 @@ std::pair<double, Scene> StoryController::getLastScene() const
     return std::make_pair(std::numeric_limits<double>::min(), Scene{});
 
   return *std::prev(story.scenes.end());
+};
+
+double StoryController::getDuration() const
+{
+  double minTime = getFirstScene().first;
+  double maxTime = getLastScene().first;
+
+  return maxTime - minTime;
 };
 
 Scene StoryController::interpolateScene(double time, const std::pair<double, Scene> &prev, const std::pair<double, Scene> &next) const

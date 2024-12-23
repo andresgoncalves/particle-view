@@ -17,7 +17,7 @@ public:
     Scale
   };
 
-  TransformController(RenderController *renderController);
+  TransformController(RenderController &renderController);
 
   void start(const QVector2D &point);
   void move(const QVector2D &point, TransformType type);
@@ -38,7 +38,7 @@ private:
   QVector2D startPoint;
   QVector2D lastPoint;
 
-  RenderController *renderController;
+  RenderController &renderController;
 
   const float rotationSensitivity = 300.0f;
   const float translationSensitivity = 1.0f;

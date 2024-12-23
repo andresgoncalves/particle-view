@@ -8,6 +8,7 @@ add_library(widgets STATIC
   AppWidget.cpp
   AppWindow.cpp
   GraphicsWidget.cpp
+  TimeSliderWidget.cpp
   utils/KeyEventFilter.cpp
 )
 

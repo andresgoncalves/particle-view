@@ -15,7 +15,7 @@
 class GraphicsWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
 public:
-  GraphicsWidget(QWidget *parent = nullptr);
+  GraphicsWidget(StoryController &storyController, RenderController &renderController, QWidget *parent = nullptr);
 
   void update();
 
@@ -33,13 +33,14 @@ private:
   QVector2D screenToView(const QVector2D &point) const;
 
   KeyEventFilter eventFilter;
-  RenderController renderController;
-  StoryController storyController;
   TransformController transformController;
   std::unique_ptr<AxisRenderer>
       axisRenderer;
   std::unique_ptr<SceneRenderer>
       sceneRenderer;
+
+  RenderController &renderController;
+  StoryController &storyController;
 };
 
 #endif

@@ -15,7 +15,10 @@ public:
   void reset();
   void skip(double delta);
 
+  void setTime(double time);
+
   double getTime() const;
+  double getDuration() const;
 
   std::pair<double, Scene> getScene() const;
   std::pair<double, Scene> getScene(double time) const;

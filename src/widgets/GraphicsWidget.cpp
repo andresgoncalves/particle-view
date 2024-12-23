@@ -1,87 +1,9 @@
-#include <QtCore/QTimer>
-
 #include "GraphicsWidget.h"
 #include "../models/Particle.h"
 #include "../models/Scene.h"
 
-inline Story _createStoryMock()
-{
-  auto story = Story{};
-  auto scene = Scene{};
-  auto particle = Particle{};
-
-  particle.position = {0.5f, 0.0f, 0.0f};
-  particle.color = {1.0f, 0.0f, 0.0f};
-  particle.radius = 0.1f;
-  scene.particles.push_back(particle);
-
-  particle.position = {0.0f, 0.5f, 0.0f};
-  particle.color = {0.0f, 1.0f, 0.0f};
-  particle.radius = 0.1f;
-  scene.particles.push_back(particle);
-
-  particle.position = {0.0f, 0.0f, 0.5f};
-  particle.color = {0.0f, 0.0f, 1.0f};
-  particle.radius = 0.1f;
-  scene.particles.push_back(particle);
-
-  particle.position = {0.0f, 0.0f, 0.0f};
-  particle.color = {1.0f, 1.0f, 1.0f};
-  particle.radius = 0.1f;
-  scene.particles.push_back(particle);
-
-  story.scenes.insert(std::make_pair(0.0, scene));
-  scene.particles.clear();
-
-  particle.position = {0.2f, 0.0f, 0.0f};
-  particle.color = {1.0f, 0.0f, 0.0f};
-  particle.radius = 0.1f;
-  scene.particles.push_back(particle);
-
-  particle.position = {0.0f, 0.2f, 0.0f};
-  particle.color = {0.0f, 1.0f, 0.0f};
-  particle.radius = 0.1f;
-  scene.particles.push_back(particle);
-
-  particle.position = {0.0f, 0.0f, 0.2f};
-  particle.color = {0.0f, 0.0f, 1.0f};
-  particle.radius = 0.1f;
-  scene.particles.push_back(particle);
-
-  particle.position = {0.0f, 0.0f, 0.0f};
-  particle.color = {1.0f, 1.0f, 1.0f};
-  particle.radius = 0.1f;
-  scene.particles.push_back(particle);
-
-  story.scenes.insert(std::make_pair(1.0, scene));
-  scene.particles.clear();
-
-  particle.position = {0.1f, 0.0f, 0.0f};
-  particle.color = {1.0f, 0.0f, 0.0f};
-  particle.radius = 0.1f;
-  scene.particles.push_back(particle);
-
-  particle.position = {0.0f, 0.1f, 0.0f};
-  particle.color = {0.0f, 1.0f, 0.0f};
-  particle.radius = 0.1f;
-  scene.particles.push_back(particle);
-
-  particle.position = {0.0f, 0.0f, 0.1f};
-  particle.color = {0.0f, 0.0f, 1.0f};
-  particle.radius = 0.1f;
-  scene.particles.push_back(particle);
-
-  particle.position = {0.0f, 0.0f, 0.0f};
-  particle.color = {1.0f, 1.0f, 1.0f};
-  particle.radius = 0.1f;
-  scene.particles.push_back(particle);
-
-  story.scenes.insert(std::make_pair(2.0, scene));
-
-  return story;
-}
-
-GraphicsWidget::GraphicsWidget(QWidget *parent) : QOpenGLWidget{parent}, transformController{&renderController}
+#include <iostream>
+GraphicsWidget::GraphicsWidget(StoryController &storyController, RenderController &renderController, QWidget *parent) : QOpenGLWidget{parent}, storyController{storyController}, renderController{renderController}, transformController{renderController}
 {
   eventFilter.addListener(Qt::Key_O, [&]()
                           { renderController.projectionMode = RenderController::Ortho; update(); });
@@ -99,14 +21,7 @@ GraphicsWidget::GraphicsWidget(QWidget *parent) : QOpenGLWidget{parent}, transfo
                           { storyController.skip(-0.1); update(); }, KeyEventFilter::Multi);
   eventFilter.addListener(Qt::Key_Right, [&]()
                           { storyController.skip(0.1); update(); }, KeyEventFilter::Multi);
-  installEventFilter(&eventFilter);
-
-  QTimer *timer = new QTimer(this);
-  connect(timer, &QTimer::timeout, this, [&]()
-          { update(); });
-  timer->start(1.0 / 60.0);
-
-  storyController.story = _createStoryMock();
+  qApp->installEventFilter(&eventFilter);
 }
 
 void GraphicsWidget::update()

@@ -5,4 +5,5 @@ AppWindow::AppWindow(QWidget *parent) : QMainWindow{parent}
 {
   auto appWidget = new AppWidget{this};
   setCentralWidget(appWidget);
+  resize(800, 600);
 }
