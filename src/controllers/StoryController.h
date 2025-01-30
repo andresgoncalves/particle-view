@@ -17,6 +17,10 @@ public:
 
   void setTime(double time);
 
+  void setStory(const Story &story);
+
+  Story &getStory();
+
   double getTime() const;
   double getDuration() const;
 
@@ -28,9 +32,9 @@ public:
 
   bool isPlaying() const;
 
+private:
   Story story;
 
-private:
   Scene interpolateScene(double time, const std::pair<double, Scene> &prev, const std::pair<double, Scene> &next) const;
 
   bool playing = false;

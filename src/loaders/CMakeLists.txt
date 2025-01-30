@@ -1,0 +1,11 @@
+find_package(Qt6 REQUIRED COMPONENTS
+  Gui
+)
+
+add_library(loaders STATIC
+  Xb7StoryLoader.cpp
+)
+
+target_link_libraries(loaders PRIVATE
+  Qt6::Gui
+)

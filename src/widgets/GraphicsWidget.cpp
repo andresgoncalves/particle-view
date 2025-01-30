@@ -2,7 +2,6 @@
 #include "../models/Particle.h"
 #include "../models/Scene.h"
 
-#include <iostream>
 GraphicsWidget::GraphicsWidget(StoryController &storyController, RenderController &renderController, QWidget *parent) : QOpenGLWidget{parent}, storyController{storyController}, renderController{renderController}, transformController{renderController}
 {
   eventFilter.addListener(Qt::Key_O, [&]()

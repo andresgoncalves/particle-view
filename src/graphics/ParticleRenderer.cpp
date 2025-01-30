@@ -80,7 +80,7 @@ void ParticleRenderer::drawElements(RenderController::ParticleShape mode)
   case RenderController::Solid:
     indexBuffers.solid.bind();
     glDrawElements(GL_TRIANGLES, indexBuffers.solid.size(), GL_UNSIGNED_INT, nullptr);
-    break;
+    shaderProgram.setUniformValue("color", {0.0f, 0.0f, 0.0f});
   case RenderController::Skeleton:
     indexBuffers.skeleton.bind();
     glDrawElements(GL_LINES, indexBuffers.skeleton.size(), GL_UNSIGNED_INT, nullptr);

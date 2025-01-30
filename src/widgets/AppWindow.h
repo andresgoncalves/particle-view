@@ -3,12 +3,17 @@
 
 #include <QtWidgets/QMainWindow>
 
-#include "../controllers/RenderController.h"
+#include "AppWidget.h"
 
 class AppWindow : public QMainWindow
 {
 public:
   AppWindow(QWidget *parent = nullptr);
+
+  AppWidget *getAppWidget();
+
+private:
+  AppWidget *appWidget;
 };
 
 #endif

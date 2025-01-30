@@ -13,6 +13,9 @@ class AppWidget : public QWidget
 public:
   AppWidget(QWidget *parent = nullptr);
 
+  RenderController *getRenderController();
+  StoryController *getStoryController();
+
 private:
   GraphicsWidget *graphicsWidget;
   TimeSliderWidget *timeSliderWidget;

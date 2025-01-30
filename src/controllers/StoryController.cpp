@@ -27,6 +27,16 @@ void StoryController::skip(double delta)
   startTime -= duration;
 }
 
+void StoryController::setStory(const Story &story)
+{
+  this->story = story;
+}
+
+Story &StoryController::getStory()
+{
+  return story;
+}
+
 void StoryController::setTime(double time)
 {
   startTime = std::chrono::steady_clock::now() - std::chrono::nanoseconds(static_cast<long long>(1e9 * time / timeScale));
