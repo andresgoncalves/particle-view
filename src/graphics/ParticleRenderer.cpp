@@ -54,6 +54,9 @@ void ParticleRenderer::render(const Particle &particle, const RenderController &
 
 bool ParticleRenderer::shouldRender(const Particle &particle, const RenderController &renderController)
 {
+  if (
+      renderController.hiddenParticles.find((int)particle.color.y()) != renderController.hiddenParticles.end())
+    return false;
 
   switch (renderController.projectionMode)
   {

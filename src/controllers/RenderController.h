@@ -1,6 +1,7 @@
 #ifndef RENDER_CONTROLLER_H
 #define RENDER_CONTROLLER_H
 
+#include <set>
 #include <QtGui/QMatrix4x4>
 
 class RenderController
@@ -51,6 +52,7 @@ public:
   void setTranslationZ(float distance);
 
   void setViewport(const QVector2D &scale);
+  void setOrigin(const QVector3D &origin);
 
   void updateViewProjectionMatrix();
 
@@ -62,6 +64,7 @@ public:
   QMatrix4x4 getScaleMatrix() const;
   QMatrix4x4 getRotationMatrix() const;
   QMatrix4x4 getTranslationMatrix() const;
+  QMatrix4x4 getOriginMatrix() const;
 
   QMatrix4x4 getViewMatrix() const;
   QMatrix4x4 getProjectionMatrix() const;
@@ -73,9 +76,13 @@ public:
 
   float axisSize = 0.2f;
 
+  void toggleParticles(int info);
+  std::set<int> hiddenParticles;
+
 private:
   QVector3D rotationAngles;
   QVector3D translationVector;
+  QVector3D originVector;
   float scaleFactor = 1.0f;
 
   QVector2D viewport = {1.0f, 1.0f};

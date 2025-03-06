@@ -1,6 +1,7 @@
 #include <QtCore/QTimer>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QtWidgets>
 
 #include "AppWidget.h"
 #include "TimeSliderWidget.h"
@@ -15,8 +16,14 @@ AppWidget::AppWidget(QWidget *parent) : QWidget{parent}
   timeSliderWidget = new TimeSliderWidget{storyController};
   timeSliderWidget->setContentsMargins(12, 8, 12, 8);
 
+  auto toggleButton = new QPushButton{"Ver/Ocultar", this};
+
+  connect(toggleButton, &QPushButton::clicked, this, [&](int)
+          { renderController.toggleParticles(1); update(); });
+
   layout->addWidget(graphicsWidget, 1);
   layout->addWidget(timeSliderWidget);
+  layout->addWidget(toggleButton);
 
   setLayout(layout);
   adjustSize();

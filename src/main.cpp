@@ -25,7 +25,13 @@ int main(int argc, char **argv)
     auto input = std::ifstream{argv[1]};
     auto story = Xb7StoryLoader::getInstance().load(input);
 
+    auto firstScene = story.scenes.at(0);
+    auto origin = (firstScene.geometryStart + firstScene.geometryEnd) / 2;
+
+    std::cout << origin.x() << " " << origin.y() << " " << origin.z() << std::endl;
+
     auto appWindow = new AppWindow{};
+    appWindow->getAppWidget()->getRenderController()->setOrigin(origin);
     appWindow->getAppWidget()->getStoryController()->setStory(story);
     appWindow->show();
 

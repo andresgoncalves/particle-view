@@ -130,6 +130,11 @@ void RenderController::setViewport(const QVector2D &scale)
   viewport = scale;
 }
 
+void RenderController::setOrigin(const QVector3D &origin)
+{
+  originVector = origin;
+}
+
 void RenderController::updateViewProjectionMatrix()
 {
   viewProjectionMatrix = getProjectionMatrix() * getViewMatrix();
@@ -153,6 +158,29 @@ float RenderController::getScale() const
 QVector2D RenderController::getViewport() const
 {
   return viewport;
+}
+
+void RenderController::toggleParticles(int info)
+{
+  if (hiddenParticles.find(info) != hiddenParticles.end())
+  {
+    hiddenParticles.erase(info);
+  }
+  else
+  {
+    hiddenParticles.insert(info);
+  }
+}
+
+QMatrix4x4 RenderController::getOriginMatrix() const
+{
+  auto origin = originVector;
+  // origin.setY(0);
+
+  auto originMatrix = QMatrix4x4{};
+  originMatrix.translate(-origin);
+  // originMatrix.translate({-3.68f * 0.1f, 0, -3.68f * 0.1f});
+  return originMatrix;
 }
 
 QMatrix4x4 RenderController::getTranslationMatrix() const
@@ -180,7 +208,7 @@ QMatrix4x4 RenderController::getViewMatrix() const
   auto viewMatrix = QMatrix4x4{};
   viewMatrix.translate({0.0f, 0.0f, -1.0f});
 
-  viewMatrix *= getTranslationMatrix() * getRotationMatrix() * getScaleMatrix();
+  viewMatrix *= getTranslationMatrix() * getScaleMatrix() * (getOriginMatrix().inverted() * getRotationMatrix() * getOriginMatrix());
 
   return viewMatrix;
 }
