@@ -9,6 +9,8 @@ add_library(widgets STATIC
   AppWindow.cpp
   GraphicsWidget.cpp
   TimeSliderWidget.cpp
+  ToolPanelWidget.cpp
+  toolpanel/TransformModesWidget.cpp
   utils/KeyEventFilter.cpp
 )
 

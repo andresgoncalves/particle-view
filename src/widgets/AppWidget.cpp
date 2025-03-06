@@ -5,25 +5,40 @@
 
 #include "AppWidget.h"
 #include "TimeSliderWidget.h"
+#include "ToolPanelWidget.h"
 
-AppWidget::AppWidget(QWidget *parent) : QWidget{parent}
+AppWidget::AppWidget(QWidget *parent) : transformController{renderController}, QWidget{parent}
 {
-  auto layout = new QVBoxLayout{this};
+  auto layout = new QHBoxLayout{this};
   layout->setContentsMargins(0, 0, 0, 0);
 
-  graphicsWidget = new GraphicsWidget{storyController, renderController};
+  graphicsWidget = new GraphicsWidget{storyController, renderController, transformController, this};
   graphicsWidget->setMinimumSize(400, 300);
   timeSliderWidget = new TimeSliderWidget{storyController};
   timeSliderWidget->setContentsMargins(12, 8, 12, 8);
+
+  auto toolPanelWidget = new ToolPanelWidget{transformController, this};
+
+  auto rightSidebar = new QWidget{this};
+  auto rightSidebarLayout = new QVBoxLayout{rightSidebar};
+  auto rightSidebarLabel = new QLabel{"Right", rightSidebar};
+  rightSidebarLayout->addWidget(rightSidebarLabel);
+  rightSidebar->setLayout(rightSidebarLayout);
 
   auto toggleButton = new QPushButton{"Ver/Ocultar", this};
 
   connect(toggleButton, &QPushButton::clicked, this, [&](int)
           { renderController.toggleParticles(1); update(); });
 
-  layout->addWidget(graphicsWidget, 1);
-  layout->addWidget(timeSliderWidget);
-  layout->addWidget(toggleButton);
+  layout->addWidget(toolPanelWidget);
+
+  auto centerLayout = new QVBoxLayout{this};
+  centerLayout->addWidget(graphicsWidget, 1);
+  centerLayout->addWidget(timeSliderWidget);
+  centerLayout->addWidget(toggleButton);
+  layout->addLayout(centerLayout, 1);
+
+  layout->addWidget(rightSidebar);
 
   setLayout(layout);
   adjustSize();

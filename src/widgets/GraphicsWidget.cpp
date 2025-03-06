@@ -2,7 +2,7 @@
 #include "../models/Particle.h"
 #include "../models/Scene.h"
 
-GraphicsWidget::GraphicsWidget(StoryController &storyController, RenderController &renderController, QWidget *parent) : QOpenGLWidget{parent}, storyController{storyController}, renderController{renderController}, transformController{renderController}
+GraphicsWidget::GraphicsWidget(StoryController &storyController, RenderController &renderController, TransformController &transformController, QWidget *parent) : storyController{storyController}, renderController{renderController}, transformController{transformController}, QOpenGLWidget{parent}
 {
   eventFilter.addListener(Qt::Key_O, [&]()
                           { renderController.projectionMode = RenderController::Ortho; update(); });
@@ -17,9 +17,33 @@ GraphicsWidget::GraphicsWidget(StoryController &storyController, RenderControlle
   eventFilter.addListener(Qt::Key_R, [&]()
                           { storyController.reset(); update(); });
   eventFilter.addListener(Qt::Key_Left, [&]()
-                          { storyController.skip(-0.1); update(); }, KeyEventFilter::Multi);
+                          { storyController.skip(-0.1); update(); });
   eventFilter.addListener(Qt::Key_Right, [&]()
-                          { storyController.skip(0.1); update(); }, KeyEventFilter::Multi);
+                          { storyController.skip(0.1); update(); });
+
+  eventFilter.addListener(Qt::Key_T, [&]()
+                          {
+                            if (renderController.projectionMode == RenderController::Perspective)
+                            {
+                              transformController.transformType = eventFilter.isKeyPressed(Qt::Key_Control) ? TransformController::TranslationZ : TransformController::TranslationXY;
+                            } else if( eventFilter.isKeyPressed(Qt::Key_Control) ){
+                              transformController.transformType = TransformController::Scale;
+                            } });
+  eventFilter.addListener(Qt::Key_S, [&]()
+                          { transformController.transformType = TransformController::Scale; });
+  eventFilter.addListener(Qt::Key_R,
+                          [&]()
+                          {
+                            if (eventFilter.isKeyPressed(Qt::Key_Control))
+                            {
+                              transformController.transformType = TransformController::RotationZ;
+                            }
+                            else
+                            {
+                              transformController.transformType = TransformController::RotationXY;
+                            }
+                          });
+
   qApp->installEventFilter(&eventFilter);
 }
 
@@ -87,21 +111,7 @@ void GraphicsWidget::mouseMoveEvent(QMouseEvent *event)
 {
   if (transformController.isTransforming())
   {
-    TransformController::TransformType transformType;
-    if (eventFilter.isKeyPressed(Qt::Key_T) && renderController.projectionMode == RenderController::Perspective)
-    {
-      transformType = eventFilter.isKeyPressed(Qt::Key_Control) ? TransformController::TranslationZ : TransformController::TranslationXY;
-    }
-    else if (eventFilter.isKeyPressed(Qt::Key_S) || eventFilter.isKeyPressed(Qt::Key_T) && eventFilter.isKeyPressed(Qt::Key_Control) && renderController.projectionMode == RenderController::Ortho)
-    {
-      transformType = TransformController::Scale;
-    }
-    else
-    {
-      transformType = eventFilter.isKeyPressed(Qt::Key_Control) ? TransformController::RotationZ : TransformController::RotationXY;
-    }
-
-    transformController.move(screenToView(QVector2D{event->position()}), transformType);
+    transformController.move(screenToView(QVector2D{event->position()}));
     update();
   }
 }

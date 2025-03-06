@@ -7,6 +7,7 @@
 #include "TimeSliderWidget.h"
 #include "../controllers/RenderController.h"
 #include "../controllers/StoryController.h"
+#include "../controllers/TransformController.h"
 
 class AppWidget : public QWidget
 {
@@ -22,6 +23,7 @@ private:
 
   RenderController renderController;
   StoryController storyController;
+  TransformController transformController;
 };
 
 #endif

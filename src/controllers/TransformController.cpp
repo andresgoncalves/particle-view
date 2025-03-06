@@ -8,9 +8,9 @@ void TransformController::start(const QVector2D &point)
   startPoint = lastPoint = point;
 }
 
-void TransformController::move(const QVector2D &point, TransformType type)
+void TransformController::move(const QVector2D &point)
 {
-  switch (type)
+  switch (transformType.get())
   {
   case RotationXY:
     rotateXY(point);

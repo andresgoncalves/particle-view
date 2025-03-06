@@ -1,9 +1,10 @@
-#ifndef Transform_CONTROLLER_H
-#define Transform_CONTROLLER_H
+#ifndef TRANSFORM_CONTROLLER_H
+#define TRANSFORM_CONTROLLER_H
 
 #include <QtGui/QVector2D>
 
 #include "RenderController.h"
+#include "Observable.h"
 
 class TransformController
 {
@@ -20,12 +21,14 @@ public:
   TransformController(RenderController &renderController);
 
   void start(const QVector2D &point);
-  void move(const QVector2D &point, TransformType type);
+  void move(const QVector2D &point);
   void end();
 
   void scroll(int delta);
 
   bool isTransforming() const;
+
+  Observable<TransformType> transformType = TransformType::RotationXY;
 
 private:
   void translateXY(const QVector2D &point);
