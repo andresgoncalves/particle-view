@@ -32,7 +32,7 @@ AppWidget::AppWidget(QWidget *parent) : transformController{renderController}, Q
 
   layout->addWidget(toolPanelWidget);
 
-  auto centerLayout = new QVBoxLayout{this};
+  auto centerLayout = new QVBoxLayout{};
   centerLayout->addWidget(graphicsWidget, 1);
   centerLayout->addWidget(timeSliderWidget);
   centerLayout->addWidget(toggleButton);
@@ -40,7 +40,6 @@ AppWidget::AppWidget(QWidget *parent) : transformController{renderController}, Q
 
   layout->addWidget(rightSidebar);
 
-  setLayout(layout);
   adjustSize();
 
   QTimer *timer = new QTimer(this);

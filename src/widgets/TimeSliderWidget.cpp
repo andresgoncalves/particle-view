@@ -25,8 +25,6 @@ TimeSliderWidget::TimeSliderWidget(StoryController &storyController, QWidget *pa
   layout->addWidget(timeLabel);
   layout->setAlignment(slider, Qt::AlignVCenter);
 
-  setLayout(layout);
-
   connect(slider, &QSlider::valueChanged, this, [&](int)
           { storyController.setTime(storyController.getDuration() * slider->value() / 100.0); update(); });
 }

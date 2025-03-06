@@ -1,6 +1,5 @@
 #include "TransformModesWidget.h"
 
-#include <iostream>
 #include <QtWidgets/QGridLayout>
 
 TransformModesWidget::TransformModesWidget(TransformController &transformController, QWidget *parent) : transformController{transformController}, QWidget{parent}
@@ -39,7 +38,7 @@ TransformModesWidget::TransformModesWidget(TransformController &transformControl
 
   transformTypeCallback(transformController.transformType.get());
 
-  transformController.transformType.subscribe(transformTypeCallback);
+  transformController.transformType.subscribe(this, transformTypeCallback);
 
   auto layout = new QVBoxLayout{this};
   layout->addWidget(label);
@@ -57,5 +56,5 @@ TransformModesWidget::TransformModesWidget(TransformController &transformControl
 
 TransformModesWidget::~TransformModesWidget()
 {
-  transformController.transformType.unsubscribe(transformTypeCallback);
+  transformController.transformType.unsubscribe(this);
 }

@@ -11,8 +11,8 @@ class Observable
 public:
   Observable(T initialValue);
 
-  void subscribe(const std::function<void(T)> cb);
-  void unsubscribe(const std::function<void(T)> cb);
+  void subscribe(void *const key, const std::function<void(T)> callback);
+  void unsubscribe(void *const key);
   void set(T value);
   T get() const;
 
@@ -21,31 +21,31 @@ public:
 private:
   T value;
 
-  std::vector<std::function<void(T value)>> callbacks;
+  std::map<void *, std::function<void(T value)>> callbacks;
 };
 
 template <typename T>
 Observable<T>::Observable(T initialValue) : value{initialValue} {}
 
 template <typename T>
-void Observable<T>::subscribe(const std::function<void(T)> cb)
+void Observable<T>::subscribe(void *key, const std::function<void(T)> callback)
 {
-  callbacks.push_back(cb);
+  callbacks.insert(std::make_pair(key, callback));
 }
 
 template <typename T>
-void Observable<T>::unsubscribe(const std::function<void(T)> cb)
+void Observable<T>::unsubscribe(void *key)
 {
-  // std::erase(callbacks, cb);
+  callbacks.erase(key);
 }
 
 template <typename T>
 void Observable<T>::set(T value)
 {
   this->value = value;
-  for (auto cb : callbacks)
+  for (auto [key, callback] : callbacks)
   {
-    cb(value);
+    callback(value);
   }
 }
 
