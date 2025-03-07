@@ -1,7 +1,6 @@
 #ifndef OBSERVABLE_H
 #define OBSERVABLE_H
 
-#include <algorithm>
 #include <map>
 #include <functional>
 
@@ -21,7 +20,7 @@ public:
 private:
   T value;
 
-  std::map<void *, std::function<void(T value)>> callbacks;
+  std::multimap<void *, std::function<void(T value)>> callbacks;
 };
 
 template <typename T>
