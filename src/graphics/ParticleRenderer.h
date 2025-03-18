@@ -13,7 +13,7 @@ class ParticleRenderer : public Renderer<Particle>
 public:
   ParticleRenderer();
 
-  void render(const Particle &particle, const RenderController &renderController) override;
+  void render(const Particle &particle, const ViewController &viewController) override;
 
 private:
   void loadShader();
@@ -22,8 +22,8 @@ private:
   void loadSolidIndices(std::vector<uint> &indices, size_t divisions = 24);
   void loadSkeletonIndices(std::vector<uint> &indices, size_t divisions = 24);
 
-  bool shouldRender(const Particle &particle, const RenderController &renderController);
-  void drawElements(RenderController::ParticleShape mode);
+  bool shouldRender(const Particle &particle, const ViewController &viewController);
+  void drawElements(ViewController::ParticleShape mode);
 
   QOpenGLShaderProgram shaderProgram;
   QOpenGLVertexArrayObject vertexArray;

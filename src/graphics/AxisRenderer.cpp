@@ -27,7 +27,7 @@ AxisRenderer::AxisRenderer()
   loadBuffers();
 }
 
-void AxisRenderer::render(const Axis &axis, const RenderController &renderController)
+void AxisRenderer::render(const Axis &axis, const ViewController &viewController)
 {
   auto modelMatrix = QMatrix4x4{};
   auto color = QVector3D{};
@@ -47,13 +47,13 @@ void AxisRenderer::render(const Axis &axis, const RenderController &renderContro
     break;
   }
 
-  float size = renderController.axisSize;
+  float size = viewController.axisSize;
 
-  auto viewProjectionMatrix = renderController.getProjectionMatrix(RenderController::Ortho);
-  viewProjectionMatrix.translate((-renderController.getViewport().toVector3D() + QVector3D{size, size, -1.0f}));
+  auto viewProjectionMatrix = viewController.getProjectionMatrix(ViewController::Ortho);
+  viewProjectionMatrix.translate((-viewController.getViewport().toVector3D() + QVector3D{size, size, -1.0f}));
   viewProjectionMatrix.scale(size);
 
-  auto modelViewProjectionMatrix = viewProjectionMatrix * renderController.getRotationMatrix() * modelMatrix;
+  auto modelViewProjectionMatrix = viewProjectionMatrix * viewController.getRotationMatrix() * modelMatrix;
 
   shaderProgram.bind();
   vertexArray.bind();

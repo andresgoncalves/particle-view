@@ -29,16 +29,16 @@ ParticleRenderer::ParticleRenderer()
 
 const bool skeletonMode = false;
 
-void ParticleRenderer::render(const Particle &particle, const RenderController &renderController)
+void ParticleRenderer::render(const Particle &particle, const ViewController &viewController)
 {
-  if (!shouldRender(particle, renderController))
+  if (!shouldRender(particle, viewController))
     return;
 
   auto modelMatrix = QMatrix4x4{};
   modelMatrix.translate(particle.position);
   modelMatrix.scale(particle.radius);
 
-  auto modelViewProjectionMatrix = renderController.getViewProjectionMatrix() * modelMatrix;
+  auto modelViewProjectionMatrix = viewController.getViewProjectionMatrix() * modelMatrix;
 
   shaderProgram.bind();
   vertexArray.bind();
@@ -46,23 +46,23 @@ void ParticleRenderer::render(const Particle &particle, const RenderController &
   shaderProgram.setUniformValue("color", particle.color);
   shaderProgram.setUniformValue("modelViewProjectionMatrix", modelViewProjectionMatrix);
 
-  drawElements(renderController.particleShape);
+  drawElements(viewController.particleShape);
 
   vertexArray.release();
   shaderProgram.release();
 }
 
-bool ParticleRenderer::shouldRender(const Particle &particle, const RenderController &renderController)
+bool ParticleRenderer::shouldRender(const Particle &particle, const ViewController &viewController)
 {
   if (
-      renderController.hiddenParticles.find((int)particle.color.y()) != renderController.hiddenParticles.end())
+      viewController.hiddenParticles.find((int)particle.color.y()) != viewController.hiddenParticles.end())
     return false;
 
-  switch (renderController.projectionMode)
+  switch (viewController.projectionMode)
   {
-  case RenderController::Perspective:
+  case ViewController::Perspective:
   {
-    auto viewProjectionMatrix = renderController.getViewProjectionMatrix();
+    auto viewProjectionMatrix = viewController.getViewProjectionMatrix();
 
     auto nearPlane = viewProjectionMatrix.row(3) + viewProjectionMatrix.row(2);
     nearPlane /= nearPlane.toVector3D().length();
@@ -76,15 +76,15 @@ bool ParticleRenderer::shouldRender(const Particle &particle, const RenderContro
   }
 }
 
-void ParticleRenderer::drawElements(RenderController::ParticleShape mode)
+void ParticleRenderer::drawElements(ViewController::ParticleShape mode)
 {
   switch (mode)
   {
-  case RenderController::Solid:
+  case ViewController::Solid:
     indexBuffers.solid.bind();
     glDrawElements(GL_TRIANGLES, indexBuffers.solid.size(), GL_UNSIGNED_INT, nullptr);
     shaderProgram.setUniformValue("color", {0.0f, 0.0f, 0.0f});
-  case RenderController::Skeleton:
+  case ViewController::Skeleton:
     indexBuffers.skeleton.bind();
     glDrawElements(GL_LINES, indexBuffers.skeleton.size(), GL_UNSIGNED_INT, nullptr);
     break;

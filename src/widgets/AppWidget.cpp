@@ -7,12 +7,12 @@
 #include "TimeSliderWidget.h"
 #include "ToolPanelWidget.h"
 
-AppWidget::AppWidget(QWidget *parent) : transformController{renderController}, QWidget{parent}
+AppWidget::AppWidget(QWidget *parent) : transformController{viewController}, QWidget{parent}
 {
   auto layout = new QHBoxLayout{this};
   layout->setContentsMargins(0, 0, 0, 0);
 
-  graphicsWidget = new GraphicsWidget{storyController, renderController, transformController, this};
+  graphicsWidget = new GraphicsWidget{storyController, viewController, transformController, this};
   graphicsWidget->setMinimumSize(400, 300);
   timeSliderWidget = new TimeSliderWidget{storyController};
   timeSliderWidget->setContentsMargins(12, 8, 12, 8);
@@ -28,7 +28,7 @@ AppWidget::AppWidget(QWidget *parent) : transformController{renderController}, Q
   auto toggleButton = new QPushButton{"Ver/Ocultar", this};
 
   connect(toggleButton, &QPushButton::clicked, this, [&](int)
-          { renderController.toggleParticles(1); update(); });
+          { viewController.toggleParticles(1); update(); });
 
   layout->addWidget(toolPanelWidget);
 
@@ -48,9 +48,9 @@ AppWidget::AppWidget(QWidget *parent) : transformController{renderController}, Q
   timer->start(1.0 / 60.0);
 }
 
-RenderController *AppWidget::getRenderController()
+ViewController *AppWidget::getViewController()
 {
-  return &renderController;
+  return &viewController;
 }
 
 StoryController *AppWidget::getStoryController()

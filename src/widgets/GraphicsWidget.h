@@ -6,7 +6,7 @@
 #include <QtOpenGLWidgets/QOpenGLWidget>
 
 #include "utils/KeyEventFilter.h"
-#include "../controllers/RenderController.h"
+#include "../controllers/ViewController.h"
 #include "../controllers/StoryController.h"
 #include "../controllers/TransformController.h"
 #include "../graphics/AxisRenderer.h"
@@ -15,7 +15,7 @@
 class GraphicsWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
 public:
-  GraphicsWidget(StoryController &storyController, RenderController &renderController, TransformController &transformController, QWidget *parent = nullptr);
+  GraphicsWidget(StoryController &storyController, ViewController &viewController, TransformController &transformController, QWidget *parent = nullptr);
 
   void update();
 
@@ -39,7 +39,7 @@ private:
       sceneRenderer;
 
   TransformController &transformController;
-  RenderController &renderController;
+  ViewController &viewController;
   StoryController &storyController;
 };
 

@@ -5,7 +5,7 @@
 
 #include "GraphicsWidget.h"
 #include "TimeSliderWidget.h"
-#include "../controllers/RenderController.h"
+#include "../controllers/ViewController.h"
 #include "../controllers/StoryController.h"
 #include "../controllers/TransformController.h"
 
@@ -14,14 +14,14 @@ class AppWidget : public QWidget
 public:
   AppWidget(QWidget *parent = nullptr);
 
-  RenderController *getRenderController();
+  ViewController *getViewController();
   StoryController *getStoryController();
 
 private:
   GraphicsWidget *graphicsWidget;
   TimeSliderWidget *timeSliderWidget;
 
-  RenderController renderController;
+  ViewController viewController;
   StoryController storyController;
   TransformController transformController;
 };

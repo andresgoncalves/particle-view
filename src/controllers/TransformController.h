@@ -3,7 +3,7 @@
 
 #include <QtGui/QVector2D>
 
-#include "RenderController.h"
+#include "ViewController.h"
 #include "Observable.h"
 
 class TransformController
@@ -18,7 +18,7 @@ public:
     Scale
   };
 
-  TransformController(RenderController &renderController);
+  TransformController(ViewController &viewController);
 
   void start(const QVector2D &point);
   void move(const QVector2D &point);
@@ -41,7 +41,7 @@ private:
   QVector2D startPoint;
   QVector2D lastPoint;
 
-  RenderController &renderController;
+  ViewController &viewController;
 
   const float rotationSensitivity = 300.0f;
   const float translationSensitivity = 1.0f;

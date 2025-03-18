@@ -1,10 +1,10 @@
 #include <algorithm>
 
-#include "RenderController.h"
+#include "ViewController.h"
 
-RenderController::RenderController() {}
+ViewController::ViewController() {}
 
-void RenderController::rotate(const QVector3D &angles, ReferenceFrame referenceFrame)
+void ViewController::rotate(const QVector3D &angles, ReferenceFrame referenceFrame)
 {
   switch (referenceFrame)
   {
@@ -22,7 +22,7 @@ void RenderController::rotate(const QVector3D &angles, ReferenceFrame referenceF
   }
 }
 
-void RenderController::translate(const QVector3D &vector, ReferenceFrame referenceFrame)
+void ViewController::translate(const QVector3D &vector, ReferenceFrame referenceFrame)
 {
   switch (referenceFrame)
   {
@@ -35,7 +35,7 @@ void RenderController::translate(const QVector3D &vector, ReferenceFrame referen
   }
 }
 
-void RenderController::scale(float factor, ReferenceFrame referenceFrame)
+void ViewController::scale(float factor, ReferenceFrame referenceFrame)
 {
   switch (referenceFrame)
   {
@@ -50,117 +50,117 @@ void RenderController::scale(float factor, ReferenceFrame referenceFrame)
   scaleFactor = std::clamp(scaleFactor, minScaleFactor, maxScaleFactor);
 }
 
-void RenderController::setRotation(const QVector3D &angles)
+void ViewController::setRotation(const QVector3D &angles)
 {
   rotationAngles = angles;
 };
 
-void RenderController::setTranslation(const QVector3D &vector)
+void ViewController::setTranslation(const QVector3D &vector)
 {
   translationVector = vector;
 };
 
-void RenderController::setScale(float factor)
+void ViewController::setScale(float factor)
 {
   scaleFactor = std::clamp(factor, minScaleFactor, maxScaleFactor);
 };
 
-void RenderController::rotateX(float angle, ReferenceFrame referenceFrame)
+void ViewController::rotateX(float angle, ReferenceFrame referenceFrame)
 {
   rotate({angle, 0.0f, 0.0f}, referenceFrame);
 }
 
-void RenderController::rotateY(float angle, ReferenceFrame referenceFrame)
+void ViewController::rotateY(float angle, ReferenceFrame referenceFrame)
 {
   rotate({0.0f, angle, 0.0f}, referenceFrame);
 }
 
-void RenderController::rotateZ(float angle, ReferenceFrame referenceFrame)
+void ViewController::rotateZ(float angle, ReferenceFrame referenceFrame)
 {
   rotate({0.0f, 0.0f, angle}, referenceFrame);
 }
 
-void RenderController::translateX(float distance, ReferenceFrame referenceFrame)
+void ViewController::translateX(float distance, ReferenceFrame referenceFrame)
 {
   translate({distance, 0.0f, 0.0f}, referenceFrame);
 }
 
-void RenderController::translateY(float distance, ReferenceFrame referenceFrame)
+void ViewController::translateY(float distance, ReferenceFrame referenceFrame)
 {
   translate({0.0f, distance, 0.0f}, referenceFrame);
 }
 
-void RenderController::translateZ(float distance, ReferenceFrame referenceFrame)
+void ViewController::translateZ(float distance, ReferenceFrame referenceFrame)
 {
   translate({0.0f, 0.0f, distance}, referenceFrame);
 }
 
-void RenderController::setRotationX(float angle)
+void ViewController::setRotationX(float angle)
 {
   rotationAngles.setX(angle);
 }
 
-void RenderController::setRotationY(float angle)
+void ViewController::setRotationY(float angle)
 {
   rotationAngles.setY(angle);
 }
 
-void RenderController::setRotationZ(float angle)
+void ViewController::setRotationZ(float angle)
 {
   rotationAngles.setZ(angle);
 }
 
-void RenderController::setTranslationX(float distance)
+void ViewController::setTranslationX(float distance)
 {
   translationVector.setX(distance);
 }
 
-void RenderController::setTranslationY(float distance)
+void ViewController::setTranslationY(float distance)
 {
   translationVector.setY(distance);
 }
 
-void RenderController::setTranslationZ(float distance)
+void ViewController::setTranslationZ(float distance)
 {
   translationVector.setZ(distance);
 }
 
-void RenderController::setViewport(const QVector2D &scale)
+void ViewController::setViewport(const QVector2D &scale)
 {
   viewport = scale;
 }
 
-void RenderController::setOrigin(const QVector3D &origin)
+void ViewController::setOrigin(const QVector3D &origin)
 {
   originVector = origin;
 }
 
-void RenderController::updateViewProjectionMatrix()
+void ViewController::updateViewProjectionMatrix()
 {
   viewProjectionMatrix = getProjectionMatrix() * getViewMatrix();
 }
 
-QVector3D RenderController::getRotation() const
+QVector3D ViewController::getRotation() const
 {
   return rotationAngles;
 };
 
-QVector3D RenderController::getTranslation() const
+QVector3D ViewController::getTranslation() const
 {
   return translationVector;
 };
 
-float RenderController::getScale() const
+float ViewController::getScale() const
 {
   return scaleFactor;
 };
 
-QVector2D RenderController::getViewport() const
+QVector2D ViewController::getViewport() const
 {
   return viewport;
 }
 
-void RenderController::toggleParticles(int info)
+void ViewController::toggleParticles(int info)
 {
   if (hiddenParticles.find(info) != hiddenParticles.end())
   {
@@ -172,7 +172,7 @@ void RenderController::toggleParticles(int info)
   }
 }
 
-QMatrix4x4 RenderController::getOriginMatrix() const
+QMatrix4x4 ViewController::getOriginMatrix() const
 {
   auto origin = originVector;
   // origin.setY(0);
@@ -183,27 +183,27 @@ QMatrix4x4 RenderController::getOriginMatrix() const
   return originMatrix;
 }
 
-QMatrix4x4 RenderController::getTranslationMatrix() const
+QMatrix4x4 ViewController::getTranslationMatrix() const
 {
   auto translationMatrix = QMatrix4x4{};
   translationMatrix.translate(translationVector);
   return translationMatrix;
 }
 
-QMatrix4x4 RenderController::getScaleMatrix() const
+QMatrix4x4 ViewController::getScaleMatrix() const
 {
   auto scaleMatrix = QMatrix4x4{};
   scaleMatrix.scale(scaleFactor);
   return scaleMatrix;
 }
 
-QMatrix4x4 RenderController::getRotationMatrix() const
+QMatrix4x4 ViewController::getRotationMatrix() const
 {
   auto rotationMatrix = QMatrix4x4{QQuaternion::fromEulerAngles(rotationAngles).toRotationMatrix()};
   return rotationMatrix;
 }
 
-QMatrix4x4 RenderController::getViewMatrix() const
+QMatrix4x4 ViewController::getViewMatrix() const
 {
   auto viewMatrix = QMatrix4x4{};
   viewMatrix.translate({0.0f, 0.0f, -1.0f});
@@ -213,12 +213,12 @@ QMatrix4x4 RenderController::getViewMatrix() const
   return viewMatrix;
 }
 
-QMatrix4x4 RenderController::getProjectionMatrix() const
+QMatrix4x4 ViewController::getProjectionMatrix() const
 {
   return getProjectionMatrix(projectionMode);
 }
 
-QMatrix4x4 RenderController::getProjectionMatrix(ProjectionMode mode) const
+QMatrix4x4 ViewController::getProjectionMatrix(ProjectionMode mode) const
 {
   auto projectionMatrix = QMatrix4x4{};
   switch (mode)
@@ -233,7 +233,7 @@ QMatrix4x4 RenderController::getProjectionMatrix(ProjectionMode mode) const
   return projectionMatrix;
 }
 
-QMatrix4x4 RenderController::getViewProjectionMatrix() const
+QMatrix4x4 ViewController::getViewProjectionMatrix() const
 {
   return viewProjectionMatrix;
 }

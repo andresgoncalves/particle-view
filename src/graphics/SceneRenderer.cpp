@@ -8,10 +8,10 @@ SceneRenderer::SceneRenderer()
   particleRenderer = std::make_unique<ParticleRenderer>();
 }
 
-void SceneRenderer::render(const Scene &scene, const RenderController &renderController)
+void SceneRenderer::render(const Scene &scene, const ViewController &viewController)
 {
   for (auto &particle : scene.particles)
   {
-    particleRenderer->render(particle, renderController);
+    particleRenderer->render(particle, viewController);
   }
 }

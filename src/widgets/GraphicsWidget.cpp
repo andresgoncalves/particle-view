@@ -2,16 +2,16 @@
 #include "../models/Particle.h"
 #include "../models/Scene.h"
 
-GraphicsWidget::GraphicsWidget(StoryController &storyController, RenderController &renderController, TransformController &transformController, QWidget *parent) : storyController{storyController}, renderController{renderController}, transformController{transformController}, QOpenGLWidget{parent}
+GraphicsWidget::GraphicsWidget(StoryController &storyController, ViewController &viewController, TransformController &transformController, QWidget *parent) : storyController{storyController}, viewController{viewController}, transformController{transformController}, QOpenGLWidget{parent}
 {
   eventFilter.addListener(Qt::Key_O, [&]()
-                          { renderController.projectionMode = RenderController::Ortho; update(); });
+                          { viewController.projectionMode = ViewController::Ortho; update(); });
   eventFilter.addListener(Qt::Key_P, [&]()
-                          { renderController.projectionMode = RenderController::Perspective; update(); });
+                          { viewController.projectionMode = ViewController::Perspective; update(); });
   eventFilter.addListener(Qt::Key_K, [&]()
-                          { renderController.particleShape = RenderController::Skeleton; update(); });
+                          { viewController.particleShape = ViewController::Skeleton; update(); });
   eventFilter.addListener(Qt::Key_L, [&]()
-                          { renderController.particleShape = RenderController::Solid; update(); });
+                          { viewController.particleShape = ViewController::Solid; update(); });
   eventFilter.addListener(Qt::Key_Space, [&]()
                           { if(storyController.isPlaying()) storyController.pause(); else storyController.play(); });
   eventFilter.addListener(Qt::Key_R, [&]()
@@ -23,7 +23,7 @@ GraphicsWidget::GraphicsWidget(StoryController &storyController, RenderControlle
 
   eventFilter.addListener(Qt::Key_T, [&]()
                           {
-                            if (renderController.projectionMode == RenderController::Perspective)
+                            if (viewController.projectionMode == ViewController::Perspective)
                             {
                               transformController.transformType = eventFilter.isKeyPressed(Qt::Key_Control) ? TransformController::TranslationZ : TransformController::TranslationXY;
                             } else if( eventFilter.isKeyPressed(Qt::Key_Control) ){
@@ -49,7 +49,7 @@ GraphicsWidget::GraphicsWidget(StoryController &storyController, RenderControlle
 
 void GraphicsWidget::update()
 {
-  renderController.updateViewProjectionMatrix();
+  viewController.updateViewProjectionMatrix();
   QWidget::update();
 }
 
@@ -68,9 +68,9 @@ void GraphicsWidget::resizeGL(int width, int height)
   glViewport(0, 0, width, height);
 
   if (width > height)
-    renderController.setViewport({1.0f, static_cast<float>(height) / width});
+    viewController.setViewport({1.0f, static_cast<float>(height) / width});
   else
-    renderController.setViewport({static_cast<float>(width) / height, 1.0f});
+    viewController.setViewport({static_cast<float>(width) / height, 1.0f});
 
   update();
 }
@@ -81,13 +81,13 @@ void GraphicsWidget::paintGL()
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  sceneRenderer->render(scene, renderController);
+  sceneRenderer->render(scene, viewController);
 
   glClear(GL_DEPTH_BUFFER_BIT);
 
-  axisRenderer->render(Axis::X, renderController);
-  axisRenderer->render(Axis::Y, renderController);
-  axisRenderer->render(Axis::Z, renderController);
+  axisRenderer->render(Axis::X, viewController);
+  axisRenderer->render(Axis::Y, viewController);
+  axisRenderer->render(Axis::Z, viewController);
 }
 
 void GraphicsWidget::mousePressEvent(QMouseEvent *event)
@@ -124,7 +124,7 @@ void GraphicsWidget::wheelEvent(QWheelEvent *event)
 
 QVector2D GraphicsWidget::screenToView(const QVector2D &screenPoint) const
 {
-  auto viewPoint = renderController.getViewport() *
+  auto viewPoint = viewController.getViewport() *
                    QVector2D{
                        (screenPoint.x() / window()->width()) * 2.0f - 1.0f,
                        1.0f - (screenPoint.y() / window()->height()) * 2.0f};

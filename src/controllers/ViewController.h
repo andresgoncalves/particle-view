@@ -4,7 +4,7 @@
 #include <set>
 #include <QtGui/QMatrix4x4>
 
-class RenderController
+class ViewController
 {
 public:
   enum ReferenceFrame
@@ -25,7 +25,7 @@ public:
     Skeleton,
   };
 
-  RenderController();
+  ViewController();
 
   void rotate(const QVector3D &angles, ReferenceFrame referenceFrame = Model);
   void translate(const QVector3D &vector, ReferenceFrame referenceFrame = Model);
