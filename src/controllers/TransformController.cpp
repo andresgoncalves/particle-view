@@ -10,7 +10,7 @@ void TransformController::start(const QVector2D &point)
 
 void TransformController::move(const QVector2D &point)
 {
-  switch (transformType.get())
+  switch (transformType)
   {
   case RotationXY:
     rotateXY(point);
@@ -102,4 +102,15 @@ void TransformController::scale(const QVector2D &point)
 bool TransformController::isTransforming() const
 {
   return transforming;
+}
+
+void TransformController::setTransformType(TransformController::TransformType transformType)
+{
+  this->transformType = transformType;
+  transformTypeObservable.notify();
+}
+
+TransformController::TransformType TransformController::getTransformType() const
+{
+  return transformType;
 }

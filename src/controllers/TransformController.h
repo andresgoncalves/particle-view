@@ -28,7 +28,10 @@ public:
 
   bool isTransforming() const;
 
-  Observable<TransformType> transformType = TransformType::RotationXY;
+  void setTransformType(TransformType transformType);
+  TransformType getTransformType() const;
+
+  Observable<TransformType> transformTypeObservable = transformType;
 
 private:
   void translateXY(const QVector2D &point);
@@ -40,6 +43,7 @@ private:
   bool transforming = false;
   QVector2D startPoint;
   QVector2D lastPoint;
+  TransformType transformType = TransformType::RotationXY;
 
   ViewController &viewController;
 

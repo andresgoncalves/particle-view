@@ -9,23 +9,23 @@ ToolControls::ToolControls(AppContext &appContext, QWidget *parent) : appContext
   rotateXYButton = new QPushButton{"Rotate XY", this};
   rotateXYButton->setCheckable(true);
   connect(rotateXYButton, &QPushButton::clicked, this, [&]
-          { appContext.transformController.transformType.set(TransformController::TransformType::RotationXY); });
+          { appContext.transformController.setTransformType(TransformController::TransformType::RotationXY); });
   rotateZButton = new QPushButton{"Rotate Z", this};
   rotateZButton->setCheckable(true);
   connect(rotateZButton, &QPushButton::clicked, this, [&]
-          { appContext.transformController.transformType.set(TransformController::TransformType::RotationZ); });
+          { appContext.transformController.setTransformType(TransformController::TransformType::RotationZ); });
   translateXYButton = new QPushButton{"Translate XY", this};
   translateXYButton->setCheckable(true);
   connect(translateXYButton, &QPushButton::clicked, this, [&]
-          { appContext.transformController.transformType.set(TransformController::TransformType::TranslationXY); });
+          { appContext.transformController.setTransformType(TransformController::TransformType::TranslationXY); });
   translateZButton = new QPushButton{"Translate Z", this};
   translateZButton->setCheckable(true);
   connect(translateZButton, &QPushButton::clicked, this, [&]
-          { appContext.transformController.transformType.set(TransformController::TransformType::TranslationZ); });
+          { appContext.transformController.setTransformType(TransformController::TransformType::TranslationZ); });
   scaleButton = new QPushButton{"Scale", this};
   scaleButton->setCheckable(true);
   connect(scaleButton, &QPushButton::clicked, this, [&]
-          { appContext.transformController.transformType.set(TransformController::TransformType::Scale); });
+          { appContext.transformController.setTransformType(TransformController::TransformType::Scale); });
 
   auto transformTypeCallback = [&](TransformController::TransformType value)
   {
@@ -36,9 +36,9 @@ ToolControls::ToolControls(AppContext &appContext, QWidget *parent) : appContext
     scaleButton->setChecked(value == TransformController::TransformType::Scale);
   };
 
-  transformTypeCallback(appContext.transformController.transformType.get());
+  transformTypeCallback(appContext.transformController.getTransformType());
 
-  appContext.transformController.transformType.subscribe(this, transformTypeCallback);
+  appContext.transformController.transformTypeObservable.subscribe(this, transformTypeCallback);
 
   auto buttonLayout = new QGridLayout{content};
   buttonLayout->setHorizontalSpacing(4);
@@ -52,5 +52,5 @@ ToolControls::ToolControls(AppContext &appContext, QWidget *parent) : appContext
 
 ToolControls::~ToolControls()
 {
-  appContext.transformController.transformType.unsubscribe(this);
+  appContext.transformController.transformTypeObservable.unsubscribe(this);
 }

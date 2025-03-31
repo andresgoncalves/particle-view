@@ -4,7 +4,7 @@
 #include <set>
 #include <QtGui/QMatrix4x4>
 
-#include "ObservableReference.h"
+#include "Observable.h"
 
 class ViewController
 {
@@ -81,10 +81,10 @@ public:
   void toggleParticles(int info);
   std::set<int> hiddenParticles;
 
-  ObservableReference<QVector3D> rotationObservable = {rotationAngles};
-  ObservableReference<QVector3D> translationObservable = {translationVector};
-  ObservableReference<QVector3D> originObservable = {originVector};
-  ObservableReference<float> scaleObservable = {scaleFactor};
+  Observable<QVector3D> rotationObservable = {rotationAngles};
+  Observable<QVector3D> translationObservable = {translationVector};
+  Observable<QVector3D> originObservable = {originVector};
+  Observable<float> scaleObservable = {scaleFactor};
 
 private:
   QVector3D rotationAngles = {};

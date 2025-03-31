@@ -25,22 +25,22 @@ GraphicsWidget::GraphicsWidget(AppContext &appContext, QWidget *parent) : appCon
                           {
                             if (appContext.viewController.projectionMode == ViewController::Perspective)
                             {
-                              appContext.transformController.transformType = eventFilter.isKeyPressed(Qt::Key_Control) ? TransformController::TranslationZ : TransformController::TranslationXY;
+                              appContext.transformController.setTransformType(eventFilter.isKeyPressed(Qt::Key_Control) ? TransformController::TranslationZ : TransformController::TranslationXY);
                             } else if( eventFilter.isKeyPressed(Qt::Key_Control) ){
-                              appContext.transformController.transformType = TransformController::Scale;
+                              appContext.transformController.setTransformType(TransformController::Scale);
                             } });
   eventFilter.addListener(Qt::Key_S, [&]()
-                          { appContext.transformController.transformType = TransformController::Scale; });
+                          { appContext.transformController.setTransformType(TransformController::Scale); });
   eventFilter.addListener(Qt::Key_R,
                           [&]()
                           {
                             if (eventFilter.isKeyPressed(Qt::Key_Control))
                             {
-                              appContext.transformController.transformType = TransformController::RotationZ;
+                              appContext.transformController.setTransformType(TransformController::RotationZ);
                             }
                             else
                             {
-                              appContext.transformController.transformType = TransformController::RotationXY;
+                              appContext.transformController.setTransformType(TransformController::RotationXY);
                             }
                           });
 

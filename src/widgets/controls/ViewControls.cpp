@@ -35,5 +35,5 @@ ViewControls::ViewControls(AppContext &appContext, QWidget *parent) : appContext
 
 ViewControls::~ViewControls()
 {
-  appContext.transformController.transformType.unsubscribe(this);
+  appContext.viewController.translationObservable.unsubscribe(this);
 }

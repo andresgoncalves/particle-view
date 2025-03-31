@@ -8,23 +8,22 @@ template <typename T>
 class Observable
 {
 public:
-  Observable(T initialValue);
+  Observable(T &reference);
 
   void subscribe(void *const key, const std::function<void(T)> callback);
   void unsubscribe(void *const key);
-  void set(T value);
+  void notify();
+  void notify(T value);
   T get() const;
 
-  Observable<T> &operator=(T value);
-
 private:
-  T value;
+  T &reference;
 
   std::multimap<void *, std::function<void(T value)>> callbacks;
 };
 
 template <typename T>
-Observable<T>::Observable(T initialValue) : value{initialValue} {}
+Observable<T>::Observable(T &reference) : reference{reference} {}
 
 template <typename T>
 void Observable<T>::subscribe(void *key, const std::function<void(T)> callback)
@@ -39,9 +38,14 @@ void Observable<T>::unsubscribe(void *key)
 }
 
 template <typename T>
-void Observable<T>::set(T value)
+void Observable<T>::notify()
 {
-  this->value = value;
+  notify(get());
+}
+
+template <typename T>
+void Observable<T>::notify(T value)
+{
   for (auto [key, callback] : callbacks)
   {
     callback(value);
@@ -51,14 +55,7 @@ void Observable<T>::set(T value)
 template <typename T>
 T Observable<T>::get() const
 {
-  return value;
-}
-
-template <typename T>
-Observable<T> &Observable<T>::operator=(T value)
-{
-  set(value);
-  return *this;
+  return reference;
 }
 
 #endif
