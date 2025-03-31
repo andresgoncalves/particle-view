@@ -1,5 +1,5 @@
-#ifndef TRANSFORM_MODES_WIDGET_H
-#define TRANSFORM_MODES_WIDGET_H
+#ifndef TOOL_CONTROLS_H
+#define TOOL_CONTROLS_H
 
 #include <functional>
 
@@ -8,13 +8,14 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QWidget>
 
+#include "ControlSection.h"
 #include "../../controllers/AppContext.h"
 
-class TransformModesWidget : public QWidget
+class ToolControls : public ControlSection
 {
 public:
-  TransformModesWidget(AppContext &appContext, QWidget *parent = nullptr);
-  ~TransformModesWidget();
+  ToolControls(AppContext &appContext, QWidget *parent = nullptr);
+  ~ToolControls();
 
 private:
   QLabel *label;

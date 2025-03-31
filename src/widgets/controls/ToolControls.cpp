@@ -1,11 +1,9 @@
-#include "TransformModesWidget.h"
+#include "ToolControls.h"
 
 #include <QtWidgets/QGridLayout>
 
-TransformModesWidget::TransformModesWidget(AppContext &appContext, QWidget *parent) : appContext{appContext}, QWidget{parent}
+ToolControls::ToolControls(AppContext &appContext, QWidget *parent) : appContext{appContext}, ControlSection{"Modo de Transformación", parent}
 {
-  label = new QLabel{"Modo de transformación", this};
-
   rotateXYButton = new QPushButton{"Rotate XY", this};
   rotateXYButton->setCheckable(true);
   connect(rotateXYButton, &QPushButton::clicked, this, [&]
@@ -40,10 +38,7 @@ TransformModesWidget::TransformModesWidget(AppContext &appContext, QWidget *pare
 
   appContext.transformController.transformType.subscribe(this, transformTypeCallback);
 
-  auto layout = new QVBoxLayout{this};
-  layout->addWidget(label);
-
-  auto buttonLayout = new QGridLayout{};
+  auto buttonLayout = new QGridLayout{content};
   buttonLayout->setHorizontalSpacing(4);
   buttonLayout->setVerticalSpacing(8);
   buttonLayout->addWidget(rotateXYButton, 0, 0);
@@ -51,10 +46,9 @@ TransformModesWidget::TransformModesWidget(AppContext &appContext, QWidget *pare
   buttonLayout->addWidget(translateXYButton, 1, 0);
   buttonLayout->addWidget(translateZButton, 1, 1);
   buttonLayout->addWidget(scaleButton, 2, 0, 1, 2);
-  layout->addLayout(buttonLayout);
 }
 
-TransformModesWidget::~TransformModesWidget()
+ToolControls::~ToolControls()
 {
   appContext.transformController.transformType.unsubscribe(this);
 }

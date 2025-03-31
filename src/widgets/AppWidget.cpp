@@ -5,7 +5,7 @@
 
 #include "AppWidget.h"
 #include "TimeSliderWidget.h"
-#include "ToolPanelWidget.h"
+#include "controls/SceneControlPanel.h"
 
 AppWidget::AppWidget(AppContext &appContext, QWidget *parent) : appContext{appContext}, QWidget{parent}
 {
@@ -17,7 +17,7 @@ AppWidget::AppWidget(AppContext &appContext, QWidget *parent) : appContext{appCo
   timeSliderWidget = new TimeSliderWidget{appContext};
   timeSliderWidget->setContentsMargins(12, 8, 12, 8);
 
-  auto toolPanelWidget = new ToolPanelWidget{appContext, this};
+  auto sceneControlPanel = new SceneControlPanel{appContext, this};
 
   auto rightSidebar = new QWidget{this};
   auto rightSidebarLayout = new QVBoxLayout{rightSidebar};
@@ -30,7 +30,7 @@ AppWidget::AppWidget(AppContext &appContext, QWidget *parent) : appContext{appCo
   connect(toggleButton, &QPushButton::clicked, this, [&](int)
           { appContext.viewController.toggleParticles(1); update(); });
 
-  layout->addWidget(toolPanelWidget);
+  layout->addWidget(sceneControlPanel);
 
   auto centerLayout = new QVBoxLayout{};
   centerLayout->addWidget(graphicsWidget, 1);
