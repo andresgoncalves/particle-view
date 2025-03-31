@@ -1,5 +1,7 @@
 #include "ToolControls.h"
 
+#include <functional>
+
 #include <QtWidgets/QGridLayout>
 
 ToolControls::ToolControls(AppContext &appContext, QWidget *parent) : appContext{appContext}, ControlSection{"Modo de Transformación", parent}
@@ -25,7 +27,7 @@ ToolControls::ToolControls(AppContext &appContext, QWidget *parent) : appContext
   connect(scaleButton, &QPushButton::clicked, this, [&]
           { appContext.transformController.transformType.set(TransformController::TransformType::Scale); });
 
-  transformTypeCallback = [&](TransformController::TransformType value)
+  auto transformTypeCallback = [&](TransformController::TransformType value)
   {
     rotateXYButton->setChecked(value == TransformController::TransformType::RotationXY);
     rotateZButton->setChecked(value == TransformController::TransformType::RotationZ);

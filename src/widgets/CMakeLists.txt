@@ -13,7 +13,9 @@ add_library(widgets STATIC
 
   controls/SceneControlPanel.cpp
   controls/ControlSection.cpp
+  controls/NumericControl.cpp
   controls/ToolControls.cpp
+  controls/ViewControls.cpp
 )
 
 target_link_libraries(widgets PRIVATE
