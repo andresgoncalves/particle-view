@@ -9,6 +9,7 @@ NumericControl::NumericControl(const char *title, QWidget *parent) : QWidget{par
   lineEdit = new QLineEdit{this};
 
   auto layout = new QVBoxLayout{this};
+  layout->setContentsMargins(0, 0, 0, 0);
   layout->addWidget(titleLabel);
   layout->addWidget(lineEdit);
 }

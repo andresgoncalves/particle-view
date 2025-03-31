@@ -16,6 +16,10 @@ add_library(widgets STATIC
   controls/NumericControl.cpp
   controls/ToolControls.cpp
   controls/ViewControls.cpp
+  controls/OriginViewControls.cpp
+  controls/TranslationViewControls.cpp
+  controls/RotationViewControls.cpp
+  controls/ScaleViewControls.cpp
 )
 
 target_link_libraries(widgets PRIVATE

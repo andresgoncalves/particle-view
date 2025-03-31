@@ -1,39 +1,23 @@
 #include "ViewControls.h"
 
-#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QVBoxLayout>
+
+#include "OriginViewControls.h"
+#include "TranslationViewControls.h"
+#include "RotationViewControls.h"
+#include "ScaleViewControls.h"
 
 ViewControls::ViewControls(AppContext &appContext, QWidget *parent) : appContext{appContext}, ControlSection{"Vista", parent}
 {
+  auto originControls = new OriginViewControls{appContext, this};
+  auto translationControls = new TranslationViewControls{appContext, this};
+  auto rotationControls = new RotationViewControls{appContext, this};
+  auto scaleControls = new ScaleViewControls{appContext, this};
 
-  xTranslationControl = new NumericControl{"x:", this};
-  connect(xTranslationControl->getLineEdit(), &QLineEdit::editingFinished, this, [&]
-          { appContext.viewController.setTranslationX(xTranslationControl->getLineEdit()->text().toFloat()); });
-  yTranslationControl = new NumericControl{"y:", this};
-  connect(yTranslationControl->getLineEdit(), &QLineEdit::editingFinished, this, [&]
-          { appContext.viewController.setTranslationY(yTranslationControl->getLineEdit()->text().toFloat()); });
-  zTranslationControl = new NumericControl{"z:", this};
-  connect(zTranslationControl->getLineEdit(), &QLineEdit::editingFinished, this, [&]
-          { appContext.viewController.setTranslationZ(zTranslationControl->getLineEdit()->text().toFloat()); });
-
-  auto layout = new QHBoxLayout{content};
-
-  layout->addWidget(xTranslationControl);
-  layout->addWidget(yTranslationControl);
-  layout->addWidget(zTranslationControl);
-
-  auto translationCallback = [&](QVector3D value)
-  {
-    xTranslationControl->getLineEdit()->setText(QString::number(value.x(), 'f', 3));
-    yTranslationControl->getLineEdit()->setText(QString::number(value.y(), 'f', 3));
-    zTranslationControl->getLineEdit()->setText(QString::number(value.z(), 'f', 3));
-  };
-
-  translationCallback(appContext.viewController.translationObservable.get());
-
-  appContext.viewController.translationObservable.subscribe(this, translationCallback);
-}
-
-ViewControls::~ViewControls()
-{
-  appContext.viewController.translationObservable.unsubscribe(this);
+  auto layout = new QVBoxLayout{content};
+  layout->addWidget(originControls, 0, Qt::AlignTop);
+  layout->addWidget(translationControls, 0, Qt::AlignTop);
+  layout->addWidget(rotationControls, 0, Qt::AlignTop);
+  layout->addWidget(scaleControls, 0, Qt::AlignTop);
+  layout->setContentsMargins(0, 0, 0, 0);
 }

@@ -14,7 +14,7 @@ GraphicsWidget::GraphicsWidget(AppContext &appContext, QWidget *parent) : appCon
                           { appContext.viewController.particleShape = ViewController::Solid; update(); });
   eventFilter.addListener(Qt::Key_Space, [&]()
                           { if(appContext.storyController.isPlaying()) appContext.storyController.pause(); else appContext.storyController.play(); });
-  eventFilter.addListener(Qt::Key_R, [&]()
+  eventFilter.addListener(Qt::Key_E, [&]()
                           { appContext.storyController.reset(); update(); });
   eventFilter.addListener(Qt::Key_Left, [&]()
                           { appContext.storyController.skip(-0.1); update(); });

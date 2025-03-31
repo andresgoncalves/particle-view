@@ -11,13 +11,8 @@ class ViewControls : public ControlSection
 {
 public:
   ViewControls(AppContext &appContext, QWidget *parent = nullptr);
-  ~ViewControls();
 
 private:
-  NumericControl *xTranslationControl;
-  NumericControl *yTranslationControl;
-  NumericControl *zTranslationControl;
-
   AppContext &appContext;
 };
 

@@ -137,6 +137,24 @@ void ViewController::setTranslationZ(float distance)
   translationObservable.notify();
 }
 
+void ViewController::setOriginX(float distance)
+{
+  originVector.setX(distance);
+  originObservable.notify();
+}
+
+void ViewController::setOriginY(float distance)
+{
+  originVector.setY(distance);
+  originObservable.notify();
+}
+
+void ViewController::setOriginZ(float distance)
+{
+  originVector.setZ(distance);
+  originObservable.notify();
+}
+
 void ViewController::setViewport(const QVector2D &scale)
 {
   viewport = scale;
@@ -221,7 +239,7 @@ QMatrix4x4 ViewController::getViewMatrix() const
   auto viewMatrix = QMatrix4x4{};
   viewMatrix.translate({0.0f, 0.0f, -1.0f});
 
-  viewMatrix *= getTranslationMatrix() * getScaleMatrix() * (getOriginMatrix().inverted() * getRotationMatrix() * getOriginMatrix());
+  viewMatrix *= getTranslationMatrix() * getScaleMatrix() * (getRotationMatrix() * getOriginMatrix());
 
   return viewMatrix;
 }

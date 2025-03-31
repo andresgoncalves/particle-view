@@ -33,8 +33,9 @@ public:
   void translate(const QVector3D &vector, ReferenceFrame referenceFrame = Model);
   void scale(float factor, ReferenceFrame referenceFrame = Model);
 
-  void setRotation(const QVector3D &angles);
+  void setOrigin(const QVector3D &origin);
   void setTranslation(const QVector3D &vector);
+  void setRotation(const QVector3D &angles);
   void setScale(float factor);
 
   void rotateX(float angle, ReferenceFrame referenceFrame = Model);
@@ -53,8 +54,11 @@ public:
   void setTranslationY(float distance);
   void setTranslationZ(float distance);
 
+  void setOriginX(float distance);
+  void setOriginY(float distance);
+  void setOriginZ(float distance);
+
   void setViewport(const QVector2D &scale);
-  void setOrigin(const QVector3D &origin);
 
   void updateViewProjectionMatrix();
 
