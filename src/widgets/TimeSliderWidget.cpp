@@ -5,7 +5,7 @@
 #include "TimeSliderWidget.h"
 #include "GraphicsWidget.h"
 
-TimeSliderWidget::TimeSliderWidget(StoryController &storyController, QWidget *parent) : QWidget{parent}, storyController{storyController}
+TimeSliderWidget::TimeSliderWidget(AppContext &appContext, QWidget *parent) : appContext{appContext}, QWidget{parent}
 {
   auto layout = new QHBoxLayout{this};
   layout->setContentsMargins({});
@@ -26,13 +26,13 @@ TimeSliderWidget::TimeSliderWidget(StoryController &storyController, QWidget *pa
   layout->setAlignment(slider, Qt::AlignVCenter);
 
   connect(slider, &QSlider::valueChanged, this, [&](int)
-          { storyController.setTime(storyController.getDuration() * slider->value() / 100.0); update(); });
+          { appContext.storyController.setTime(appContext.storyController.getDuration() * slider->value() / 100.0); update(); });
 }
 
 void TimeSliderWidget::update()
 {
-  double time = storyController.getTime();
-  double duration = storyController.getDuration();
+  double time = appContext.storyController.getTime();
+  double duration = appContext.storyController.getDuration();
   slider->setValue(time * 100.0 / duration);
   timeLabel->setText(QString::number(time, 'f', 3));
   QWidget::update();

@@ -8,12 +8,12 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QWidget>
 
-#include "../../controllers/TransformController.h"
+#include "../../controllers/AppContext.h"
 
 class TransformModesWidget : public QWidget
 {
 public:
-  TransformModesWidget(TransformController &transformController, QWidget *parent = nullptr);
+  TransformModesWidget(AppContext &appContext, QWidget *parent = nullptr);
   ~TransformModesWidget();
 
 private:
@@ -24,7 +24,7 @@ private:
   QPushButton *translateZButton;
   QPushButton *scaleButton;
 
-  TransformController &transformController;
+  AppContext &appContext;
 
   std::function<void(TransformController::TransformType)> transformTypeCallback;
 };

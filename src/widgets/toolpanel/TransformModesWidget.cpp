@@ -2,30 +2,30 @@
 
 #include <QtWidgets/QGridLayout>
 
-TransformModesWidget::TransformModesWidget(TransformController &transformController, QWidget *parent) : transformController{transformController}, QWidget{parent}
+TransformModesWidget::TransformModesWidget(AppContext &appContext, QWidget *parent) : appContext{appContext}, QWidget{parent}
 {
   label = new QLabel{"Modo de transformación", this};
 
   rotateXYButton = new QPushButton{"Rotate XY", this};
   rotateXYButton->setCheckable(true);
   connect(rotateXYButton, &QPushButton::clicked, this, [&]
-          { transformController.transformType.set(TransformController::TransformType::RotationXY); });
+          { appContext.transformController.transformType.set(TransformController::TransformType::RotationXY); });
   rotateZButton = new QPushButton{"Rotate Z", this};
   rotateZButton->setCheckable(true);
   connect(rotateZButton, &QPushButton::clicked, this, [&]
-          { transformController.transformType.set(TransformController::TransformType::RotationZ); });
+          { appContext.transformController.transformType.set(TransformController::TransformType::RotationZ); });
   translateXYButton = new QPushButton{"Translate XY", this};
   translateXYButton->setCheckable(true);
   connect(translateXYButton, &QPushButton::clicked, this, [&]
-          { transformController.transformType.set(TransformController::TransformType::TranslationXY); });
+          { appContext.transformController.transformType.set(TransformController::TransformType::TranslationXY); });
   translateZButton = new QPushButton{"Translate Z", this};
   translateZButton->setCheckable(true);
   connect(translateZButton, &QPushButton::clicked, this, [&]
-          { transformController.transformType.set(TransformController::TransformType::TranslationZ); });
+          { appContext.transformController.transformType.set(TransformController::TransformType::TranslationZ); });
   scaleButton = new QPushButton{"Scale", this};
   scaleButton->setCheckable(true);
   connect(scaleButton, &QPushButton::clicked, this, [&]
-          { transformController.transformType.set(TransformController::TransformType::Scale); });
+          { appContext.transformController.transformType.set(TransformController::TransformType::Scale); });
 
   transformTypeCallback = [&](TransformController::TransformType value)
   {
@@ -36,9 +36,9 @@ TransformModesWidget::TransformModesWidget(TransformController &transformControl
     scaleButton->setChecked(value == TransformController::TransformType::Scale);
   };
 
-  transformTypeCallback(transformController.transformType.get());
+  transformTypeCallback(appContext.transformController.transformType.get());
 
-  transformController.transformType.subscribe(this, transformTypeCallback);
+  appContext.transformController.transformType.subscribe(this, transformTypeCallback);
 
   auto layout = new QVBoxLayout{this};
   layout->addWidget(label);
@@ -56,5 +56,5 @@ TransformModesWidget::TransformModesWidget(TransformController &transformControl
 
 TransformModesWidget::~TransformModesWidget()
 {
-  transformController.transformType.unsubscribe(this);
+  appContext.transformController.transformType.unsubscribe(this);
 }

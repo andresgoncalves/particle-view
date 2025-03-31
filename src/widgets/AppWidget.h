@@ -5,25 +5,18 @@
 
 #include "GraphicsWidget.h"
 #include "TimeSliderWidget.h"
-#include "../controllers/ViewController.h"
-#include "../controllers/StoryController.h"
-#include "../controllers/TransformController.h"
+#include "../controllers/AppContext.h"
 
 class AppWidget : public QWidget
 {
 public:
-  AppWidget(QWidget *parent = nullptr);
-
-  ViewController *getViewController();
-  StoryController *getStoryController();
+  AppWidget(AppContext &appContext, QWidget *parent = nullptr);
 
 private:
   GraphicsWidget *graphicsWidget;
   TimeSliderWidget *timeSliderWidget;
 
-  ViewController viewController;
-  StoryController storyController;
-  TransformController transformController;
+  AppContext &appContext;
 };
 
 #endif

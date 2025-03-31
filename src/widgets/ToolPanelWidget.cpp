@@ -1,8 +1,8 @@
 #include "ToolPanelWidget.h"
 
-ToolPanelWidget::ToolPanelWidget(TransformController &transformController, QWidget *parent) : QFrame{parent}
+ToolPanelWidget::ToolPanelWidget(AppContext &appContext, QWidget *parent) : appContext{appContext}, QFrame{parent}
 {
-  transformModesWidget = new TransformModesWidget{transformController, this};
+  transformModesWidget = new TransformModesWidget{appContext, this};
 
   auto layout = new QVBoxLayout{this};
   layout->addWidget(transformModesWidget, 0, Qt::AlignTop);

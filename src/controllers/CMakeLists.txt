@@ -3,6 +3,7 @@ find_package(Qt6 REQUIRED COMPONENTS
 )
 
 add_library(controllers STATIC
+  AppContext.cpp
   ViewController.cpp
   StoryController.cpp
   TransformController.cpp

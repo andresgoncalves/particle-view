@@ -7,12 +7,12 @@
 #include <QtWidgets/QSlider>
 #include <QtWidgets/QLabel>
 
-#include "../controllers/StoryController.h"
+#include "../controllers/AppContext.h"
 
 class TimeSliderWidget : public QWidget
 {
 public:
-  TimeSliderWidget(StoryController &storyController, QWidget *parent = nullptr);
+  TimeSliderWidget(AppContext &appContext, QWidget *parent = nullptr);
 
   void update();
 
@@ -20,7 +20,7 @@ private:
   QSlider *slider;
   QLabel *timeLabel;
 
-  StoryController &storyController;
+  AppContext &appContext;
 };
 
 #endif

@@ -6,6 +6,7 @@
 
 #include "loaders/Xb7StoryLoader.h"
 #include "widgets/AppWindow.h"
+#include "controllers/AppContext.h"
 
 int main(int argc, char **argv)
 {
@@ -30,9 +31,11 @@ int main(int argc, char **argv)
 
     std::cout << origin.x() << " " << origin.y() << " " << origin.z() << std::endl;
 
-    auto appWindow = new AppWindow{};
-    appWindow->getAppWidget()->getViewController()->setOrigin(origin);
-    appWindow->getAppWidget()->getStoryController()->setStory(story);
+    auto appContext = AppContext{};
+
+    auto appWindow = new AppWindow{appContext};
+    appContext.viewController.setOrigin(origin);
+    appContext.storyController.setStory(story);
     appWindow->show();
 
     return app.exec();

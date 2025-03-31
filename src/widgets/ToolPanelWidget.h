@@ -5,13 +5,17 @@
 
 #include "toolpanel/TransformModesWidget.h"
 
+#include "../controllers/AppContext.h"
+
 class ToolPanelWidget : public QFrame
 {
 public:
-  ToolPanelWidget(TransformController &transformController, QWidget *parent = nullptr);
+  ToolPanelWidget(AppContext &appContext, QWidget *parent = nullptr);
 
 private:
   TransformModesWidget *transformModesWidget;
+
+  AppContext &appContext;
 };
 
 #endif
