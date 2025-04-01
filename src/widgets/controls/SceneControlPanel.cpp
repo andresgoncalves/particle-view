@@ -11,7 +11,8 @@ SceneControlPanel::SceneControlPanel(AppContext &appContext, QWidget *parent) : 
   auto viewControls = new ViewControls{appContext, this};
 
   auto layout = new QVBoxLayout{this};
-  layout->addWidget(toolControls, 0, Qt::AlignTop);
-  layout->addWidget(viewControls, 0, Qt::AlignTop);
-  layout->setContentsMargins(8, 12, 8, 8);
+  layout->setAlignment(Qt::AlignTop);
+  layout->addWidget(toolControls);
+  layout->addWidget(viewControls);
+  layout->setContentsMargins(0, 8, 0, 8);
 }

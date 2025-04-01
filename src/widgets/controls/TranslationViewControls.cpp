@@ -19,6 +19,7 @@ TranslationViewControls::TranslationViewControls(AppContext &appContext, QWidget
   layout->addWidget(xTranslationControl);
   layout->addWidget(yTranslationControl);
   layout->addWidget(zTranslationControl);
+  layout->setContentsMargins({});
 
   auto translationCallback = [&](QVector3D value)
   {

@@ -15,9 +15,9 @@ ViewControls::ViewControls(AppContext &appContext, QWidget *parent) : appContext
   auto scaleControls = new ScaleViewControls{appContext, this};
 
   auto layout = new QVBoxLayout{content};
-  layout->addWidget(originControls, 0, Qt::AlignTop);
-  layout->addWidget(translationControls, 0, Qt::AlignTop);
-  layout->addWidget(rotationControls, 0, Qt::AlignTop);
-  layout->addWidget(scaleControls, 0, Qt::AlignTop);
+  layout->addWidget(originControls);
+  layout->addWidget(translationControls);
+  layout->addWidget(rotationControls);
+  layout->addWidget(scaleControls);
   layout->setContentsMargins(0, 0, 0, 0);
 }

@@ -8,12 +8,13 @@
 class NumericControl : public QWidget
 {
 public:
+  NumericControl(QWidget *parent);
   NumericControl(const char *title, QWidget *parent);
 
   QLineEdit *getLineEdit();
 
 protected:
-  QLabel *titleLabel = nullptr;
+  QLabel *label = nullptr;
   QLineEdit *lineEdit = nullptr;
 };
 

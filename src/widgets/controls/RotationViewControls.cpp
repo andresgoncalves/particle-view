@@ -19,6 +19,7 @@ RotationViewControls::RotationViewControls(AppContext &appContext, QWidget *pare
   layout->addWidget(xRotationControl);
   layout->addWidget(yRotationControl);
   layout->addWidget(zRotationControl);
+  layout->setContentsMargins({});
 
   auto rotationCallback = [&](QVector3D value)
   {

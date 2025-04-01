@@ -5,12 +5,13 @@
 ScaleViewControls::ScaleViewControls(AppContext &appContext, QWidget *parent) : appContext{appContext}, ControlSection{"Escala", parent}
 {
 
-  scaleControl = new NumericControl{"x:", this};
+  scaleControl = new NumericControl{this};
   connect(scaleControl->getLineEdit(), &QLineEdit::editingFinished, this, [&]
           { appContext.viewController.setScale(scaleControl->getLineEdit()->text().toFloat()); });
 
   auto layout = new QHBoxLayout{content};
   layout->addWidget(scaleControl);
+  layout->setContentsMargins({});
 
   auto scaleCallback = [&](float value)
   {

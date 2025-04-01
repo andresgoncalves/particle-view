@@ -12,7 +12,7 @@ public:
   QWidget *getContent();
 
 protected:
-  QLabel *titleLabel = nullptr;
+  QLabel *label = nullptr;
   QWidget *content = nullptr;
 };
 

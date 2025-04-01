@@ -19,6 +19,7 @@ OriginViewControls::OriginViewControls(AppContext &appContext, QWidget *parent) 
   layout->addWidget(xOriginControl);
   layout->addWidget(yOriginControl);
   layout->addWidget(zOriginControl);
+  layout->setContentsMargins({});
 
   auto originCallback = [&](QVector3D value)
   {
