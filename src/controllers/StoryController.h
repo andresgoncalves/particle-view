@@ -3,6 +3,7 @@
 
 #include <chrono>
 
+#include "Observable.h"
 #include "../models/Story.h"
 
 class StoryController
@@ -14,6 +15,7 @@ public:
   void pause();
   void reset();
   void skip(double delta);
+  void updateTime();
 
   void setTime(double time);
 
@@ -32,12 +34,16 @@ public:
 
   bool isPlaying() const;
 
+  Observable<double> timeObservable = time;
+  Observable<bool> playingObservable = playing;
+
 private:
   Story story;
 
   Scene interpolateScene(double time, const std::pair<double, Scene> &prev, const std::pair<double, Scene> &next) const;
 
   bool playing = false;
+  double time = 0.0;
   std::chrono::steady_clock::time_point startTime;
   std::chrono::steady_clock::time_point pauseTime;
 

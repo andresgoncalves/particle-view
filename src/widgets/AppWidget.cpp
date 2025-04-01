@@ -29,6 +29,7 @@ AppWidget::AppWidget(AppContext &appContext, QWidget *parent) : appContext{appCo
 
   QTimer *timer = new QTimer(this);
   connect(timer, &QTimer::timeout, this, [&]()
-          { graphicsWidget->update(); timeSliderWidget->update(); });
+          { if(appContext.storyController.isPlaying()) appContext.storyController.updateTime(); });
+
   timer->start(1.0 / 60.0);
 }

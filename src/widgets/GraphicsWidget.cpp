@@ -45,6 +45,9 @@ GraphicsWidget::GraphicsWidget(AppContext &appContext, QWidget *parent) : appCon
                           });
 
   qApp->installEventFilter(&eventFilter);
+
+  appContext.storyController.timeObservable.subscribe(this, [&](double)
+                                                      { update(); });
 }
 
 void GraphicsWidget::update()

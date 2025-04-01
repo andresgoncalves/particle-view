@@ -8,23 +8,48 @@ void StoryController::play()
   startTime = playing ? startTime : std::chrono::steady_clock::now() - (pauseTime - startTime);
   playing = true;
   pauseTime = {};
+  playingObservable.notify();
 }
 
 void StoryController::pause()
 {
   pauseTime = std::chrono::steady_clock::now();
   playing = false;
+  playingObservable.notify();
 }
 
 void StoryController::reset()
 {
   startTime = pauseTime = std::chrono::steady_clock::now();
+  updateTime();
+}
+
+void StoryController::updateTime()
+{
+  auto now = playing ? std::chrono::steady_clock::now() : pauseTime;
+
+  double duration = 1e-9 * (now - startTime).count();
+
+  auto [minTime, _] = getFirstScene();
+  auto [maxTime, __] = getLastScene();
+
+  auto computedTime = duration * timeScale;
+
+  time = std::clamp(computedTime, minTime, maxTime);
+
+  if (computedTime > maxTime)
+  {
+    pause();
+  }
+
+  timeObservable.notify();
 }
 
 void StoryController::skip(double delta)
 {
   auto duration = std::chrono::nanoseconds(static_cast<long long>(1e9 * delta / timeScale));
   startTime -= duration;
+  updateTime();
 }
 
 void StoryController::setStory(const Story &story)
@@ -41,16 +66,11 @@ void StoryController::setTime(double time)
 {
   startTime = std::chrono::steady_clock::now() - std::chrono::nanoseconds(static_cast<long long>(1e9 * time / timeScale));
   pauseTime = playing ? std::chrono::steady_clock::time_point{} : std::chrono::steady_clock::now();
+  updateTime();
 }
 
 double StoryController::getTime() const
 {
-  auto now = playing ? std::chrono::steady_clock::now() : pauseTime;
-
-  double duration = 1e-9 * (now - startTime).count();
-
-  double time = duration * timeScale;
-
   return time;
 };
 

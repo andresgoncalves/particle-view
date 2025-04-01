@@ -85,10 +85,10 @@ public:
   void toggleParticles(int info);
   std::set<int> hiddenParticles;
 
-  Observable<QVector3D> rotationObservable = {rotationAngles};
-  Observable<QVector3D> translationObservable = {translationVector};
-  Observable<QVector3D> originObservable = {originVector};
-  Observable<float> scaleObservable = {scaleFactor};
+  Observable<QVector3D> rotationObservable = rotationAngles;
+  Observable<QVector3D> translationObservable = translationVector;
+  Observable<QVector3D> originObservable = originVector;
+  Observable<float> scaleObservable = scaleFactor;
 
 private:
   QVector3D rotationAngles = {};

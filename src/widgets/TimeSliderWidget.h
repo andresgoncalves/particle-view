@@ -13,8 +13,7 @@ class TimeSliderWidget : public QWidget
 {
 public:
   TimeSliderWidget(AppContext &appContext, QWidget *parent = nullptr);
-
-  void update();
+  ~TimeSliderWidget();
 
 private:
   QSlider *slider;
