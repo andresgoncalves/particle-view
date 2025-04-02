@@ -19,6 +19,7 @@ public:
   void updateTime();
 
   void setTime(double time);
+  void setAnimationSpeed(double animationSpeed);
 
   void setStory(const Story &story);
 
@@ -26,6 +27,7 @@ public:
 
   double getTime() const;
   double getDuration() const;
+  double getAnimationSpeed() const;
 
   Scene getScene() const;
   Scene getScene(double time) const;
@@ -37,6 +39,7 @@ public:
 
   Observable<double> timeObservable = time;
   Observable<bool> playingObservable = playing;
+  Observable<double> animationSpeedObservable = animationSpeed;
 
 private:
   Story story;
@@ -48,7 +51,7 @@ private:
 
   std::unique_ptr<AnimationStrategy> animationStrategy;
 
-  double timeScale = 1.0;
+  double animationSpeed = 1.0;
 };
 
 #endif

@@ -35,7 +35,7 @@ void AnimationController::updateTime()
   auto minTime = getFirstScene().time;
   auto maxTime = getLastScene().time;
 
-  auto computedTime = minTime + duration * timeScale;
+  auto computedTime = minTime + duration * animationSpeed;
 
   time = std::clamp(computedTime, minTime, maxTime);
 
@@ -49,7 +49,7 @@ void AnimationController::updateTime()
 
 void AnimationController::skip(double delta)
 {
-  auto duration = std::chrono::nanoseconds(static_cast<long long>(1e9 * delta / timeScale));
+  auto duration = std::chrono::nanoseconds(static_cast<long long>(1e9 * delta / animationSpeed));
   startTime -= duration;
   updateTime();
 }
@@ -66,9 +66,19 @@ Story &AnimationController::getStory()
 
 void AnimationController::setTime(double time)
 {
-  startTime = std::chrono::steady_clock::now() - std::chrono::nanoseconds(static_cast<long long>(1e9 * time / timeScale));
+  startTime = std::chrono::steady_clock::now() - std::chrono::nanoseconds(static_cast<long long>(1e9 * time / animationSpeed));
   pauseTime = playing ? std::chrono::steady_clock::time_point{} : std::chrono::steady_clock::now();
   updateTime();
+}
+
+void AnimationController::setAnimationSpeed(double animationSpeed)
+{
+  this->animationSpeed = animationSpeed;
+}
+
+double AnimationController::getAnimationSpeed() const
+{
+  return animationSpeed;
 }
 
 double AnimationController::getTime() const
