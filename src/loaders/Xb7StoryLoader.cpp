@@ -19,14 +19,17 @@ Story Xb7StoryLoader::load(std::istream &input)
 
     lineStream >> count >> time >> xStart >> yStart >> zStart >> xEnd >> yEnd >> zEnd;
 
+    time *= 1e-2;
     auto scene = loadScene(input, count);
+
+    scene.time = time;
     scene.geometryStart = {xStart, zStart, yStart};
     scene.geometryEnd = {xEnd, zEnd, yEnd};
 
     scene.geometryStart *= 0.1;
     scene.geometryEnd *= 0.1;
 
-    story.scenes.insert(std::make_pair(time * 1e-2, scene));
+    story.scenes.insert(std::make_pair(time, scene));
   }
 
   return story;

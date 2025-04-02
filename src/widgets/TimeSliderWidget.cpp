@@ -27,20 +27,53 @@ TimeSliderWidget::TimeSliderWidget(AppContext &appContext, QWidget *parent) : ap
   layout->addWidget(timeLabel);
   layout->setContentsMargins({});
 
-  connect(slider, &QSlider::valueChanged, this, [&](int)
-          { appContext.storyController.setTime(appContext.storyController.getDuration() * slider->value() / 100.0); });
+  auto sliderMovedCallback = [&](int value)
+  {
+    double duration = appContext.animationController.getDuration();
+    double minTime = appContext.animationController.getFirstScene().time;
+    appContext.animationController.setTime(minTime + duration * value / 100.0);
+  };
+
+  auto sliderPressedCallback = [&, sliderMovedCallback = sliderMovedCallback]
+  {
+    if (appContext.animationController.isPlaying())
+    {
+      wasPlaying = true;
+      appContext.animationController.pause();
+    }
+    sliderMovedCallback(slider->value());
+  };
+
+  auto sliderReleasedCallback = [&]
+  {
+    if (wasPlaying)
+    {
+      wasPlaying = false;
+      appContext.animationController.play();
+    }
+  };
+
+  connect(slider, &QSlider::sliderPressed, this, sliderPressedCallback);
+  connect(slider, &QSlider::sliderReleased, this, sliderReleasedCallback);
+  connect(slider, &QSlider::sliderMoved, this, sliderMovedCallback);
 
   auto timeCallback = [&](double time)
   {
-    double duration = appContext.storyController.getDuration();
-    slider->setValue(time * 100.0 / duration);
+    if (!slider->isSliderDown())
+    {
+      double duration = appContext.animationController.getDuration();
+      double minTime = appContext.animationController.getFirstScene().time;
+      slider->setValue((time - minTime) * 100.0 / duration);
+    }
     timeLabel->setText(QString::number(time, 'f', 3));
   };
 
-  appContext.storyController.timeObservable.subscribe(this, timeCallback);
+  timeCallback(appContext.animationController.getTime());
+
+  appContext.animationController.timeObservable.subscribe(this, timeCallback);
 }
 
 TimeSliderWidget::~TimeSliderWidget()
 {
-  appContext.storyController.timeObservable.unsubscribe(this);
+  appContext.animationController.timeObservable.unsubscribe(this);
 }

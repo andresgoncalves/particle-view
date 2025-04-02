@@ -5,8 +5,10 @@ find_package(Qt6 REQUIRED COMPONENTS
 add_library(controllers STATIC
   AppContext.cpp
   ViewController.cpp
-  StoryController.cpp
+  AnimationController.cpp
   TransformController.cpp
+  animation/StepAnimationStrategy.cpp
+  animation/LinearAnimationStrategy.cpp
 )
 
 target_link_libraries(controllers PRIVATE

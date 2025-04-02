@@ -29,7 +29,7 @@ AppWidget::AppWidget(AppContext &appContext, QWidget *parent) : appContext{appCo
 
   QTimer *timer = new QTimer(this);
   connect(timer, &QTimer::timeout, this, [&]()
-          { if(appContext.storyController.isPlaying()) appContext.storyController.updateTime(); });
+          { if(appContext.animationController.isPlaying()) appContext.animationController.updateTime(); });
 
   timer->start(1.0 / 60.0);
 }

@@ -35,7 +35,7 @@ int main(int argc, char **argv)
 
     auto appWindow = new AppWindow{appContext};
     appContext.viewController.setOrigin(origin);
-    appContext.storyController.setStory(story);
+    appContext.animationController.setStory(story);
     appWindow->show();
 
     return app.exec();

@@ -1,7 +1,7 @@
 #ifndef APP_CONTEXT_H
 #define APP_CONTEXT_H
 
-#include "StoryController.h"
+#include "AnimationController.h"
 #include "TransformController.h"
 #include "ViewController.h"
 
@@ -9,7 +9,7 @@ struct AppContext
 {
   AppContext();
 
-  StoryController storyController;
+  AnimationController animationController;
   TransformController transformController;
   ViewController viewController;
 };

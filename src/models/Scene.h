@@ -10,6 +10,8 @@ struct Scene
 {
   Scene();
 
+  double time;
+
   std::vector<Particle> particles;
 
   QVector3D geometryStart;

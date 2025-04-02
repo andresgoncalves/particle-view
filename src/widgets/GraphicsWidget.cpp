@@ -13,13 +13,13 @@ GraphicsWidget::GraphicsWidget(AppContext &appContext, QWidget *parent) : appCon
   eventFilter.addListener(Qt::Key_L, [&]()
                           { appContext.viewController.particleShape = ViewController::Solid; update(); });
   eventFilter.addListener(Qt::Key_Space, [&]()
-                          { if(appContext.storyController.isPlaying()) appContext.storyController.pause(); else appContext.storyController.play(); });
+                          { if(appContext.animationController.isPlaying()) appContext.animationController.pause(); else appContext.animationController.play(); });
   eventFilter.addListener(Qt::Key_E, [&]()
-                          { appContext.storyController.reset(); update(); });
+                          { appContext.animationController.reset(); update(); });
   eventFilter.addListener(Qt::Key_Left, [&]()
-                          { appContext.storyController.skip(-0.1); update(); });
+                          { appContext.animationController.skip(-0.1); update(); });
   eventFilter.addListener(Qt::Key_Right, [&]()
-                          { appContext.storyController.skip(0.1); update(); });
+                          { appContext.animationController.skip(0.1); update(); });
 
   eventFilter.addListener(Qt::Key_T, [&]()
                           {
@@ -46,8 +46,8 @@ GraphicsWidget::GraphicsWidget(AppContext &appContext, QWidget *parent) : appCon
 
   qApp->installEventFilter(&eventFilter);
 
-  appContext.storyController.timeObservable.subscribe(this, [&](double)
-                                                      { update(); });
+  appContext.animationController.timeObservable.subscribe(this, [&](double)
+                                                          { update(); });
 }
 
 void GraphicsWidget::update()
@@ -80,7 +80,7 @@ void GraphicsWidget::resizeGL(int width, int height)
 
 void GraphicsWidget::paintGL()
 {
-  auto [time, scene] = appContext.storyController.getScene();
+  auto scene = appContext.animationController.getScene();
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

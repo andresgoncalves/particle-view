@@ -16,6 +16,8 @@ public:
   ~TimeSliderWidget();
 
 private:
+  bool wasPlaying = false;
+
   QSlider *slider;
   QLabel *timeLabel;
 
