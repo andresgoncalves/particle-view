@@ -76,6 +76,11 @@ void AnimationController::setAnimationSpeed(double animationSpeed)
   this->animationSpeed = animationSpeed;
 }
 
+void AnimationController::setAnimationStrategy(std::unique_ptr<AnimationStrategy> animationStrategy)
+{
+  this->animationStrategy = std::move(animationStrategy);
+}
+
 double AnimationController::getAnimationSpeed() const
 {
   return animationSpeed;

@@ -25,6 +25,7 @@ add_library(widgets STATIC
   controls/AnimationControls.cpp
   controls/TimeAnimationControls.cpp
   controls/AnimationSpeedControls.cpp
+  controls/AnimationStrategyControls.cpp
 )
 
 target_link_libraries(widgets PRIVATE

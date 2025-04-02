@@ -20,6 +20,7 @@ public:
 
   void setTime(double time);
   void setAnimationSpeed(double animationSpeed);
+  void setAnimationStrategy(std::unique_ptr<AnimationStrategy> animationStrategy);
 
   void setStory(const Story &story);
 
