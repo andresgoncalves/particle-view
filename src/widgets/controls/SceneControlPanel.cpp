@@ -6,13 +6,17 @@
 #include "ViewControls.h"
 #include "AnimationControls.h"
 
-SceneControlPanel::SceneControlPanel(AppContext &appContext, QWidget *parent) : appContext{appContext}, QWidget{parent}
+SceneControlPanel::SceneControlPanel(AppContext &appContext, QWidget *parent) : appContext{appContext}, QScrollArea{parent}
 {
   auto toolControls = new ToolControls{appContext, this};
   auto viewControls = new ViewControls{appContext, this};
   auto animationControls = new AnimationControls{appContext, this};
 
-  auto layout = new QVBoxLayout{this};
+  auto widget = new QWidget{this};
+  setWidget(widget);
+  setWidgetResizable(true);
+
+  auto layout = new QVBoxLayout{widget};
   layout->setAlignment(Qt::AlignTop);
   layout->addWidget(toolControls);
   layout->addWidget(viewControls);
