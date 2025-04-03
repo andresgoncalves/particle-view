@@ -5,8 +5,8 @@
 AnimationSpeedControls::AnimationSpeedControls(AppContext &appContext, QWidget *parent) : appContext{appContext}, ControlSection{"Velocidad de reproducción", parent}
 {
   animationSpeedControl = new NumericControl{this};
-  connect(animationSpeedControl->getLineEdit(), &QLineEdit::editingFinished, this, [&]
-          { appContext.animationController.setAnimationSpeed(animationSpeedControl->getLineEdit()->text().toFloat()); });
+  animationSpeedControl->onChange<double>([&](double value)
+                                          { appContext.animationController.setAnimationSpeed(value); });
 
   auto layout = new QHBoxLayout{content};
   layout->addWidget(animationSpeedControl);
@@ -14,7 +14,7 @@ AnimationSpeedControls::AnimationSpeedControls(AppContext &appContext, QWidget *
 
   auto animationSpeedCallback = [&](double value)
   {
-    animationSpeedControl->getLineEdit()->setText(QString::number(value, 'f', 3));
+    animationSpeedControl->setValue(value);
   };
 
   animationSpeedCallback(appContext.animationController.animationSpeedObservable.get());

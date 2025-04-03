@@ -6,20 +6,16 @@ AnimationTimeControls::AnimationTimeControls(AppContext &appContext, QWidget *pa
 {
 
   timeControl = new NumericControl{"Tiempo", this};
-  connect(timeControl->getLineEdit(), &QLineEdit::editingFinished, this, [&]
-          { appContext.animationController.setTime(timeControl->getLineEdit()->text().toFloat()); });
-  // frameControl = new NumericControl{"Frame", this};
-  // connect(frameControl->getLineEdit(), &QLineEdit::editingFinished, this, [&]
-  //         { appContext.viewController.setScale(frameControl->getLineEdit()->text().toFloat()); });
+  timeControl->onChange<float>([&](float value)
+                               { appContext.animationController.setTime(value); });
 
   auto layout = new QHBoxLayout{content};
   layout->addWidget(timeControl);
-  // layout->addWidget(frameControl);
   layout->setContentsMargins({});
 
   auto timeCallback = [&](double value)
   {
-    timeControl->getLineEdit()->setText(QString::number(value, 'f', 3));
+    timeControl->setValue(value);
   };
 
   auto playingCallback = [&](bool value)

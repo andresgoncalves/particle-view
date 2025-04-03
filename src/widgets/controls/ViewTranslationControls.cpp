@@ -6,14 +6,14 @@ ViewTranslationControls::ViewTranslationControls(AppContext &appContext, QWidget
 {
 
   xTranslationControl = new NumericControl{"x:", this};
-  connect(xTranslationControl->getLineEdit(), &QLineEdit::editingFinished, this, [&]
-          { appContext.viewController.setTranslationX(xTranslationControl->getLineEdit()->text().toFloat()); });
+  xTranslationControl->onChange<float>([&](float value)
+                                       { appContext.viewController.setTranslationX(value); });
   yTranslationControl = new NumericControl{"y:", this};
-  connect(yTranslationControl->getLineEdit(), &QLineEdit::editingFinished, this, [&]
-          { appContext.viewController.setTranslationY(yTranslationControl->getLineEdit()->text().toFloat()); });
+  yTranslationControl->onChange<float>([&](float value)
+                                       { appContext.viewController.setTranslationY(value); });
   zTranslationControl = new NumericControl{"z:", this};
-  connect(zTranslationControl->getLineEdit(), &QLineEdit::editingFinished, this, [&]
-          { appContext.viewController.setTranslationZ(zTranslationControl->getLineEdit()->text().toFloat()); });
+  zTranslationControl->onChange<float>([&](float value)
+                                       { appContext.viewController.setTranslationZ(value); });
 
   auto layout = new QHBoxLayout{content};
   layout->addWidget(xTranslationControl);
@@ -23,9 +23,9 @@ ViewTranslationControls::ViewTranslationControls(AppContext &appContext, QWidget
 
   auto translationCallback = [&](QVector3D value)
   {
-    xTranslationControl->getLineEdit()->setText(QString::number(value.x(), 'f', 3));
-    yTranslationControl->getLineEdit()->setText(QString::number(value.y(), 'f', 3));
-    zTranslationControl->getLineEdit()->setText(QString::number(value.z(), 'f', 3));
+    xTranslationControl->setValue(value.x());
+    yTranslationControl->setValue(value.y());
+    zTranslationControl->setValue(value.z());
   };
 
   translationCallback(appContext.viewController.translationObservable.get());

@@ -6,8 +6,8 @@ ViewScaleControls::ViewScaleControls(AppContext &appContext, QWidget *parent) : 
 {
 
   scaleControl = new NumericControl{this};
-  connect(scaleControl->getLineEdit(), &QLineEdit::editingFinished, this, [&]
-          { appContext.viewController.setScale(scaleControl->getLineEdit()->text().toFloat()); });
+  scaleControl->onChange<float>([&](float value)
+                                { appContext.viewController.setScale(value); });
 
   auto layout = new QHBoxLayout{content};
   layout->addWidget(scaleControl);
@@ -15,7 +15,7 @@ ViewScaleControls::ViewScaleControls(AppContext &appContext, QWidget *parent) : 
 
   auto scaleCallback = [&](float value)
   {
-    scaleControl->getLineEdit()->setText(QString::number(value, 'f', 3));
+    scaleControl->setValue(value);
   };
 
   scaleCallback(appContext.viewController.scaleObservable.get());

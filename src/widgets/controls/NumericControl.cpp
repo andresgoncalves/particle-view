@@ -19,7 +19,43 @@ NumericControl::NumericControl(const char *title, QWidget *parent) : QWidget{par
   layout->setContentsMargins({});
 }
 
-QLineEdit *NumericControl::getLineEdit()
+QLineEdit *NumericControl::getLineEdit() const
 {
   return lineEdit;
+}
+
+void NumericControl::setValue(int value)
+{
+  lineEdit->setText(QString::number(value));
+}
+
+void NumericControl::setValue(float value)
+{
+  lineEdit->setText(QString::number(value, 'f', 3));
+}
+
+void NumericControl::setValue(double value)
+{
+  lineEdit->setText(QString::number(value, 'f', 3));
+}
+
+template <>
+void NumericControl::onChange<int>(std::function<void(int)> callback) const
+{
+  connect(lineEdit, &QLineEdit::editingFinished, this, [&, callback = callback]
+          { callback(lineEdit->text().toInt()); });
+}
+
+template <>
+void NumericControl::onChange<float>(std::function<void(float)> callback) const
+{
+  connect(lineEdit, &QLineEdit::editingFinished, this, [&, callback = callback]
+          { callback(lineEdit->text().toFloat()); });
+}
+
+template <>
+void NumericControl::onChange<double>(std::function<void(double)> callback) const
+{
+  connect(lineEdit, &QLineEdit::editingFinished, this, [&, callback = callback]
+          { callback(lineEdit->text().toDouble()); });
 }

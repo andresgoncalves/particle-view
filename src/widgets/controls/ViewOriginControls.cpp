@@ -6,14 +6,14 @@ ViewOriginControls::ViewOriginControls(AppContext &appContext, QWidget *parent) 
 {
 
   xOriginControl = new NumericControl{"x:", this};
-  connect(xOriginControl->getLineEdit(), &QLineEdit::editingFinished, this, [&]
-          { appContext.viewController.setOriginX(xOriginControl->getLineEdit()->text().toFloat()); });
+  xOriginControl->onChange<float>([&](float value)
+                                  { appContext.viewController.setOriginX(value); });
   yOriginControl = new NumericControl{"y:", this};
-  connect(yOriginControl->getLineEdit(), &QLineEdit::editingFinished, this, [&]
-          { appContext.viewController.setOriginY(yOriginControl->getLineEdit()->text().toFloat()); });
+  yOriginControl->onChange<float>([&](float value)
+                                  { appContext.viewController.setOriginY(value); });
   zOriginControl = new NumericControl{"z:", this};
-  connect(zOriginControl->getLineEdit(), &QLineEdit::editingFinished, this, [&]
-          { appContext.viewController.setOriginZ(zOriginControl->getLineEdit()->text().toFloat()); });
+  zOriginControl->onChange<float>([&](float value)
+                                  { appContext.viewController.setOriginZ(value); });
 
   auto layout = new QHBoxLayout{content};
   layout->addWidget(xOriginControl);
@@ -23,9 +23,9 @@ ViewOriginControls::ViewOriginControls(AppContext &appContext, QWidget *parent) 
 
   auto originCallback = [&](QVector3D value)
   {
-    xOriginControl->getLineEdit()->setText(QString::number(value.x(), 'f', 3));
-    yOriginControl->getLineEdit()->setText(QString::number(value.y(), 'f', 3));
-    zOriginControl->getLineEdit()->setText(QString::number(value.z(), 'f', 3));
+    xOriginControl->setValue(value.x());
+    yOriginControl->setValue(value.y());
+    zOriginControl->setValue(value.z());
   };
 
   originCallback(appContext.viewController.originObservable.get());

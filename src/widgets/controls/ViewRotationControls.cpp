@@ -6,14 +6,14 @@ ViewRotationControls::ViewRotationControls(AppContext &appContext, QWidget *pare
 {
 
   xRotationControl = new NumericControl{"x:", this};
-  connect(xRotationControl->getLineEdit(), &QLineEdit::editingFinished, this, [&]
-          { appContext.viewController.setRotationX(xRotationControl->getLineEdit()->text().toFloat()); });
+  xRotationControl->onChange<float>([&](float value)
+                                    { appContext.viewController.setRotationX(value); });
   yRotationControl = new NumericControl{"y':", this};
-  connect(yRotationControl->getLineEdit(), &QLineEdit::editingFinished, this, [&]
-          { appContext.viewController.setRotationY(yRotationControl->getLineEdit()->text().toFloat()); });
+  yRotationControl->onChange<float>([&](float value)
+                                    { appContext.viewController.setRotationY(value); });
   zRotationControl = new NumericControl{"z\":", this};
-  connect(zRotationControl->getLineEdit(), &QLineEdit::editingFinished, this, [&]
-          { appContext.viewController.setRotationZ(zRotationControl->getLineEdit()->text().toFloat()); });
+  zRotationControl->onChange<float>([&](float value)
+                                    { appContext.viewController.setRotationZ(value); });
 
   auto layout = new QHBoxLayout{content};
   layout->addWidget(xRotationControl);
@@ -23,9 +23,9 @@ ViewRotationControls::ViewRotationControls(AppContext &appContext, QWidget *pare
 
   auto rotationCallback = [&](QVector3D value)
   {
-    xRotationControl->getLineEdit()->setText(QString::number(value.x(), 'f', 3));
-    yRotationControl->getLineEdit()->setText(QString::number(value.y(), 'f', 3));
-    zRotationControl->getLineEdit()->setText(QString::number(value.z(), 'f', 3));
+    xRotationControl->setValue(value.x());
+    yRotationControl->setValue(value.y());
+    zRotationControl->setValue(value.z());
   };
 
   rotationCallback(appContext.viewController.rotationObservable.get());
