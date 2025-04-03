@@ -1,5 +1,5 @@
-#ifndef ORIGIN_VIEW_CONTROLS_H
-#define ORIGIN_VIEW_CONTROLS_H
+#ifndef VIEW_ORIGIN_CONTROLS_H
+#define VIEW_ORIGIN_CONTROLS_H
 
 #include <QtWidgets/QWidget>
 
@@ -7,11 +7,11 @@
 #include "NumericControl.h"
 #include "../../controllers/AppContext.h"
 
-class OriginViewControls : public ControlSection
+class ViewOriginControls : public ControlSection
 {
 public:
-  OriginViewControls(AppContext &appContext, QWidget *parent = nullptr);
-  ~OriginViewControls();
+  ViewOriginControls(AppContext &appContext, QWidget *parent = nullptr);
+  ~ViewOriginControls();
 
 private:
   NumericControl *xOriginControl;

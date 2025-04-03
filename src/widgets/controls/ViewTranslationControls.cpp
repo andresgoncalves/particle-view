@@ -1,8 +1,8 @@
-#include "TranslationViewControls.h"
+#include "ViewTranslationControls.h"
 
 #include <QtWidgets/QHBoxLayout>
 
-TranslationViewControls::TranslationViewControls(AppContext &appContext, QWidget *parent) : appContext{appContext}, ControlSection{"Traslación", parent}
+ViewTranslationControls::ViewTranslationControls(AppContext &appContext, QWidget *parent) : appContext{appContext}, ControlSection{"Traslación", parent}
 {
 
   xTranslationControl = new NumericControl{"x:", this};
@@ -33,7 +33,7 @@ TranslationViewControls::TranslationViewControls(AppContext &appContext, QWidget
   appContext.viewController.translationObservable.subscribe(this, translationCallback);
 }
 
-TranslationViewControls::~TranslationViewControls()
+ViewTranslationControls::~ViewTranslationControls()
 {
   appContext.viewController.translationObservable.unsubscribe(this);
 }

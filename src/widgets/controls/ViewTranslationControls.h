@@ -1,5 +1,5 @@
-#ifndef TRANSLATION_VIEW_CONTROLS_H
-#define TRANSLATION_VIEW_CONTROLS_H
+#ifndef VIEW_TRANSLATION_CONTROLS_H
+#define VIEW_TRANSLATION_CONTROLS_H
 
 #include <QtWidgets/QWidget>
 
@@ -7,11 +7,11 @@
 #include "NumericControl.h"
 #include "../../controllers/AppContext.h"
 
-class TranslationViewControls : public ControlSection
+class ViewTranslationControls : public ControlSection
 {
 public:
-  TranslationViewControls(AppContext &appContext, QWidget *parent = nullptr);
-  ~TranslationViewControls();
+  ViewTranslationControls(AppContext &appContext, QWidget *parent = nullptr);
+  ~ViewTranslationControls();
 
 private:
   NumericControl *xTranslationControl;

@@ -1,8 +1,8 @@
-#include "TimeAnimationControls.h"
+#include "AnimationTimeControls.h"
 
 #include <QtWidgets/QHBoxLayout>
 
-TimeAnimationControls::TimeAnimationControls(AppContext &appContext, QWidget *parent) : appContext{appContext}, ControlSection{"Tiempo actual", parent}
+AnimationTimeControls::AnimationTimeControls(AppContext &appContext, QWidget *parent) : appContext{appContext}, ControlSection{"Tiempo actual", parent}
 {
 
   timeControl = new NumericControl{"Tiempo", this};
@@ -34,7 +34,7 @@ TimeAnimationControls::TimeAnimationControls(AppContext &appContext, QWidget *pa
   appContext.animationController.playingObservable.subscribe(this, playingCallback);
 }
 
-TimeAnimationControls::~TimeAnimationControls()
+AnimationTimeControls::~AnimationTimeControls()
 {
   appContext.animationController.timeObservable.unsubscribe(this);
   appContext.animationController.playingObservable.unsubscribe(this);

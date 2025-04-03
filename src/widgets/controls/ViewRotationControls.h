@@ -1,5 +1,5 @@
-#ifndef ROTATION_VIEW_CONTROLS_H
-#define ROTATION_VIEW_CONTROLS_H
+#ifndef VIEW_ROTATION_CONTROLS_H
+#define VIEW_ROTATION_CONTROLS_H
 
 #include <QtWidgets/QWidget>
 
@@ -7,11 +7,11 @@
 #include "NumericControl.h"
 #include "../../controllers/AppContext.h"
 
-class RotationViewControls : public ControlSection
+class ViewRotationControls : public ControlSection
 {
 public:
-  RotationViewControls(AppContext &appContext, QWidget *parent = nullptr);
-  ~RotationViewControls();
+  ViewRotationControls(AppContext &appContext, QWidget *parent = nullptr);
+  ~ViewRotationControls();
 
 private:
   NumericControl *xRotationControl;

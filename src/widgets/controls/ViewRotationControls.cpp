@@ -1,8 +1,8 @@
-#include "RotationViewControls.h"
+#include "ViewRotationControls.h"
 
 #include <QtWidgets/QHBoxLayout>
 
-RotationViewControls::RotationViewControls(AppContext &appContext, QWidget *parent) : appContext{appContext}, ControlSection{"Rotación", parent}
+ViewRotationControls::ViewRotationControls(AppContext &appContext, QWidget *parent) : appContext{appContext}, ControlSection{"Rotación", parent}
 {
 
   xRotationControl = new NumericControl{"x:", this};
@@ -33,7 +33,7 @@ RotationViewControls::RotationViewControls(AppContext &appContext, QWidget *pare
   appContext.viewController.rotationObservable.subscribe(this, rotationCallback);
 }
 
-RotationViewControls::~RotationViewControls()
+ViewRotationControls::~ViewRotationControls()
 {
   appContext.viewController.rotationObservable.unsubscribe(this);
 }

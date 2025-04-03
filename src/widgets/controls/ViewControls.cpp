@@ -2,17 +2,17 @@
 
 #include <QtWidgets/QVBoxLayout>
 
-#include "OriginViewControls.h"
-#include "TranslationViewControls.h"
-#include "RotationViewControls.h"
-#include "ScaleViewControls.h"
+#include "ViewOriginControls.h"
+#include "ViewTranslationControls.h"
+#include "ViewRotationControls.h"
+#include "ViewScaleControls.h"
 
 ViewControls::ViewControls(AppContext &appContext, QWidget *parent) : appContext{appContext}, ControlSection{"Vista", parent}
 {
-  auto originControls = new OriginViewControls{appContext, this};
-  auto translationControls = new TranslationViewControls{appContext, this};
-  auto rotationControls = new RotationViewControls{appContext, this};
-  auto scaleControls = new ScaleViewControls{appContext, this};
+  auto originControls = new ViewOriginControls{appContext, this};
+  auto translationControls = new ViewTranslationControls{appContext, this};
+  auto rotationControls = new ViewRotationControls{appContext, this};
+  auto scaleControls = new ViewScaleControls{appContext, this};
 
   auto layout = new QVBoxLayout{content};
   layout->addWidget(originControls);

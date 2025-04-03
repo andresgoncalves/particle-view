@@ -1,5 +1,5 @@
-#ifndef TIME_ANIMATION_CONTROLS_H
-#define TIME_ANIMATION_CONTROLS_H
+#ifndef ANIMATION_TIME_CONTROLS_H
+#define ANIMATION_TIME_CONTROLS_H
 
 #include <QtWidgets/QWidget>
 
@@ -7,11 +7,11 @@
 #include "NumericControl.h"
 #include "../../controllers/AppContext.h"
 
-class TimeAnimationControls : public ControlSection
+class AnimationTimeControls : public ControlSection
 {
 public:
-  TimeAnimationControls(AppContext &appContext, QWidget *parent = nullptr);
-  ~TimeAnimationControls();
+  AnimationTimeControls(AppContext &appContext, QWidget *parent = nullptr);
+  ~AnimationTimeControls();
 
 private:
   NumericControl *timeControl;

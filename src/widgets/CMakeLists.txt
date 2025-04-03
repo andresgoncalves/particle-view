@@ -17,13 +17,13 @@ add_library(widgets STATIC
   controls/ToolControls.cpp
 
   controls/ViewControls.cpp
-  controls/OriginViewControls.cpp
-  controls/TranslationViewControls.cpp
-  controls/RotationViewControls.cpp
-  controls/ScaleViewControls.cpp
+  controls/ViewOriginControls.cpp
+  controls/ViewTranslationControls.cpp
+  controls/ViewRotationControls.cpp
+  controls/ViewScaleControls.cpp
 
   controls/AnimationControls.cpp
-  controls/TimeAnimationControls.cpp
+  controls/AnimationTimeControls.cpp
   controls/AnimationSpeedControls.cpp
   controls/AnimationStrategyControls.cpp
 )

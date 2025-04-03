@@ -2,13 +2,13 @@
 
 #include <QtWidgets/QVBoxLayout>
 
-#include "TimeAnimationControls.h"
+#include "AnimationTimeControls.h"
 #include "AnimationSpeedControls.h"
 #include "AnimationStrategyControls.h"
 
 AnimationControls::AnimationControls(AppContext &appContext, QWidget *parent) : appContext{appContext}, ControlSection{"Animación", parent}
 {
-  auto timeControls = new TimeAnimationControls{appContext, this};
+  auto timeControls = new AnimationTimeControls{appContext, this};
   auto speedControls = new AnimationSpeedControls{appContext, this};
   auto strategyControls = new AnimationStrategyControls{appContext, this};
 

@@ -1,8 +1,8 @@
-#include "OriginViewControls.h"
+#include "ViewOriginControls.h"
 
 #include <QtWidgets/QHBoxLayout>
 
-OriginViewControls::OriginViewControls(AppContext &appContext, QWidget *parent) : appContext{appContext}, ControlSection{"Origen", parent}
+ViewOriginControls::ViewOriginControls(AppContext &appContext, QWidget *parent) : appContext{appContext}, ControlSection{"Origen", parent}
 {
 
   xOriginControl = new NumericControl{"x:", this};
@@ -33,7 +33,7 @@ OriginViewControls::OriginViewControls(AppContext &appContext, QWidget *parent) 
   appContext.viewController.originObservable.subscribe(this, originCallback);
 }
 
-OriginViewControls::~OriginViewControls()
+ViewOriginControls::~ViewOriginControls()
 {
   appContext.viewController.originObservable.unsubscribe(this);
 }

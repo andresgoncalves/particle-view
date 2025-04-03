@@ -1,8 +1,8 @@
-#include "ScaleViewControls.h"
+#include "ViewScaleControls.h"
 
 #include <QtWidgets/QHBoxLayout>
 
-ScaleViewControls::ScaleViewControls(AppContext &appContext, QWidget *parent) : appContext{appContext}, ControlSection{"Escala", parent}
+ViewScaleControls::ViewScaleControls(AppContext &appContext, QWidget *parent) : appContext{appContext}, ControlSection{"Escala", parent}
 {
 
   scaleControl = new NumericControl{this};
@@ -23,7 +23,7 @@ ScaleViewControls::ScaleViewControls(AppContext &appContext, QWidget *parent) : 
   appContext.viewController.scaleObservable.subscribe(this, scaleCallback);
 }
 
-ScaleViewControls::~ScaleViewControls()
+ViewScaleControls::~ViewScaleControls()
 {
   appContext.viewController.scaleObservable.unsubscribe(this);
 }
