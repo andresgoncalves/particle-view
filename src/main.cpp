@@ -4,7 +4,7 @@
 #include <fstream>
 #include <iostream>
 
-#include "loaders/Xb7StoryLoader.h"
+#include "loaders/CustomLoader.h"
 #include "widgets/AppWindow.h"
 #include "controllers/AppContext.h"
 
@@ -24,7 +24,16 @@ int main(int argc, char **argv)
     }
 
     auto input = std::ifstream{argv[1]};
-    auto story = Xb7StoryLoader::getInstance().load(input);
+
+    auto loader = CustomLoader{};
+
+    loader.setColumnCount(7);
+    loader.setDefaultProperty(CustomLoader::DefaultProperty::X, 0);
+    loader.setDefaultProperty(CustomLoader::DefaultProperty::Y, 2);
+    loader.setDefaultProperty(CustomLoader::DefaultProperty::Z, 1);
+    loader.setDefaultProperty(CustomLoader::DefaultProperty::R, 6);
+
+    auto story = loader.load(input);
 
     auto firstScene = story.scenes.at(0);
     auto origin = (firstScene.geometryStart + firstScene.geometryEnd) / 2;

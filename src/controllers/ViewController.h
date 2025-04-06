@@ -100,8 +100,8 @@ private:
 
   QMatrix4x4 viewProjectionMatrix;
 
-  float minScaleFactor = 0.1f;
-  float maxScaleFactor = 2.0f;
+  float minScaleFactor = 1e-2f;
+  float maxScaleFactor = 1e3f;
 };
 
 #endif
