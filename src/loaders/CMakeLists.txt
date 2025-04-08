@@ -3,7 +3,6 @@ find_package(Qt6 REQUIRED COMPONENTS
 )
 
 add_library(loaders STATIC
-  Xb7StoryLoader.cpp
   CustomLoader.cpp
 )
 
