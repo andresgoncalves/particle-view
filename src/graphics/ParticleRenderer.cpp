@@ -43,7 +43,20 @@ void ParticleRenderer::render(const Particle &particle, const ViewController &vi
   shaderProgram.bind();
   vertexArray.bind();
 
-  shaderProgram.setUniformValue("color", particle.color);
+  auto type = particle.customProperties.find("type");
+  if (type == particle.customProperties.end())
+  {
+    shaderProgram.setUniformValue("color", particle.color);
+  }
+  else if (type->second == 1)
+  {
+    shaderProgram.setUniformValue("color", {1.0f, 0.0f, 0.0f});
+  }
+  else
+  {
+    shaderProgram.setUniformValue("color", {1.0f, 1.0f, 0.0f});
+  }
+
   shaderProgram.setUniformValue("modelViewProjectionMatrix", modelViewProjectionMatrix);
 
   drawElements(viewController.particleShape);
