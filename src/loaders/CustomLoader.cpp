@@ -18,10 +18,10 @@ void CustomLoader::setDefaultProperty(DefaultProperty property, int column)
   defaultProperties[property] = column;
 }
 
-// void CustomLoader::setCustomProperty(std::string property, int column)
-// {
-//   customProperties[property] = column;
-// }
+void CustomLoader::setCustomProperty(std::string property, int column)
+{
+  customProperties[property] = column;
+}
 
 Story CustomLoader::load(std::istream &input)
 {
@@ -78,11 +78,17 @@ Particle CustomLoader::loadParticle(std::istream &input)
   }
 
   auto defaultValues = std::map<DefaultProperty, float>{};
+  auto customValues = std::map<std::string, float>{};
 
   for (auto property : defaultProperties)
   {
     if (property.second >= 0 && property.second < columnValues.size())
       defaultValues[property.first] = columnValues[property.second];
+  }
+  for (auto property : customProperties)
+  {
+    if (property.second >= 0 && property.second < columnValues.size())
+      customValues[property.first] = columnValues[property.second];
   }
 
   auto x = defaultValues.find(DefaultProperty::X);
@@ -97,6 +103,7 @@ Particle CustomLoader::loadParticle(std::istream &input)
           y != defaultValues.end() ? y->second : 0,
           z != defaultValues.end() ? z->second : 0,
       },
+      .customProperties = customValues,
   };
 
   return particle;

@@ -27,11 +27,12 @@ int main(int argc, char **argv)
 
     auto loader = CustomLoader{};
 
-    loader.setColumnCount(7);
+    loader.setColumnCount(8);
     loader.setDefaultProperty(CustomLoader::DefaultProperty::X, 0);
     loader.setDefaultProperty(CustomLoader::DefaultProperty::Y, 2);
     loader.setDefaultProperty(CustomLoader::DefaultProperty::Z, 1);
     loader.setDefaultProperty(CustomLoader::DefaultProperty::R, 6);
+    loader.setCustomProperty("type", 7);
 
     auto story = loader.load(input);
 

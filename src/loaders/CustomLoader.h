@@ -20,7 +20,7 @@ public:
 
   void setColumnCount(int count);
   void setDefaultProperty(DefaultProperty property, int column);
-  // void setCustomProperty(std::string property, int column);
+  void setCustomProperty(std::string property, int column);
 
   Story load(std::istream &input) override;
 
