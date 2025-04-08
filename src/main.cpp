@@ -31,6 +31,9 @@ int main(int argc, char **argv)
     loader.setDefaultProperty(CustomLoader::DefaultProperty::X, 0);
     loader.setDefaultProperty(CustomLoader::DefaultProperty::Y, 2);
     loader.setDefaultProperty(CustomLoader::DefaultProperty::Z, 1);
+    loader.setDefaultProperty(CustomLoader::DefaultProperty::VX, 3);
+    loader.setDefaultProperty(CustomLoader::DefaultProperty::VY, 5);
+    loader.setDefaultProperty(CustomLoader::DefaultProperty::VZ, 4);
     loader.setDefaultProperty(CustomLoader::DefaultProperty::R, 6);
     loader.setCustomProperty("type", 7);
 

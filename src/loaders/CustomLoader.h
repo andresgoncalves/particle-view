@@ -15,6 +15,9 @@ public:
     X,
     Y,
     Z,
+    VX,
+    VY,
+    VZ,
     R,
   };
 

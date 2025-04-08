@@ -46,7 +46,7 @@ void ParticleRenderer::render(const Particle &particle, const ViewController &vi
   auto type = particle.customProperties.find("type");
   if (type == particle.customProperties.end())
   {
-    shaderProgram.setUniformValue("color", particle.color);
+    shaderProgram.setUniformValue("color", {0.0f, 0.0f, 1.0f});
   }
   else if (type->second == 1)
   {
@@ -67,10 +67,6 @@ void ParticleRenderer::render(const Particle &particle, const ViewController &vi
 
 bool ParticleRenderer::shouldRender(const Particle &particle, const ViewController &viewController)
 {
-  if (
-      viewController.hiddenParticles.find((int)particle.color.y()) != viewController.hiddenParticles.end())
-    return false;
-
   switch (viewController.projectionMode)
   {
   case ViewController::Perspective:

@@ -91,17 +91,23 @@ Particle CustomLoader::loadParticle(std::istream &input)
       customValues[property.first] = columnValues[property.second];
   }
 
-  auto x = defaultValues.find(DefaultProperty::X);
-  auto y = defaultValues.find(DefaultProperty::Y);
-  auto z = defaultValues.find(DefaultProperty::Z);
-  auto r = defaultValues.find(DefaultProperty::R);
+  auto getDefaultValue = [&](DefaultProperty property, float fallback)
+  {
+    auto it = defaultValues.find(property);
+    return it != defaultValues.end() ? it->second : fallback;
+  };
 
   auto particle = Particle{
-      .radius = r != defaultValues.end() ? r->second : 1,
+      .radius = getDefaultValue(DefaultProperty::R, 1.0f),
       .position = {
-          x != defaultValues.end() ? x->second : 0,
-          y != defaultValues.end() ? y->second : 0,
-          z != defaultValues.end() ? z->second : 0,
+          getDefaultValue(DefaultProperty::X, 0.0f),
+          getDefaultValue(DefaultProperty::Y, 0.0f),
+          getDefaultValue(DefaultProperty::Z, 0.0f),
+      },
+      .velocity = {
+          getDefaultValue(DefaultProperty::VX, 0.0f),
+          getDefaultValue(DefaultProperty::VY, 0.0f),
+          getDefaultValue(DefaultProperty::VZ, 0.0f),
       },
       .customProperties = customValues,
   };
