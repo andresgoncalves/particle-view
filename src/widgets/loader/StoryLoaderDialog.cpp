@@ -5,6 +5,7 @@
 #include <QtWidgets/QtWidgets>
 
 #include "StoryLoaderPropertyGrid.h"
+#include "../controls/NumericControl.h"
 
 StoryLoaderDialog::StoryLoaderDialog(AppContext &appContext, QWidget *parent) : appContext{appContext}, QDialog{parent}
 {
@@ -29,7 +30,12 @@ StoryLoaderDialog::StoryLoaderDialog(AppContext &appContext, QWidget *parent) : 
   horizontalLayout->addWidget(selectFileButton);
 
   propertyGrid = new StoryLoaderPropertyGrid{this};
-  propertyGrid->setCount(7);
+
+  auto columnControl = new NumericControl{"Cantidad de columnas", this};
+  columnControl->getLayout()->setDirection(QBoxLayout::Direction::LeftToRight);
+  columnControl->setValue(0);
+  columnControl->onChange<int>([&](int value)
+                               { propertyGrid->setCount(value); });
 
   auto loadButton = new QPushButton{"Cargar", this};
   auto loadCallback = [&]()
@@ -61,6 +67,7 @@ StoryLoaderDialog::StoryLoaderDialog(AppContext &appContext, QWidget *parent) : 
   auto verticalLayout = new QVBoxLayout{this};
   verticalLayout->addWidget(selectFileLabel);
   verticalLayout->addLayout(horizontalLayout);
+  verticalLayout->addWidget(columnControl);
   verticalLayout->addWidget(propertyGrid);
   verticalLayout->addWidget(loadButton);
 

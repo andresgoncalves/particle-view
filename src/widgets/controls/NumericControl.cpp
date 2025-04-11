@@ -1,7 +1,7 @@
 #include "NumericControl.h"
 
 #include <QtWidgets/QLabel>
-#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QBoxLayout>
 
 NumericControl::NumericControl(QWidget *parent) : NumericControl{nullptr, parent} {}
 
@@ -9,7 +9,7 @@ NumericControl::NumericControl(const char *title, QWidget *parent) : QWidget{par
 {
   lineEdit = new QLineEdit{this};
 
-  auto layout = new QVBoxLayout{this};
+  layout = new QBoxLayout{QBoxLayout::Direction::TopToBottom, this};
   if (title != nullptr)
   {
     label = new QLabel{title, this};
@@ -22,6 +22,11 @@ NumericControl::NumericControl(const char *title, QWidget *parent) : QWidget{par
 QLineEdit *NumericControl::getLineEdit() const
 {
   return lineEdit;
+}
+
+QBoxLayout *NumericControl::getLayout() const
+{
+  return layout;
 }
 
 void NumericControl::setValue(int value)

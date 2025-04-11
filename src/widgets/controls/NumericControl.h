@@ -6,16 +6,18 @@
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
+#include <QtWidgets/QBoxLayout>
 
 #include "../../controllers/Observable.h"
 
 class NumericControl : public QWidget
 {
 public:
-  NumericControl(QWidget *parent);
-  NumericControl(const char *title, QWidget *parent);
+  NumericControl(QWidget *parent = nullptr);
+  NumericControl(const char *title, QWidget *parent = nullptr);
 
   QLineEdit *getLineEdit() const;
+  QBoxLayout *getLayout() const;
 
   void setValue(int value);
   void setValue(float value);
@@ -25,8 +27,9 @@ public:
   void onChange(std::function<void(T)> callback) const;
 
 protected:
-  QLabel *label = nullptr;
-  QLineEdit *lineEdit = nullptr;
+  QLabel *label;
+  QLineEdit *lineEdit;
+  QBoxLayout *layout;
 };
 
 #endif

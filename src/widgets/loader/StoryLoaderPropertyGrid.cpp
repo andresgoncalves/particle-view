@@ -41,12 +41,14 @@ void StoryLoaderPropertyGrid::setCount(int count)
 {
   for (auto [_, selector] : selectors)
   {
+    auto value = selector->currentData().toInt();
     selector->clear();
-    selector->addItem("N/A");
+    selector->addItem("N/A", -1);
     for (int i = 1; i <= count; i++)
     {
-      selector->addItem(std::to_string(i).c_str());
+      selector->addItem(std::to_string(i).c_str(), i - 1);
     }
+    selector->setCurrentIndex(value >= count ? 0 : value + 1);
   }
 }
 
