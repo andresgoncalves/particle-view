@@ -3,7 +3,7 @@ find_package(Qt6 REQUIRED COMPONENTS
 )
 
 add_library(loaders STATIC
-  CustomLoader.cpp
+  StoryLoader.cpp
 )
 
 target_link_libraries(loaders PRIVATE

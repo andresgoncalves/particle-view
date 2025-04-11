@@ -4,7 +4,7 @@
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QComboBox>
 
-#include "../../loaders/CustomLoader.h"
+#include "../../loaders/StoryLoader.h"
 
 class StoryLoaderPropertyGrid : public QWidget
 {
@@ -12,10 +12,10 @@ public:
   StoryLoaderPropertyGrid(QWidget *parent = nullptr);
 
   void setCount(int count);
-  std::map<CustomLoader::DefaultProperty, int> getDefaultProperties() const;
+  std::map<StoryLoader::DefaultProperty, int> getDefaultProperties() const;
 
 private:
-  std::map<CustomLoader::DefaultProperty, QComboBox *> selectors;
+  std::map<StoryLoader::DefaultProperty, QComboBox *> selectors;
 };
 
 #endif

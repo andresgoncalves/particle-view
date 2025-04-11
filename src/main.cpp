@@ -4,7 +4,7 @@
 #include <fstream>
 #include <iostream>
 
-#include "loaders/CustomLoader.h"
+#include "loaders/StoryLoader.h"
 #include "widgets/AppWindow.h"
 #include "controllers/AppContext.h"
 

@@ -9,13 +9,13 @@ StoryLoaderPropertyGrid::StoryLoaderPropertyGrid(QWidget *parent) : QWidget{pare
 {
   auto layout = new QGridLayout{this};
 
-  selectors[CustomLoader::DefaultProperty::X] = new QComboBox{this};
-  selectors[CustomLoader::DefaultProperty::Y] = new QComboBox{this};
-  selectors[CustomLoader::DefaultProperty::Z] = new QComboBox{this};
-  selectors[CustomLoader::DefaultProperty::VX] = new QComboBox{this};
-  selectors[CustomLoader::DefaultProperty::VY] = new QComboBox{this};
-  selectors[CustomLoader::DefaultProperty::VZ] = new QComboBox{this};
-  selectors[CustomLoader::DefaultProperty::R] = new QComboBox{this};
+  selectors[StoryLoader::DefaultProperty::X] = new QComboBox{this};
+  selectors[StoryLoader::DefaultProperty::Y] = new QComboBox{this};
+  selectors[StoryLoader::DefaultProperty::Z] = new QComboBox{this};
+  selectors[StoryLoader::DefaultProperty::VX] = new QComboBox{this};
+  selectors[StoryLoader::DefaultProperty::VY] = new QComboBox{this};
+  selectors[StoryLoader::DefaultProperty::VZ] = new QComboBox{this};
+  selectors[StoryLoader::DefaultProperty::R] = new QComboBox{this};
 
   // Default property labels
   layout->addWidget(new QLabel{"x", this}, 0, 0);
@@ -26,13 +26,13 @@ StoryLoaderPropertyGrid::StoryLoaderPropertyGrid(QWidget *parent) : QWidget{pare
   layout->addWidget(new QLabel{"Vz", this}, 5, 0);
   layout->addWidget(new QLabel{"Radio", this}, 6, 0);
   // Default property seletors
-  layout->addWidget(selectors[CustomLoader::DefaultProperty::X], 0, 1);
-  layout->addWidget(selectors[CustomLoader::DefaultProperty::Y], 1, 1);
-  layout->addWidget(selectors[CustomLoader::DefaultProperty::Z], 2, 1);
-  layout->addWidget(selectors[CustomLoader::DefaultProperty::VX], 3, 1);
-  layout->addWidget(selectors[CustomLoader::DefaultProperty::VY], 4, 1);
-  layout->addWidget(selectors[CustomLoader::DefaultProperty::VZ], 5, 1);
-  layout->addWidget(selectors[CustomLoader::DefaultProperty::R], 6, 1);
+  layout->addWidget(selectors[StoryLoader::DefaultProperty::X], 0, 1);
+  layout->addWidget(selectors[StoryLoader::DefaultProperty::Y], 1, 1);
+  layout->addWidget(selectors[StoryLoader::DefaultProperty::Z], 2, 1);
+  layout->addWidget(selectors[StoryLoader::DefaultProperty::VX], 3, 1);
+  layout->addWidget(selectors[StoryLoader::DefaultProperty::VY], 4, 1);
+  layout->addWidget(selectors[StoryLoader::DefaultProperty::VZ], 5, 1);
+  layout->addWidget(selectors[StoryLoader::DefaultProperty::R], 6, 1);
 
   setCount(0);
 }
@@ -50,9 +50,9 @@ void StoryLoaderPropertyGrid::setCount(int count)
   }
 }
 
-std::map<CustomLoader::DefaultProperty, int> StoryLoaderPropertyGrid::getDefaultProperties() const
+std::map<StoryLoader::DefaultProperty, int> StoryLoaderPropertyGrid::getDefaultProperties() const
 {
-  auto values = std::map<CustomLoader::DefaultProperty, int>{};
+  auto values = std::map<StoryLoader::DefaultProperty, int>{};
   for (auto [property, selector] : selectors)
   {
     auto text = selector->currentText();

@@ -1,8 +1,8 @@
-#include "CustomLoader.h"
+#include "StoryLoader.h"
 
 #include <sstream>
 
-void CustomLoader::setColumnCount(int count)
+void StoryLoader::setColumnCount(int count)
 {
   this->columnCount = count;
 
@@ -13,17 +13,17 @@ void CustomLoader::setColumnCount(int count)
   }
 }
 
-void CustomLoader::setDefaultProperty(DefaultProperty property, int column)
+void StoryLoader::setDefaultProperty(DefaultProperty property, int column)
 {
   defaultProperties[property] = column;
 }
 
-void CustomLoader::setCustomProperty(std::string property, int column)
+void StoryLoader::setCustomProperty(std::string property, int column)
 {
   customProperties[property] = column;
 }
 
-Story CustomLoader::load(std::istream &input)
+Story StoryLoader::load(std::istream &input)
 {
   auto story = Story{};
   for (auto [key, _] : customProperties)
@@ -52,7 +52,7 @@ Story CustomLoader::load(std::istream &input)
   return story;
 }
 
-Scene CustomLoader::loadScene(std::istream &input, size_t particleCount)
+Scene StoryLoader::loadScene(std::istream &input, size_t particleCount)
 {
   auto scene = Scene{};
 
@@ -69,7 +69,7 @@ Scene CustomLoader::loadScene(std::istream &input, size_t particleCount)
   return scene;
 }
 
-Particle CustomLoader::loadParticle(std::istream &input)
+Particle StoryLoader::loadParticle(std::istream &input)
 {
   std::vector<float> columnValues;
   float value;

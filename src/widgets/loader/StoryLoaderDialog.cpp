@@ -34,7 +34,7 @@ StoryLoaderDialog::StoryLoaderDialog(AppContext &appContext, QWidget *parent) : 
   auto loadButton = new QPushButton{"Cargar", this};
   auto loadCallback = [&]()
   {
-    auto loader = CustomLoader{};
+    auto loader = StoryLoader{};
     loader.setColumnCount(7);
 
     auto defaultProperties = propertyGrid->getDefaultProperties();
