@@ -26,6 +26,8 @@ void CustomLoader::setCustomProperty(std::string property, int column)
 Story CustomLoader::load(std::istream &input)
 {
   auto story = Story{};
+  for (auto [key, _] : customProperties)
+    story.customProperties.push_back(key);
 
   while (!input.eof())
   {

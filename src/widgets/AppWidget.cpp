@@ -19,10 +19,18 @@ AppWidget::AppWidget(AppContext &appContext, QWidget *parent) : appContext{appCo
   connect(toggleButton, &QPushButton::clicked, this, [&](int)
           { appContext.viewController.toggleParticles(1); update(); });
 
+  storyLoaderDialog = new StoryLoaderDialog{appContext, this};
+
+  auto openDialogButton = new QPushButton{"Abrir archivo", this};
+
+  connect(openDialogButton, &QPushButton::clicked, this, [&](int)
+          { storyLoaderDialog->exec(); });
+
   auto layout = new QVBoxLayout{this};
   layout->addWidget(graphicsWidget, 1);
   layout->addWidget(timeSliderWidget);
   layout->addWidget(toggleButton);
+  layout->addWidget(openDialogButton);
   layout->setContentsMargins({});
 
   adjustSize();

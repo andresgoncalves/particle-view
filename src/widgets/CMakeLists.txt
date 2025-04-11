@@ -26,6 +26,9 @@ add_library(widgets STATIC
   controls/AnimationTimeControls.cpp
   controls/AnimationSpeedControls.cpp
   controls/AnimationStrategyControls.cpp
+
+  loader/StoryLoaderDialog.cpp
+  loader/StoryLoaderPropertyGrid.cpp
 )
 
 target_link_libraries(widgets PRIVATE

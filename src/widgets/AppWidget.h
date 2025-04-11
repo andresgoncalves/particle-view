@@ -5,6 +5,7 @@
 
 #include "GraphicsWidget.h"
 #include "TimeSliderWidget.h"
+#include "loader/StoryLoaderDialog.h"
 #include "../controllers/AppContext.h"
 
 class AppWidget : public QWidget
@@ -15,6 +16,7 @@ public:
 private:
   GraphicsWidget *graphicsWidget;
   TimeSliderWidget *timeSliderWidget;
+  StoryLoaderDialog *storyLoaderDialog;
 
   AppContext &appContext;
 };
