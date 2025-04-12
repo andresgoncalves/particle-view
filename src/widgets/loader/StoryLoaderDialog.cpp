@@ -40,20 +40,20 @@ StoryLoaderDialog::StoryLoaderDialog(AppContext &appContext, QWidget *parent) : 
   auto loadButton = new QPushButton{"Cargar", this};
   auto loadCallback = [&]()
   {
-    auto loader = StoryLoader{};
-    loader.setColumnCount(7);
-
-    auto defaultProperties = propertyGrid->getDefaultProperties();
-    for (auto [property, value] : defaultProperties)
-    {
-      loader.setDefaultProperty(property, value);
-    }
-
     auto fileName = selectFileTextField->text().toStdString();
     if (!std::filesystem::exists(fileName) || !std::filesystem::is_regular_file(fileName))
     {
+      QMessageBox{QMessageBox::Icon::Critical, "Error", "Archivo no encontrado"}.exec();
       return;
     }
+
+    auto loader = StoryLoader{};
+    loader.setColumnCount(7);
+
+    for (auto [property, value] : propertyGrid->getDefaultProperties())
+      loader.setDefaultProperty(property, value);
+    for (auto [property, value] : propertyGrid->getCustomProperties())
+      loader.setCustomProperty(property, value);
 
     auto input = std::ifstream{fileName};
 

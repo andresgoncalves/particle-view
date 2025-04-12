@@ -29,6 +29,7 @@ add_library(widgets STATIC
 
   loader/StoryLoaderDialog.cpp
   loader/StoryLoaderPropertyGrid.cpp
+  loader/StoryLoaderPropertyRow.cpp
 )
 
 target_link_libraries(widgets PRIVATE
