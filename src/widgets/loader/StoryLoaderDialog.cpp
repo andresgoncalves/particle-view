@@ -30,11 +30,14 @@ StoryLoaderDialog::StoryLoaderDialog(AppContext &appContext, QWidget *parent) : 
   horizontalLayout->addWidget(selectFileTextField);
   horizontalLayout->addWidget(selectFileButton);
 
+  int initialCount = 7;
+
   propertyGrid = new StoryLoaderPropertyGrid{this};
+  propertyGrid->setCount(initialCount);
 
   auto columnControl = new NumericControl{"Cantidad de columnas", this};
   columnControl->getLayout()->setDirection(QBoxLayout::Direction::LeftToRight);
-  columnControl->setValue(0);
+  columnControl->setValue(initialCount);
   columnControl->onChange<int>([&](int value)
                                { propertyGrid->setCount(value); });
 

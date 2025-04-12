@@ -45,7 +45,7 @@ StoryLoaderPropertyGrid::StoryLoaderPropertyGrid(QWidget *parent) : QWidget{pare
   layout->addWidget(scrollArea);
   layout->addLayout(addPropertyLayout);
 
-  setCount(7);
+  setCount(0);
 }
 
 void StoryLoaderPropertyGrid::setCount(int count)
