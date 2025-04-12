@@ -11,6 +11,7 @@
 
 StoryLoaderPropertyGrid::StoryLoaderPropertyGrid(QWidget *parent) : QWidget{parent}
 {
+  // Default properties
   defaultRows[StoryLoader::DefaultProperty::X] = new StoryLoaderPropertyRow{"x", this};
   defaultRows[StoryLoader::DefaultProperty::Y] = new StoryLoaderPropertyRow{"y", this};
   defaultRows[StoryLoader::DefaultProperty::Z] = new StoryLoaderPropertyRow{"z", this};
@@ -19,13 +20,14 @@ StoryLoaderPropertyGrid::StoryLoaderPropertyGrid(QWidget *parent) : QWidget{pare
   defaultRows[StoryLoader::DefaultProperty::VZ] = new StoryLoaderPropertyRow{"Vz", this};
   defaultRows[StoryLoader::DefaultProperty::R] = new StoryLoaderPropertyRow{"Radio", this};
 
-  // Default property seletors
   auto scrollArea = new QScrollArea{this};
   scrollArea->setWidget(new QWidget{this});
   scrollArea->setWidgetResizable(true);
   scrollArea->setFrameStyle(0);
+  scrollArea->setMaximumHeight(640);
 
   itemLayout = new QVBoxLayout{scrollArea->widget()};
+  itemLayout->setAlignment(Qt::AlignTop);
   for (auto [_, row] : defaultRows)
     itemLayout->addWidget(row);
 

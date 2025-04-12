@@ -2,27 +2,6 @@
 
 #include <sstream>
 
-void StoryLoader::setColumnCount(int count)
-{
-  this->columnCount = count;
-
-  for (auto property : defaultProperties)
-  {
-    if (property.second >= count)
-      property.second = -1;
-  }
-}
-
-void StoryLoader::setDefaultProperty(DefaultProperty property, int column)
-{
-  defaultProperties[property] = column;
-}
-
-void StoryLoader::setCustomProperty(std::string property, int column)
-{
-  customProperties[property] = column;
-}
-
 Story StoryLoader::load(std::istream &input)
 {
   auto story = Story{};

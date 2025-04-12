@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <filesystem>
+
 #include <QtWidgets/QtWidgets>
 
 #include "StoryLoaderPropertyGrid.h"
@@ -47,13 +48,10 @@ StoryLoaderDialog::StoryLoaderDialog(AppContext &appContext, QWidget *parent) : 
       return;
     }
 
-    auto loader = StoryLoader{};
-    loader.setColumnCount(7);
-
-    for (auto [property, value] : propertyGrid->getDefaultProperties())
-      loader.setDefaultProperty(property, value);
-    for (auto [property, value] : propertyGrid->getCustomProperties())
-      loader.setCustomProperty(property, value);
+    auto loader = StoryLoader{
+        .defaultProperties = propertyGrid->getDefaultProperties(),
+        .customProperties = propertyGrid->getCustomProperties(),
+    };
 
     auto input = std::ifstream{fileName};
 
@@ -71,7 +69,5 @@ StoryLoaderDialog::StoryLoaderDialog(AppContext &appContext, QWidget *parent) : 
   verticalLayout->addWidget(propertyGrid);
   verticalLayout->addWidget(loadButton);
 
-  setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
   setMinimumWidth(320);
-  setFixedHeight(sizeHint().height());
 }

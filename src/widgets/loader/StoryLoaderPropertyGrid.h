@@ -14,6 +14,7 @@ public:
   StoryLoaderPropertyGrid(QWidget *parent = nullptr);
 
   void setCount(int count);
+
   std::map<StoryLoader::DefaultProperty, int> getDefaultProperties() const;
   std::map<std::string, int> getCustomProperties() const;
 
