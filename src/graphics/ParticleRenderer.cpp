@@ -1,5 +1,7 @@
 #include "ParticleRenderer.h"
 
+#include "shapes/SphereFactory.h"
+
 inline const char *vertexShaderSource =
     "#version 330 core\n"
     "layout (location = 0) in vec3 position;\n"
@@ -109,25 +111,24 @@ void ParticleRenderer::loadShader()
 
 void ParticleRenderer::loadBuffers()
 {
+  auto sphereFactory = SphereFactory{24};
+
   vertexArray.create();
   vertexArray.bind();
 
-  auto vertices = std::vector<float>{};
-  loadVertices(vertices);
+  auto vertices = sphereFactory.buildVertices();
 
   vertexBuffer.create();
   vertexBuffer.bind();
   vertexBuffer.allocate(vertices.data(), vertices.size() * sizeof(vertices[0]));
 
-  auto solidIndices = std::vector<uint>{};
-  loadSolidIndices(solidIndices);
+  auto solidIndices = sphereFactory.buildIndices();
 
   indexBuffers.solid.create();
   indexBuffers.solid.bind();
   indexBuffers.solid.allocate(solidIndices.data(), solidIndices.size() * sizeof(solidIndices[0]));
 
-  auto skeletonIndices = std::vector<uint>{};
-  loadSkeletonIndices(skeletonIndices);
+  auto skeletonIndices = sphereFactory.buildOutlineIndices();
 
   indexBuffers.skeleton.create();
   indexBuffers.skeleton.bind();
@@ -137,67 +138,4 @@ void ParticleRenderer::loadBuffers()
   glVertexAttribPointer(0, 3, GL_FLOAT, false, 3 * sizeof(vertices[0]), nullptr);
 
   vertexArray.release();
-}
-
-void ParticleRenderer::loadVertices(std::vector<float> &vertices, size_t divisions)
-{
-  for (int latitude = 0; latitude <= divisions; latitude++)
-  {
-    float theta = latitude * M_PI / divisions;
-    float sinTheta = std::sin(theta);
-    float cosTheta = std::cos(theta);
-
-    for (int longitude = 0; longitude <= divisions; longitude++)
-    {
-      float phi = 2 * longitude * M_PI / divisions;
-      float sinPhi = std::sin(phi);
-      float cosPhi = std::cos(phi);
-
-      float x = cosPhi * sinTheta;
-      float y = cosTheta;
-      float z = sinPhi * sinTheta;
-
-      vertices.push_back(x);
-      vertices.push_back(y);
-      vertices.push_back(z);
-    }
-  }
-}
-
-void ParticleRenderer::loadSolidIndices(std::vector<uint> &indices, size_t divisions)
-{
-  for (int latitude = 0; latitude < divisions; latitude++)
-  {
-    for (int longitude = 0; longitude < divisions; longitude++)
-    {
-      int first = (latitude * (divisions + 1)) + longitude;
-      int second = first + divisions + 1;
-
-      indices.push_back(first);
-      indices.push_back(second);
-      indices.push_back(first + 1);
-
-      indices.push_back(second);
-      indices.push_back(second + 1);
-      indices.push_back(first + 1);
-    }
-  }
-}
-
-void ParticleRenderer::loadSkeletonIndices(std::vector<uint> &indices, size_t divisions)
-{
-  for (int latitude = 0; latitude < divisions; latitude++)
-  {
-    for (int longitude = 0; longitude < divisions; longitude++)
-    {
-      int first = (latitude * (divisions + 1)) + longitude;
-      int second = first + divisions + 1;
-
-      indices.push_back(first);
-      indices.push_back(first + 1);
-
-      indices.push_back(first);
-      indices.push_back(second);
-    }
-  }
 }

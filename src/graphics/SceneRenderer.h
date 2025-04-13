@@ -14,6 +14,7 @@ public:
 
 private:
   std::unique_ptr<Renderer<Particle>> particleRenderer;
+  std::unique_ptr<Renderer<Particle>> velocityRenderer;
 };
 
 #endif

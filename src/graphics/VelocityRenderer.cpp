@@ -1,4 +1,4 @@
-#include "AxisRenderer.h"
+#include "VelocityRenderer.h"
 
 #include "shapes/ArrowFactory.h"
 
@@ -23,59 +23,59 @@ inline const char *fragmentShaderSource =
     "    fragmentColor = vertexColor;\n"
     "}\n";
 
-AxisRenderer::AxisRenderer()
+VelocityRenderer::VelocityRenderer()
 {
   loadShader();
   loadBuffers();
 }
 
-void AxisRenderer::render(const Axis &axis, const ViewController &viewController)
+void VelocityRenderer::render(const Particle &particle, const ViewController &viewController)
 {
+  float width = 0.5f;
+  float height = 0.5f; // * particle.velocity.length();
+
+  if (height < 0.1f)
+    return;
+
   auto modelMatrix = QMatrix4x4{};
-  auto color = QVector3D{};
+  modelMatrix.translate(particle.position);
+  modelMatrix.rotate(QQuaternion::rotationTo({0.0f, 1.0f, 0.0f}, particle.velocity));
+  modelMatrix.scale(width, height, width);
 
-  switch (axis)
-  {
-  case Axis::X:
-    modelMatrix.rotate(QQuaternion::rotationTo({0.0f, 1.0f, 0.0f}, {1.0f, 0.0f, 0.0f}));
-    color = {1.0f, 0.0f, 0.0f};
-    break;
-  case Axis::Y:
-    color = {0.0f, 1.0f, 0.0f};
-    break;
-  case Axis::Z:
-    modelMatrix.rotate(QQuaternion::rotationTo({0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}));
-    color = {0.0f, 0.0f, 1.0f};
-    break;
-  }
-
-  float size = viewController.axisSize;
-
-  auto viewProjectionMatrix = viewController.getProjectionMatrix(ViewController::Ortho);
-  viewProjectionMatrix.translate((-viewController.getViewport().toVector3D() + QVector3D{size, size, -1.0f}));
-  viewProjectionMatrix.scale(size);
-
-  auto modelViewProjectionMatrix = viewProjectionMatrix * viewController.getRotationMatrix() * modelMatrix;
+  auto modelViewProjectionMatrix = viewController.getViewProjectionMatrix() * modelMatrix;
 
   shaderProgram.bind();
   vertexArray.bind();
 
+  auto type = particle.customProperties.find("type");
+  if (type == particle.customProperties.end())
+  {
+    shaderProgram.setUniformValue("color", {0.0f, 0.0f, 1.0f});
+  }
+  else if (type->second == 1)
+  {
+    shaderProgram.setUniformValue("color", {1.0f, 0.0f, 0.0f});
+  }
+  else
+  {
+    shaderProgram.setUniformValue("color", {1.0f, 1.0f, 0.0f});
+  }
+
   shaderProgram.setUniformValue("modelViewProjectionMatrix", modelViewProjectionMatrix);
-  shaderProgram.setUniformValue("color", color);
-  glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
+  glDrawElements(GL_TRIANGLES, indexBuffer.size(), GL_UNSIGNED_INT, nullptr);
 
   vertexArray.release();
   shaderProgram.release();
 }
 
-void AxisRenderer::loadShader()
+void VelocityRenderer::loadShader()
 {
   shaderProgram.addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource);
   shaderProgram.addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSource);
   shaderProgram.link();
 }
 
-void AxisRenderer::loadBuffers()
+void VelocityRenderer::loadBuffers()
 {
   auto arrowFactory = ArrowFactory{24};
 

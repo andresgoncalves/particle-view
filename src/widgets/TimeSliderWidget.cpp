@@ -15,7 +15,6 @@ TimeSliderWidget::TimeSliderWidget(AppContext &appContext, QWidget *parent) : ap
   timeLabel->setFont(font);
   timeLabel->setAlignment(Qt::AlignRight);
   timeLabel->setMinimumSize(64, 0);
-  timeLabel->setMaximumSize(64, std::numeric_limits<short>::max());
   timeLabel->setContentsMargins({});
 
   slider = new QSlider{Qt::Horizontal};

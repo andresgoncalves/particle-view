@@ -50,7 +50,7 @@ private:
   const float rotationSensitivity = 300.0f;
   const float translationSensitivity = 1.0f;
   const float scaleSensitivity = 1.0f;
-  const float scrollScaleSensitivity = 0.01f;
+  const float scrollScaleSensitivity = 0.005f;
 };
 
 #endif

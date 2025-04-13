@@ -24,8 +24,6 @@ public:
 private:
   void loadShader();
   void loadBuffers();
-  void loadVertices(std::vector<float> &vertices, size_t divisions = 24);
-  void loadIndices(std::vector<uint> &indices, size_t divisions = 24);
 
   QOpenGLShaderProgram shaderProgram;
   QOpenGLVertexArrayObject vertexArray;
