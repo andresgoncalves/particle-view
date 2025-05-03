@@ -8,8 +8,10 @@ class ArrowFactory
 public:
   ArrowFactory(int divisions);
 
-  std::vector<int> buildIndices();
   std::vector<float> buildVertices();
+  std::vector<int> buildIndices();
+  std::vector<int> buildBodyIndices();
+  std::vector<int> buildHeadIndices();
 
   float bodyRadius = 0.05f;
   float headRadius = 0.10f;

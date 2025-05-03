@@ -1,7 +1,5 @@
 #include "VelocityRenderer.h"
 
-#include "shapes/ArrowFactory.h"
-
 inline const char *vertexShaderSource =
     "#version 330 core\n"
     "layout (location = 0) in vec3 position;\n"
@@ -31,18 +29,14 @@ VelocityRenderer::VelocityRenderer()
 
 void VelocityRenderer::render(const Particle &particle, const ViewController &viewController)
 {
-  float width = 0.5f;
-  float height = 0.5f; // * particle.velocity.length();
+  float width = 0.25f;
+  float height = 10.f * particle.velocity.length();
 
-  if (height < 0.1f)
-    return;
+  // if (height < 0.1f)
+  //   return;
 
-  auto modelMatrix = QMatrix4x4{};
-  modelMatrix.translate(particle.position);
-  modelMatrix.rotate(QQuaternion::rotationTo({0.0f, 1.0f, 0.0f}, particle.velocity));
-  modelMatrix.scale(width, height, width);
-
-  auto modelViewProjectionMatrix = viewController.getViewProjectionMatrix() * modelMatrix;
+  auto headModelMatrix = getHeadModelMatrix(particle.position, particle.velocity, 0.25f, 10.f * particle.velocity.length());
+  auto bodyModelMatrix = getBodyModelMatrix(particle.position, particle.velocity, 0.25f, 10.f * particle.velocity.length());
 
   shaderProgram.bind();
   vertexArray.bind();
@@ -61,11 +55,38 @@ void VelocityRenderer::render(const Particle &particle, const ViewController &vi
     shaderProgram.setUniformValue("color", {1.0f, 1.0f, 0.0f});
   }
 
-  shaderProgram.setUniformValue("modelViewProjectionMatrix", modelViewProjectionMatrix);
-  glDrawElements(GL_TRIANGLES, indexBuffer.size(), GL_UNSIGNED_INT, nullptr);
+  indexBuffers.arrowHead.bind();
+  shaderProgram.setUniformValue("modelViewProjectionMatrix", viewController.getViewProjectionMatrix() * headModelMatrix);
+  glDrawElements(GL_TRIANGLES, indexBuffers.arrowHead.size(), GL_UNSIGNED_INT, nullptr);
+
+  indexBuffers.arrowBody.bind();
+  shaderProgram.setUniformValue("modelViewProjectionMatrix", viewController.getViewProjectionMatrix() * bodyModelMatrix);
+  glDrawElements(GL_TRIANGLES, indexBuffers.arrowBody.size(), GL_UNSIGNED_INT, nullptr);
 
   vertexArray.release();
   shaderProgram.release();
+}
+
+QMatrix4x4 VelocityRenderer::getBodyModelMatrix(QVector3D center, QVector3D direction, float width, float height) const
+{
+  auto modelMatrix = QMatrix4x4{};
+  modelMatrix.translate(center);
+  modelMatrix.rotate(QQuaternion::rotationTo({0.0f, 1.0f, 0.0f}, direction));
+  modelMatrix.scale(width, height, width);
+
+  return modelMatrix;
+}
+
+QMatrix4x4 VelocityRenderer::getHeadModelMatrix(QVector3D center, QVector3D direction, float width, float height) const
+{
+  auto modelMatrix = QMatrix4x4{};
+  modelMatrix.translate(center);
+  modelMatrix.rotate(QQuaternion::rotationTo({0.0f, 1.0f, 0.0f}, direction));
+  modelMatrix.translate(0, height * arrowFactory.bodyHeight, 0);
+  modelMatrix.scale(width);
+  modelMatrix.translate(0, -arrowFactory.bodyHeight, 0);
+
+  return modelMatrix;
 }
 
 void VelocityRenderer::loadShader()
@@ -77,8 +98,6 @@ void VelocityRenderer::loadShader()
 
 void VelocityRenderer::loadBuffers()
 {
-  auto arrowFactory = ArrowFactory{24};
-
   vertexArray.create();
   vertexArray.bind();
 
@@ -88,13 +107,17 @@ void VelocityRenderer::loadBuffers()
   vertexBuffer.bind();
   vertexBuffer.allocate(vertices.data(), vertices.size() * sizeof(vertices[0]));
 
-  auto indices = arrowFactory.buildIndices();
+  auto bodyIndices = arrowFactory.buildBodyIndices();
 
-  indexBuffer.create();
-  indexBuffer.bind();
-  indexBuffer.allocate(indices.data(), indices.size() * sizeof(indices[0]));
+  indexBuffers.arrowBody.create();
+  indexBuffers.arrowBody.bind();
+  indexBuffers.arrowBody.allocate(bodyIndices.data(), bodyIndices.size() * sizeof(bodyIndices[0]));
 
-  indexCount = indices.size();
+  auto headIndices = arrowFactory.buildHeadIndices();
+
+  indexBuffers.arrowHead.create();
+  indexBuffers.arrowHead.bind();
+  indexBuffers.arrowHead.allocate(headIndices.data(), headIndices.size() * sizeof(headIndices[0]));
 
   glEnableVertexAttribArray(0);
   glVertexAttribPointer(0, 3, GL_FLOAT, false, 3 * sizeof(vertices[0]), nullptr);

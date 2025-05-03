@@ -48,12 +48,21 @@ std::vector<float> ArrowFactory::buildVertices()
 
 std::vector<int> ArrowFactory::buildIndices()
 {
+  auto bodyIndices = buildBodyIndices();
+  auto headIndices = buildHeadIndices();
+
+  bodyIndices.insert(bodyIndices.end(), headIndices.begin(), headIndices.end());
+
+  return bodyIndices;
+}
+
+std::vector<int> ArrowFactory::buildBodyIndices()
+{
   auto indices = std::vector<int>{};
 
   uint baseIndex = (divisions + 1) * 2;
-  uint tipIndex = (divisions + 1) * 3 + 1;
 
-  // Generar índices del cilindro
+  // Lados del cilindro
   for (int i = 0; i < divisions; i++)
   {
     int base1 = 2 * i;
@@ -61,7 +70,6 @@ std::vector<int> ArrowFactory::buildIndices()
     int top1 = base1 + 1;
     int top2 = base2 + 1;
 
-    // Lados del cilindro
     indices.push_back(base1);
     indices.push_back(base2);
     indices.push_back(top1);
@@ -71,24 +79,7 @@ std::vector<int> ArrowFactory::buildIndices()
     indices.push_back(top2);
   }
 
-  // Generar índices del cilindro
-  for (int i = 0; i < divisions; i++)
-  {
-    int base1 = 2 * i;
-    int base2 = 2 * (i + 1);
-    int top1 = base1 + 1;
-    int top2 = base2 + 1;
-
-    // Lados del cilindro
-    indices.push_back(base1);
-    indices.push_back(base2);
-    indices.push_back(top1);
-
-    indices.push_back(top1);
-    indices.push_back(base2);
-    indices.push_back(top2);
-  }
-
+  // Base del cilindro
   for (int i = 0; i < divisions; i++)
   {
     indices.push_back(baseIndex);
@@ -96,7 +87,17 @@ std::vector<int> ArrowFactory::buildIndices()
     indices.push_back(2 * (i + 1));
   }
 
-  // Índices de la base del cono
+  return indices;
+}
+
+std::vector<int> ArrowFactory::buildHeadIndices()
+{
+  auto indices = std::vector<int>{};
+
+  uint baseIndex = (divisions + 1) * 2;
+  uint tipIndex = (divisions + 1) * 3 + 1;
+
+  // Base del cono
   for (int i = 1; i <= divisions; i++)
   {
     indices.push_back(baseIndex);
@@ -104,7 +105,7 @@ std::vector<int> ArrowFactory::buildIndices()
     indices.push_back(baseIndex + i + 1);
   }
 
-  // Índices de los lados del cono
+  // Lados del cono
   for (int i = 1; i <= divisions; i++)
   {
     indices.push_back(tipIndex);
