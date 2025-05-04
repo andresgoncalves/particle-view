@@ -1,5 +1,5 @@
-#ifndef VELOCITY_RENDERER_H
-#define VELOCITY_RENDERER_H
+#ifndef VECTOR_RENDERER_H
+#define VECTOR_RENDERER_H
 
 #include <QtOpenGL/QOpenGLBuffer>
 #include <QtOpenGL/QOpenGLShaderProgram>
@@ -16,12 +16,12 @@ enum Axis
   Z
 };
 
-class VelocityRenderer : public Renderer<Particle>
+class VectorRenderer : public Renderer<std::pair<Particle, std::string>>
 {
 public:
-  VelocityRenderer();
+  VectorRenderer();
 
-  void render(const Particle &particle, const AppContext &appContext) override;
+  void render(const std::pair<Particle, std::string> &input, const AppContext &appContext) override;
 
 private:
   void loadShader();

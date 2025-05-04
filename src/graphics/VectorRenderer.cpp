@@ -1,4 +1,4 @@
-#include "VelocityRenderer.h"
+#include "VectorRenderer.h"
 
 inline const char *vertexShaderSource =
     "#version 330 core\n"
@@ -21,21 +21,31 @@ inline const char *fragmentShaderSource =
     "    fragmentColor = vertexColor;\n"
     "}\n";
 
-VelocityRenderer::VelocityRenderer()
+VectorRenderer::VectorRenderer()
 {
   loadShader();
   loadBuffers();
 }
 
-void VelocityRenderer::render(const Particle &particle, const AppContext &appContext)
+void VectorRenderer::render(const std::pair<Particle, std::string> &input, const AppContext &appContext)
 {
+  auto [particle, property] = input;
+
+  auto vectorIt = particle.vectorProperties.find(property);
+  if (vectorIt == particle.vectorProperties.end())
+    return;
+
+  auto vector = vectorIt->second;
+
   auto metadata = appContext.animationController.getStory().metadata;
+  auto largestVectorIt = metadata.largestVectors.find(property);
+  auto largestVector = largestVectorIt == metadata.largestVectors.end() && largestVectorIt->second > 0 ? largestVectorIt->second : 1.0f;
 
   float width = 0.25f;
-  float height = 5.0f * metadata.maxRadius * particle.velocity.length() / (metadata.maxVelocity > 0 ? metadata.maxVelocity : 1.0f);
+  float height = 5.0f * metadata.maxRadius * vector.length() / largestVector;
 
-  auto headModelMatrix = getHeadModelMatrix(particle.position, particle.velocity, width, height);
-  auto bodyModelMatrix = getBodyModelMatrix(particle.position, particle.velocity, width, height);
+  auto headModelMatrix = getHeadModelMatrix(particle.position, vector, width, height);
+  auto bodyModelMatrix = getBodyModelMatrix(particle.position, vector, width, height);
 
   shaderProgram.bind();
   vertexArray.bind();
@@ -66,7 +76,7 @@ void VelocityRenderer::render(const Particle &particle, const AppContext &appCon
   shaderProgram.release();
 }
 
-QMatrix4x4 VelocityRenderer::getBodyModelMatrix(QVector3D center, QVector3D direction, float width, float height) const
+QMatrix4x4 VectorRenderer::getBodyModelMatrix(QVector3D center, QVector3D direction, float width, float height) const
 {
   auto modelMatrix = QMatrix4x4{};
   modelMatrix.translate(center);
@@ -76,7 +86,7 @@ QMatrix4x4 VelocityRenderer::getBodyModelMatrix(QVector3D center, QVector3D dire
   return modelMatrix;
 }
 
-QMatrix4x4 VelocityRenderer::getHeadModelMatrix(QVector3D center, QVector3D direction, float width, float height) const
+QMatrix4x4 VectorRenderer::getHeadModelMatrix(QVector3D center, QVector3D direction, float width, float height) const
 {
   auto modelMatrix = QMatrix4x4{};
   modelMatrix.translate(center);
@@ -88,14 +98,14 @@ QMatrix4x4 VelocityRenderer::getHeadModelMatrix(QVector3D center, QVector3D dire
   return modelMatrix;
 }
 
-void VelocityRenderer::loadShader()
+void VectorRenderer::loadShader()
 {
   shaderProgram.addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource);
   shaderProgram.addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSource);
   shaderProgram.link();
 }
 
-void VelocityRenderer::loadBuffers()
+void VectorRenderer::loadBuffers()
 {
   vertexArray.create();
   vertexArray.bind();

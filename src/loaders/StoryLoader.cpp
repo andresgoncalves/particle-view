@@ -93,11 +93,6 @@ Particle StoryLoader::loadParticle(std::istream &input)
           getDefaultValue(DefaultProperty::Y, 0.0f),
           getDefaultValue(DefaultProperty::Z, 0.0f),
       },
-      .velocity = {
-          getDefaultValue(DefaultProperty::VX, 0.0f),
-          getDefaultValue(DefaultProperty::VY, 0.0f),
-          getDefaultValue(DefaultProperty::VZ, 0.0f),
-      },
       .scalarProperties = scalarValues,
       .vectorProperties = vectorValues,
   };
@@ -130,9 +125,6 @@ Scene::Metadata StoryLoader::getMetadata(const Scene &scene) const
 
   std::vector<Particle>::const_iterator maxRadius = std::max_element(scene.particles.begin(), scene.particles.end(), [](const Particle &a, const Particle &b)
                                                                      { return a.radius < b.radius; });
-
-  std::vector<Particle>::const_iterator maxVelocity = std::max_element(scene.particles.begin(), scene.particles.end(), [](const Particle &a, const Particle &b)
-                                                                       { return a.velocity.length() < b.velocity.length(); });
 
   auto largestScalars = std::map<std::string, float>{};
   for (auto [key, _] : scene.particles[0].scalarProperties)
@@ -184,7 +176,6 @@ Scene::Metadata StoryLoader::getMetadata(const Scene &scene) const
           end[2]->position.z() + end[2]->radius,
       },
       .maxRadius = maxRadius->radius,
-      .maxVelocity = maxVelocity->velocity.length(),
       .largestScalars = largestScalars,
       .largestVectors = largestVectors,
   };
@@ -217,9 +208,6 @@ Story::Metadata StoryLoader::getMetadata(const Story &story) const
 
   std::map<double, Scene>::const_iterator maxRadius = std::max_element(story.scenes.begin(), story.scenes.end(), [](const std::pair<double, Scene> &a, const std::pair<double, Scene> &b)
                                                                        { return a.second.metadata.maxRadius < b.second.metadata.maxRadius; });
-
-  std::map<double, Scene>::const_iterator maxVelocity = std::max_element(story.scenes.begin(), story.scenes.end(), [](const std::pair<double, Scene> &a, const std::pair<double, Scene> &b)
-                                                                         { return a.second.metadata.maxVelocity < b.second.metadata.maxVelocity; });
 
   auto largestScalars = std::map<std::string, float>{};
   for (auto [key, _] : story.scenes.begin()->second.metadata.largestScalars)
@@ -273,7 +261,6 @@ Story::Metadata StoryLoader::getMetadata(const Story &story) const
       .startTime = story.scenes.begin()->first,
       .endTime = std::prev(story.scenes.end())->first,
       .maxRadius = maxRadius->second.metadata.maxRadius,
-      .maxVelocity = maxVelocity->second.metadata.maxVelocity,
       .largestScalars = largestScalars,
       .largestVectors = largestVectors,
   };

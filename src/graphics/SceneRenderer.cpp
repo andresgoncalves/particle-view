@@ -2,12 +2,12 @@
 
 #include "SceneRenderer.h"
 #include "ParticleRenderer.h"
-#include "VelocityRenderer.h"
+#include "VectorRenderer.h"
 
 SceneRenderer::SceneRenderer()
 {
   particleRenderer = std::make_unique<ParticleRenderer>();
-  velocityRenderer = std::make_unique<VelocityRenderer>();
+  vectorRenderer = std::make_unique<VectorRenderer>();
 }
 
 void SceneRenderer::render(const Scene &scene, const AppContext &appContext)
@@ -16,5 +16,5 @@ void SceneRenderer::render(const Scene &scene, const AppContext &appContext)
   //   particleRenderer->render(particle, appContext);
 
   for (auto &particle : scene.particles)
-    velocityRenderer->render(particle, appContext);
+    vectorRenderer->render({particle, Particle::VelocityProperty}, appContext);
 }

@@ -6,7 +6,7 @@ add_library(graphics STATIC
   AxisRenderer.cpp
   SceneRenderer.cpp
   ParticleRenderer.cpp
-  VelocityRenderer.cpp
+  VectorRenderer.cpp
 
   shapes/ArrowFactory.cpp
   shapes/SphereFactory.cpp

@@ -17,10 +17,9 @@ StoryLoaderPropertyGrid::StoryLoaderPropertyGrid(QWidget *parent) : QWidget{pare
   defaultRows[StoryLoader::DefaultProperty::X] = new StoryLoaderScalarPropertyRow{"x", this};
   defaultRows[StoryLoader::DefaultProperty::Y] = new StoryLoaderScalarPropertyRow{"y", this};
   defaultRows[StoryLoader::DefaultProperty::Z] = new StoryLoaderScalarPropertyRow{"z", this};
-  defaultRows[StoryLoader::DefaultProperty::VX] = new StoryLoaderScalarPropertyRow{"Vx", this};
-  defaultRows[StoryLoader::DefaultProperty::VY] = new StoryLoaderScalarPropertyRow{"Vy", this};
-  defaultRows[StoryLoader::DefaultProperty::VZ] = new StoryLoaderScalarPropertyRow{"Vz", this};
   defaultRows[StoryLoader::DefaultProperty::R] = new StoryLoaderScalarPropertyRow{"Radio", this};
+
+  vectorRows[Particle::VelocityProperty] = new StoryLoaderVectorPropertyRow{"Velocidad", this};
 
   auto scrollArea = new QScrollArea{this};
   scrollArea->setWidget(new QWidget{this});
@@ -31,6 +30,10 @@ StoryLoaderPropertyGrid::StoryLoaderPropertyGrid(QWidget *parent) : QWidget{pare
   itemLayout = new QVBoxLayout{scrollArea->widget()};
   itemLayout->setAlignment(Qt::AlignTop);
   for (auto [_, row] : defaultRows)
+    itemLayout->addWidget(row);
+  for (auto [_, row] : scalarRows)
+    itemLayout->addWidget(row);
+  for (auto [_, row] : vectorRows)
     itemLayout->addWidget(row);
 
   auto layout = new QVBoxLayout{this};
