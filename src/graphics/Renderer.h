@@ -1,7 +1,7 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include "../controllers/ViewController.h"
+#include "../controllers/AppContext.h"
 
 template <typename T>
 class Renderer
@@ -9,7 +9,7 @@ class Renderer
 public:
   virtual ~Renderer() = default;
 
-  virtual void render(const T &element, const ViewController &viewController) = 0;
+  virtual void render(const T &element, const AppContext &appContext) = 0;
 };
 
 #endif

@@ -10,7 +10,7 @@ class SceneRenderer : public Renderer<Scene>
 public:
   SceneRenderer();
 
-  void render(const Scene &scene, const ViewController &viewController) override;
+  void render(const Scene &scene, const AppContext &appContext) override;
 
 private:
   std::unique_ptr<Renderer<Particle>> particleRenderer;

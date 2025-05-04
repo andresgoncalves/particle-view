@@ -84,13 +84,13 @@ void GraphicsWidget::paintGL()
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  sceneRenderer->render(scene, appContext.viewController);
+  sceneRenderer->render(scene, appContext);
 
   glClear(GL_DEPTH_BUFFER_BIT);
 
-  axisRenderer->render(Axis::X, appContext.viewController);
-  axisRenderer->render(Axis::Y, appContext.viewController);
-  axisRenderer->render(Axis::Z, appContext.viewController);
+  axisRenderer->render(Axis::X, appContext);
+  axisRenderer->render(Axis::Y, appContext);
+  axisRenderer->render(Axis::Z, appContext);
 }
 
 void GraphicsWidget::mousePressEvent(QMouseEvent *event)

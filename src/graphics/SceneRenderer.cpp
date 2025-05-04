@@ -10,11 +10,11 @@ SceneRenderer::SceneRenderer()
   velocityRenderer = std::make_unique<VelocityRenderer>();
 }
 
-void SceneRenderer::render(const Scene &scene, const ViewController &viewController)
+void SceneRenderer::render(const Scene &scene, const AppContext &appContext)
 {
   // for (auto &particle : scene.particles)
-  //   particleRenderer->render(particle, viewController);
+  //   particleRenderer->render(particle, appContext);
 
   for (auto &particle : scene.particles)
-    velocityRenderer->render(particle, viewController);
+    velocityRenderer->render(particle, appContext);
 }

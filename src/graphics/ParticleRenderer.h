@@ -13,13 +13,13 @@ class ParticleRenderer : public Renderer<Particle>
 public:
   ParticleRenderer();
 
-  void render(const Particle &particle, const ViewController &viewController) override;
+  void render(const Particle &particle, const AppContext &appContext) override;
 
 private:
   void loadShader();
   void loadBuffers();
 
-  bool shouldRender(const Particle &particle, const ViewController &viewController);
+  bool shouldRender(const Particle &particle, const AppContext &appContext);
   void drawElements(ViewController::ParticleShape mode);
 
   QOpenGLShaderProgram shaderProgram;

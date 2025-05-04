@@ -21,7 +21,7 @@ class VelocityRenderer : public Renderer<Particle>
 public:
   VelocityRenderer();
 
-  void render(const Particle &particle, const ViewController &viewController) override;
+  void render(const Particle &particle, const AppContext &appContext) override;
 
 private:
   void loadShader();

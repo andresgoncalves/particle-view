@@ -19,7 +19,7 @@ class AxisRenderer : public Renderer<Axis>
 public:
   AxisRenderer();
 
-  void render(const Axis &axis, const ViewController &viewController) override;
+  void render(const Axis &axis, const AppContext &appContext) override;
 
 private:
   void loadShader();

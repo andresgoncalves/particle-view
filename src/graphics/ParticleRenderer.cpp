@@ -31,16 +31,16 @@ ParticleRenderer::ParticleRenderer()
 
 const bool skeletonMode = false;
 
-void ParticleRenderer::render(const Particle &particle, const ViewController &viewController)
+void ParticleRenderer::render(const Particle &particle, const AppContext &appContext)
 {
-  if (!shouldRender(particle, viewController))
+  if (!shouldRender(particle, appContext))
     return;
 
   auto modelMatrix = QMatrix4x4{};
   modelMatrix.translate(particle.position);
   modelMatrix.scale(particle.radius);
 
-  auto modelViewProjectionMatrix = viewController.getViewProjectionMatrix() * modelMatrix;
+  auto modelViewProjectionMatrix = appContext.viewController.getViewProjectionMatrix() * modelMatrix;
 
   shaderProgram.bind();
   vertexArray.bind();
@@ -61,19 +61,19 @@ void ParticleRenderer::render(const Particle &particle, const ViewController &vi
 
   shaderProgram.setUniformValue("modelViewProjectionMatrix", modelViewProjectionMatrix);
 
-  drawElements(viewController.particleShape);
+  drawElements(appContext.viewController.particleShape);
 
   vertexArray.release();
   shaderProgram.release();
 }
 
-bool ParticleRenderer::shouldRender(const Particle &particle, const ViewController &viewController)
+bool ParticleRenderer::shouldRender(const Particle &particle, const AppContext &appContext)
 {
-  switch (viewController.projectionMode)
+  switch (appContext.viewController.projectionMode)
   {
   case ViewController::Perspective:
   {
-    auto viewProjectionMatrix = viewController.getViewProjectionMatrix();
+    auto viewProjectionMatrix = appContext.viewController.getViewProjectionMatrix();
 
     auto nearPlane = viewProjectionMatrix.row(3) + viewProjectionMatrix.row(2);
     nearPlane /= nearPlane.toVector3D().length();

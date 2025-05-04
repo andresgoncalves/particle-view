@@ -27,7 +27,7 @@ VelocityRenderer::VelocityRenderer()
   loadBuffers();
 }
 
-void VelocityRenderer::render(const Particle &particle, const ViewController &viewController)
+void VelocityRenderer::render(const Particle &particle, const AppContext &appContext)
 {
   float width = 0.25f;
   float height = 10.f * particle.velocity.length();
@@ -56,11 +56,11 @@ void VelocityRenderer::render(const Particle &particle, const ViewController &vi
   }
 
   indexBuffers.arrowHead.bind();
-  shaderProgram.setUniformValue("modelViewProjectionMatrix", viewController.getViewProjectionMatrix() * headModelMatrix);
+  shaderProgram.setUniformValue("modelViewProjectionMatrix", appContext.viewController.getViewProjectionMatrix() * headModelMatrix);
   glDrawElements(GL_TRIANGLES, indexBuffers.arrowHead.size(), GL_UNSIGNED_INT, nullptr);
 
   indexBuffers.arrowBody.bind();
-  shaderProgram.setUniformValue("modelViewProjectionMatrix", viewController.getViewProjectionMatrix() * bodyModelMatrix);
+  shaderProgram.setUniformValue("modelViewProjectionMatrix", appContext.viewController.getViewProjectionMatrix() * bodyModelMatrix);
   glDrawElements(GL_TRIANGLES, indexBuffers.arrowBody.size(), GL_UNSIGNED_INT, nullptr);
 
   vertexArray.release();
