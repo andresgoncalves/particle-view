@@ -66,7 +66,8 @@ StoryLoaderDialog::StoryLoaderDialog(AppContext &appContext, QWidget *parent) : 
 
     auto loader = StoryLoader{
         .defaultProperties = propertyGrid->getDefaultProperties(),
-        .customProperties = propertyGrid->getCustomProperties(),
+        .scalarProperties = propertyGrid->getCustomProperties(),
+        .vectorProperties = {},
     };
 
     auto input = std::ifstream{fileName};

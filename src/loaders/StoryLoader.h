@@ -25,7 +25,8 @@ public:
   Story load(std::istream &input);
 
   std::map<DefaultProperty, int> defaultProperties;
-  std::map<std::string, int> customProperties;
+  std::map<std::string, int> scalarProperties;
+  std::map<std::string, int[3]> vectorProperties;
 
 private:
   Particle loadParticle(std::istream &input);

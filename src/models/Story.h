@@ -3,14 +3,15 @@
 
 #include <map>
 #include <string>
-#include <vector>
+#include <set>
 
 #include "Scene.h"
 
 struct Story
 {
   std::map<double, Scene> scenes;
-  std::vector<std::string> customProperties;
+  std::vector<std::string> scalarProperties;
+  std::vector<std::string> vectorProperties;
 
   struct Metadata
   {

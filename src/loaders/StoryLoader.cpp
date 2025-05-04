@@ -6,19 +6,21 @@
 Story StoryLoader::load(std::istream &input)
 {
   auto story = Story{};
-  for (auto [key, _] : customProperties)
-    story.customProperties.push_back(key);
+  for (auto [key, _] : scalarProperties)
+    story.scalarProperties.push_back(key);
+  for (auto [key, _] : vectorProperties)
+    story.vectorProperties.push_back(key);
 
   while (!input.eof())
   {
     size_t count;
-    float time, xStart, yStart, zStart, xEnd, yEnd, zEnd;
+    float time;
 
     std::string line;
     std::getline(input, line);
     auto lineStream = std::istringstream{line};
 
-    lineStream >> count >> time >> xStart >> yStart >> zStart >> xEnd >> yEnd >> zEnd;
+    lineStream >> count >> time;
 
     auto scene = loadScene(input, count);
 
@@ -56,22 +58,29 @@ Particle StoryLoader::loadParticle(std::istream &input)
   float value;
 
   while (input >> value)
-  {
     columnValues.push_back(value);
-  }
 
   auto defaultValues = std::map<DefaultProperty, float>{};
-  auto customValues = std::map<std::string, float>{};
+  auto scalarValues = std::map<std::string, float>{};
+  auto vectorValues = std::map<std::string, QVector3D>{};
 
   for (auto property : defaultProperties)
   {
     if (property.second >= 0 && property.second < columnValues.size())
       defaultValues[property.first] = columnValues[property.second];
   }
-  for (auto property : customProperties)
+  for (auto property : scalarProperties)
   {
     if (property.second >= 0 && property.second < columnValues.size())
-      customValues[property.first] = columnValues[property.second];
+      scalarValues[property.first] = columnValues[property.second];
+  }
+  for (auto property : vectorProperties)
+  {
+    for (int i = 0; i < 3; i++)
+    {
+      if (property.second[i] >= 0 && property.second[i] < columnValues.size())
+        vectorValues[property.first][i] = columnValues[property.second[i]];
+    }
   }
 
   auto getDefaultValue = [&](DefaultProperty property, float fallback)
@@ -92,7 +101,8 @@ Particle StoryLoader::loadParticle(std::istream &input)
           getDefaultValue(DefaultProperty::VY, 0.0f),
           getDefaultValue(DefaultProperty::VZ, 0.0f),
       },
-      .customProperties = customValues,
+      .scalarProperties = scalarValues,
+      .vectorProperties = vectorValues,
   };
 
   return particle;

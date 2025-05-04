@@ -10,7 +10,8 @@ struct Particle
   QVector3D velocity = {0.0f, 0.0f, 0.0f};
   float radius = 1.0f;
 
-  std::map<std::string, float> customProperties;
+  std::map<std::string, float> scalarProperties;
+  std::map<std::string, QVector3D> vectorProperties;
 };
 
 #endif

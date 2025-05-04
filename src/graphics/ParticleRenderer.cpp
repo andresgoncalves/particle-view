@@ -45,8 +45,8 @@ void ParticleRenderer::render(const Particle &particle, const AppContext &appCon
   shaderProgram.bind();
   vertexArray.bind();
 
-  auto type = particle.customProperties.find("type");
-  if (type == particle.customProperties.end())
+  auto type = particle.scalarProperties.find("type");
+  if (type == particle.scalarProperties.end())
   {
     shaderProgram.setUniformValue("color", {0.0f, 0.0f, 1.0f});
   }
