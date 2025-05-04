@@ -94,7 +94,7 @@ public:
   Observable<float> scaleObservable = scaleFactor;
   Observable<float> baseScaleObservable = baseScaleFactor;
 
-  BaseObservable<nullptr_t> viewObservable;
+  BaseObservable<void> viewObservable;
 
 private:
   QVector3D rotationAngles = {};

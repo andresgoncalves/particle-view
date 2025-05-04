@@ -46,10 +46,12 @@ GraphicsWidget::GraphicsWidget(AppContext &appContext, QWidget *parent) : appCon
 
   qApp->installEventFilter(&eventFilter);
 
-  appContext.viewController.viewObservable.subscribe(this, [&](nullptr_t)
+  appContext.viewController.viewObservable.subscribe(this, [&]()
                                                      { update(); });
   appContext.animationController.timeObservable.subscribe(this, [&](double)
                                                           { update(); });
+  appContext.animationController.storyObservable.subscribe(this, [&]()
+                                                           { update(); });
   appContext.displayController.displayParticlesObservable.subscribe(this, [&](bool)
                                                                     { update(); });
   appContext.displayController.displayedVectorsObservable.subscribe(this, [&](std::set<std::string>)

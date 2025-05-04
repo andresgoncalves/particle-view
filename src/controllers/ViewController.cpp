@@ -21,7 +21,7 @@ void ViewController::rotate(const QVector3D &angles, ReferenceFrame referenceFra
   }
   }
   rotationObservable.notify();
-  viewObservable.notify(nullptr);
+  viewObservable.notify();
 }
 
 void ViewController::translate(const QVector3D &vector, ReferenceFrame referenceFrame)
@@ -36,7 +36,7 @@ void ViewController::translate(const QVector3D &vector, ReferenceFrame reference
     break;
   }
   translationObservable.notify();
-  viewObservable.notify(nullptr);
+  viewObservable.notify();
 }
 
 void ViewController::scale(float factor, ReferenceFrame referenceFrame)
@@ -53,35 +53,35 @@ void ViewController::scale(float factor, ReferenceFrame referenceFrame)
 
   scaleFactor = std::clamp(scaleFactor, minScaleFactor, maxScaleFactor);
   scaleObservable.notify();
-  viewObservable.notify(nullptr);
+  viewObservable.notify();
 }
 
 void ViewController::setRotation(const QVector3D &angles)
 {
   rotationAngles = angles;
   rotationObservable.notify();
-  viewObservable.notify(nullptr);
+  viewObservable.notify();
 };
 
 void ViewController::setTranslation(const QVector3D &vector)
 {
   translationVector = vector;
   translationObservable.notify();
-  viewObservable.notify(nullptr);
+  viewObservable.notify();
 };
 
 void ViewController::setScale(float factor)
 {
   scaleFactor = std::clamp(factor, minScaleFactor, maxScaleFactor);
   scaleObservable.notify();
-  viewObservable.notify(nullptr);
+  viewObservable.notify();
 };
 
 void ViewController::setBaseScale(float factor)
 {
   scaleFactor = factor;
   baseScaleObservable.notify();
-  viewObservable.notify(nullptr);
+  viewObservable.notify();
 };
 
 void ViewController::rotateX(float angle, ReferenceFrame referenceFrame)
@@ -118,63 +118,63 @@ void ViewController::setRotationX(float angle)
 {
   rotationAngles.setX(angle);
   rotationObservable.notify();
-  viewObservable.notify(nullptr);
+  viewObservable.notify();
 }
 
 void ViewController::setRotationY(float angle)
 {
   rotationAngles.setY(angle);
   rotationObservable.notify();
-  viewObservable.notify(nullptr);
+  viewObservable.notify();
 }
 
 void ViewController::setRotationZ(float angle)
 {
   rotationAngles.setZ(angle);
   rotationObservable.notify();
-  viewObservable.notify(nullptr);
+  viewObservable.notify();
 }
 
 void ViewController::setTranslationX(float distance)
 {
   translationVector.setX(distance);
   translationObservable.notify();
-  viewObservable.notify(nullptr);
+  viewObservable.notify();
 }
 
 void ViewController::setTranslationY(float distance)
 {
   translationVector.setY(distance);
   translationObservable.notify();
-  viewObservable.notify(nullptr);
+  viewObservable.notify();
 }
 
 void ViewController::setTranslationZ(float distance)
 {
   translationVector.setZ(distance);
   translationObservable.notify();
-  viewObservable.notify(nullptr);
+  viewObservable.notify();
 }
 
 void ViewController::setOriginX(float distance)
 {
   originVector.setX(distance);
   originObservable.notify();
-  viewObservable.notify(nullptr);
+  viewObservable.notify();
 }
 
 void ViewController::setOriginY(float distance)
 {
   originVector.setY(distance);
   originObservable.notify();
-  viewObservable.notify(nullptr);
+  viewObservable.notify();
 }
 
 void ViewController::setOriginZ(float distance)
 {
   originVector.setZ(distance);
   originObservable.notify();
-  viewObservable.notify(nullptr);
+  viewObservable.notify();
 }
 
 void ViewController::setViewport(const QVector2D &scale)
@@ -186,7 +186,7 @@ void ViewController::setOrigin(const QVector3D &origin)
 {
   originVector = origin;
   originObservable.notify();
-  viewObservable.notify(nullptr);
+  viewObservable.notify();
 }
 
 void ViewController::updateViewProjectionMatrix()

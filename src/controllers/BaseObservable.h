@@ -8,36 +8,52 @@ template <typename T>
 class BaseObservable
 {
 public:
-  BaseObservable();
+  BaseObservable() {};
 
-  void subscribe(void *const key, const std::function<void(T)> callback);
-  void unsubscribe(void *const key);
-  void notify(T value);
+  void subscribe(void *const key, const std::function<void(T)> callback)
+  {
+    callbacks.insert(std::make_pair(key, callback));
+  }
+
+  void unsubscribe(void *const key)
+  {
+    callbacks.erase(key);
+  }
+
+  void notify(T value)
+  {
+    for (auto [key, callback] : callbacks)
+      callback(value);
+  }
 
 private:
   std::multimap<void *, std::function<void(T value)>> callbacks;
 };
 
-template <typename T>
-BaseObservable<T>::BaseObservable() {}
-
-template <typename T>
-void BaseObservable<T>::subscribe(void *key, const std::function<void(T)> callback)
+template <>
+class BaseObservable<void>
 {
-  callbacks.insert(std::make_pair(key, callback));
-}
+public:
+  BaseObservable() {};
 
-template <typename T>
-void BaseObservable<T>::unsubscribe(void *key)
-{
-  callbacks.erase(key);
-}
+  void subscribe(void *const key, const std::function<void()> callback)
+  {
+    callbacks.insert(std::make_pair(key, callback));
+  }
 
-template <typename T>
-void BaseObservable<T>::notify(T value)
-{
-  for (auto [key, callback] : callbacks)
-    callback(value);
-}
+  void unsubscribe(void *const key)
+  {
+    callbacks.erase(key);
+  }
+
+  void notify()
+  {
+    for (auto [key, callback] : callbacks)
+      callback();
+  }
+
+private:
+  std::multimap<void *, std::function<void()>> callbacks;
+};
 
 #endif

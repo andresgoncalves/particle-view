@@ -14,6 +14,8 @@ public:
   ~DisplayControls();
 
 private:
+  void refreshProperties();
+
   QCheckBox *particleCheckBox;
   std::map<std::string, QCheckBox *> vectorCheckBoxes;
   AppContext &appContext;

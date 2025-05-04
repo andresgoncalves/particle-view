@@ -57,6 +57,7 @@ void AnimationController::skip(double delta)
 void AnimationController::setStory(const Story &story)
 {
   this->story = story;
+  storyObservable.notify();
 }
 
 const Story &AnimationController::getStory() const

@@ -41,6 +41,7 @@ public:
   Observable<double> timeObservable = time;
   Observable<bool> playingObservable = playing;
   Observable<double> animationSpeedObservable = animationSpeed;
+  BaseObservable<void> storyObservable;
 
 private:
   Story story;
