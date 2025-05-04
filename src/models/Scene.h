@@ -8,14 +8,16 @@
 
 struct Scene
 {
-  Scene();
-
   double time;
-
   std::vector<Particle> particles;
 
-  QVector3D geometryStart;
-  QVector3D geometryEnd;
+  struct Metadata
+  {
+    QVector3D start;
+    QVector3D end;
+    float maxRadius;
+    float maxVelocity;
+  } metadata;
 };
 
 #endif

@@ -1,5 +1,6 @@
 #include "StoryLoader.h"
 
+#include <algorithm>
 #include <sstream>
 
 Story StoryLoader::load(std::istream &input)
@@ -22,11 +23,12 @@ Story StoryLoader::load(std::istream &input)
     auto scene = loadScene(input, count);
 
     scene.time = time;
-    scene.geometryStart = {xStart, zStart, yStart};
-    scene.geometryEnd = {xEnd, zEnd, yEnd};
+    scene.metadata = getMetadata(scene);
 
     story.scenes[time] = scene;
   }
+
+  story.metadata = getMetadata(story);
 
   return story;
 }
@@ -94,4 +96,96 @@ Particle StoryLoader::loadParticle(std::istream &input)
   };
 
   return particle;
+}
+
+Scene::Metadata StoryLoader::getMetadata(const Scene &scene) const
+{
+  if (scene.particles.size() == 0)
+    return Scene::Metadata{};
+
+  std::vector<Particle>::const_iterator start[] = {
+      std::min_element(scene.particles.begin(), scene.particles.end(), [](const Particle &a, const Particle &b)
+                       { return (a.position.x() - a.radius) < (b.position.x() - b.radius); }),
+      std::min_element(scene.particles.begin(), scene.particles.end(), [](const Particle &a, const Particle &b)
+                       { return (a.position.y() - a.radius) < (b.position.y() - b.radius); }),
+      std::min_element(scene.particles.begin(), scene.particles.end(), [](const Particle &a, const Particle &b)
+                       { return (a.position.z() - a.radius) < (b.position.z() - b.radius); }),
+  };
+
+  std::vector<Particle>::const_iterator end[] = {
+      std::max_element(scene.particles.begin(), scene.particles.end(), [](const Particle &a, const Particle &b)
+                       { return (a.position.x() + a.radius) < (b.position.x() + b.radius); }),
+      std::max_element(scene.particles.begin(), scene.particles.end(), [](const Particle &a, const Particle &b)
+                       { return (a.position.y() + a.radius) < (b.position.y() + b.radius); }),
+      std::max_element(scene.particles.begin(), scene.particles.end(), [](const Particle &a, const Particle &b)
+                       { return (a.position.z() + a.radius) < (b.position.z() + b.radius); }),
+  };
+
+  std::vector<Particle>::const_iterator maxRadius = std::max_element(scene.particles.begin(), scene.particles.end(), [](const Particle &a, const Particle &b)
+                                                                     { return a.radius < b.radius; });
+
+  std::vector<Particle>::const_iterator maxVelocity = std::max_element(scene.particles.begin(), scene.particles.end(), [](const Particle &a, const Particle &b)
+                                                                       { return a.velocity.length() < b.velocity.length(); });
+
+  auto metadata = Scene::Metadata{
+      .start = {
+          start[0]->position.x() - start[0]->radius,
+          start[1]->position.y() - start[1]->radius,
+          start[2]->position.z() - start[2]->radius,
+      },
+      .end = {
+          end[0]->position.x() + end[0]->radius,
+          end[1]->position.y() + end[1]->radius,
+          end[2]->position.z() + end[2]->radius,
+      },
+      .maxRadius = maxRadius->radius,
+      .maxVelocity = maxVelocity->velocity.length()};
+
+  return metadata;
+}
+
+Story::Metadata StoryLoader::getMetadata(const Story &story) const
+{
+  if (story.scenes.size() == 0)
+    return Story::Metadata{};
+
+  std::map<double, Scene>::const_iterator start[] = {
+      std::min_element(story.scenes.begin(), story.scenes.end(), [](const std::pair<double, Scene> &a, const std::pair<double, Scene> &b)
+                       { return a.second.metadata.start.x() < b.second.metadata.start.x(); }),
+      std::min_element(story.scenes.begin(), story.scenes.end(), [](const std::pair<double, Scene> &a, const std::pair<double, Scene> &b)
+                       { return a.second.metadata.start.y() < b.second.metadata.start.y(); }),
+      std::min_element(story.scenes.begin(), story.scenes.end(), [](const std::pair<double, Scene> &a, const std::pair<double, Scene> &b)
+                       { return a.second.metadata.start.z() < b.second.metadata.start.z(); }),
+  };
+
+  std::map<double, Scene>::const_iterator end[] = {
+      std::max_element(story.scenes.begin(), story.scenes.end(), [](const std::pair<double, Scene> &a, const std::pair<double, Scene> &b)
+                       { return a.second.metadata.end.x() < b.second.metadata.end.x(); }),
+      std::max_element(story.scenes.begin(), story.scenes.end(), [](const std::pair<double, Scene> &a, const std::pair<double, Scene> &b)
+                       { return a.second.metadata.end.y() < b.second.metadata.end.y(); }),
+      std::max_element(story.scenes.begin(), story.scenes.end(), [](const std::pair<double, Scene> &a, const std::pair<double, Scene> &b)
+                       { return a.second.metadata.end.z() < b.second.metadata.end.z(); }),
+  };
+
+  std::map<double, Scene>::const_iterator maxRadius = std::max_element(story.scenes.begin(), story.scenes.end(), [](const std::pair<double, Scene> &a, const std::pair<double, Scene> &b)
+                                                                       { return a.second.metadata.maxRadius < b.second.metadata.maxRadius; });
+
+  std::map<double, Scene>::const_iterator maxVelocity = std::max_element(story.scenes.begin(), story.scenes.end(), [](const std::pair<double, Scene> &a, const std::pair<double, Scene> &b)
+                                                                         { return a.second.metadata.maxVelocity < b.second.metadata.maxVelocity; });
+
+  auto metadata = Story::Metadata{
+      .start = {
+          start[0]->second.metadata.start.x(),
+          start[1]->second.metadata.start.y(),
+          start[2]->second.metadata.start.z(),
+      },
+      .end = {
+          end[0]->second.metadata.end.x(),
+          end[1]->second.metadata.end.y(),
+          end[2]->second.metadata.end.z(),
+      },
+      .maxRadius = maxRadius->second.metadata.maxRadius,
+      .maxVelocity = maxVelocity->second.metadata.maxVelocity};
+
+  return metadata;
 }

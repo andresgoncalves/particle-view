@@ -30,6 +30,9 @@ public:
 private:
   Particle loadParticle(std::istream &input);
   Scene loadScene(std::istream &input, size_t particleCount);
+
+  Scene::Metadata getMetadata(const Scene &scene) const;
+  Story::Metadata getMetadata(const Story &story) const;
 };
 
 #endif
