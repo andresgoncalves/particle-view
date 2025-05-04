@@ -69,6 +69,16 @@ std::map<std::string, int> StoryLoaderPropertyGrid::getScalarProperties() const
   return values;
 }
 
+std::map<std::string, std::array<int, 3>> StoryLoaderPropertyGrid::getVectorProperties() const
+{
+  auto values = std::map<std::string, std::array<int, 3>>{};
+
+  for (auto [property, row] : vectorRows)
+    values[property] = row->getValues();
+
+  return values;
+};
+
 void StoryLoaderPropertyGrid::addCustomProperty(std::string property, Particle::PropertyType type)
 {
   if (scalarRows.find(property) == scalarRows.end() && vectorRows.find(property) == vectorRows.end())

@@ -10,8 +10,6 @@
 struct Story
 {
   std::map<double, Scene> scenes;
-  std::vector<std::string> scalarProperties;
-  std::vector<std::string> vectorProperties;
 
   struct Metadata
   {
@@ -19,6 +17,8 @@ struct Story
     QVector3D end;
     float maxRadius;
     float maxVelocity;
+    std::map<std::string, float> largestScalars;
+    std::map<std::string, float> largestVectors;
   } metadata;
 };
 

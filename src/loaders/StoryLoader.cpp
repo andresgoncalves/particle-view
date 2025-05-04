@@ -6,10 +6,6 @@
 Story StoryLoader::load(std::istream &input)
 {
   auto story = Story{};
-  for (auto [key, _] : scalarProperties)
-    story.scalarProperties.push_back(key);
-  for (auto [key, _] : vectorProperties)
-    story.vectorProperties.push_back(key);
 
   while (!input.eof())
   {
@@ -137,6 +133,44 @@ Scene::Metadata StoryLoader::getMetadata(const Scene &scene) const
   std::vector<Particle>::const_iterator maxVelocity = std::max_element(scene.particles.begin(), scene.particles.end(), [](const Particle &a, const Particle &b)
                                                                        { return a.velocity.length() < b.velocity.length(); });
 
+  auto largestScalars = std::map<std::string, float>{};
+  for (auto [key, _] : scene.particles[0].scalarProperties)
+  {
+    auto compare = [=](const Particle &a, const Particle &b)
+    {
+      auto aScalar = a.scalarProperties.find(key);
+      auto bScalar = b.scalarProperties.find(key);
+
+      if (aScalar == a.scalarProperties.end())
+        return true;
+      if (bScalar == b.scalarProperties.end())
+        return false;
+
+      return aScalar->second < bScalar->second;
+    };
+    auto largest = std::max_element(scene.particles.begin(), scene.particles.end(), compare);
+    largestScalars[key] = largest->scalarProperties.at(key);
+  }
+
+  auto largestVectors = std::map<std::string, float>{};
+  for (auto [key, _] : scene.particles[0].vectorProperties)
+  {
+    auto compare = [=](const Particle &a, const Particle &b)
+    {
+      auto aVector = a.vectorProperties.find(key);
+      auto bVector = b.vectorProperties.find(key);
+
+      if (aVector == a.vectorProperties.end())
+        return true;
+      if (bVector == b.vectorProperties.end())
+        return false;
+
+      return aVector->second.length() < bVector->second.length();
+    };
+    auto largest = std::max_element(scene.particles.begin(), scene.particles.end(), compare);
+    largestVectors[key] = largest->vectorProperties.at(key).length();
+  }
+
   auto metadata = Scene::Metadata{
       .start = {
           start[0]->position.x() - start[0]->radius,
@@ -149,7 +183,10 @@ Scene::Metadata StoryLoader::getMetadata(const Scene &scene) const
           end[2]->position.z() + end[2]->radius,
       },
       .maxRadius = maxRadius->radius,
-      .maxVelocity = maxVelocity->velocity.length()};
+      .maxVelocity = maxVelocity->velocity.length(),
+      .largestScalars = largestScalars,
+      .largestVectors = largestVectors,
+  };
 
   return metadata;
 }
@@ -183,6 +220,44 @@ Story::Metadata StoryLoader::getMetadata(const Story &story) const
   std::map<double, Scene>::const_iterator maxVelocity = std::max_element(story.scenes.begin(), story.scenes.end(), [](const std::pair<double, Scene> &a, const std::pair<double, Scene> &b)
                                                                          { return a.second.metadata.maxVelocity < b.second.metadata.maxVelocity; });
 
+  auto largestScalars = std::map<std::string, float>{};
+  for (auto [key, _] : story.scenes.begin()->second.metadata.largestScalars)
+  {
+    auto compare = [=](const std::pair<double, Scene> &a, const std::pair<double, Scene> &b)
+    {
+      auto aScalar = a.second.metadata.largestScalars.find(key);
+      auto bScalar = b.second.metadata.largestScalars.find(key);
+
+      if (aScalar == a.second.metadata.largestScalars.end())
+        return true;
+      if (bScalar == b.second.metadata.largestScalars.end())
+        return false;
+
+      return aScalar->second < bScalar->second;
+    };
+    auto largest = std::max_element(story.scenes.begin(), story.scenes.end(), compare);
+    largestScalars[key] = largest->second.metadata.largestScalars.at(key);
+  }
+
+  auto largestVectors = std::map<std::string, float>{};
+  for (auto [key, _] : story.scenes.begin()->second.metadata.largestVectors)
+  {
+    auto compare = [=](const std::pair<double, Scene> &a, const std::pair<double, Scene> &b)
+    {
+      auto aVector = a.second.metadata.largestVectors.find(key);
+      auto bVector = b.second.metadata.largestVectors.find(key);
+
+      if (aVector == a.second.metadata.largestVectors.end())
+        return true;
+      if (bVector == b.second.metadata.largestVectors.end())
+        return false;
+
+      return aVector->second < bVector->second;
+    };
+    auto largest = std::max_element(story.scenes.begin(), story.scenes.end(), compare);
+    largestVectors[key] = largest->second.metadata.largestVectors.at(key);
+  }
+
   auto metadata = Story::Metadata{
       .start = {
           start[0]->second.metadata.start.x(),
@@ -195,7 +270,10 @@ Story::Metadata StoryLoader::getMetadata(const Story &story) const
           end[2]->second.metadata.end.z(),
       },
       .maxRadius = maxRadius->second.metadata.maxRadius,
-      .maxVelocity = maxVelocity->second.metadata.maxVelocity};
+      .maxVelocity = maxVelocity->second.metadata.maxVelocity,
+      .largestScalars = largestScalars,
+      .largestVectors = largestVectors,
+  };
 
   return metadata;
 }
