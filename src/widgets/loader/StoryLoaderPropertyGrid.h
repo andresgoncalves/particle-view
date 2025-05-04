@@ -5,7 +5,7 @@
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QVBoxLayout>
 
-#include "StoryLoaderPropertyRow.h"
+#include "StoryLoaderScalarPropertyRow.h"
 #include "../../loaders/StoryLoader.h"
 
 class StoryLoaderPropertyGrid : public QWidget
@@ -26,8 +26,8 @@ private:
 
   QVBoxLayout *itemLayout;
 
-  std::map<StoryLoader::DefaultProperty, StoryLoaderPropertyRow *> defaultRows;
-  std::map<std::string, StoryLoaderPropertyRow *> customRows;
+  std::map<StoryLoader::DefaultProperty, StoryLoaderScalarPropertyRow *> defaultRows;
+  std::map<std::string, StoryLoaderScalarPropertyRow *> customRows;
 };
 
 #endif

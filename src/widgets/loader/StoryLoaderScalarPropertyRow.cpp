@@ -1,13 +1,13 @@
-#include "StoryLoaderPropertyRow.h"
+#include "StoryLoaderScalarPropertyRow.h"
 
 #include <map>
 
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QGridLayout>
 
-StoryLoaderPropertyRow::StoryLoaderPropertyRow(const char *title, QWidget *parent) : StoryLoaderPropertyRow{title, false, parent} {}
+StoryLoaderScalarPropertyRow::StoryLoaderScalarPropertyRow(const char *title, QWidget *parent) : StoryLoaderScalarPropertyRow{title, false, parent} {}
 
-StoryLoaderPropertyRow::StoryLoaderPropertyRow(const char *title, bool canDelete, QWidget *parent) : QWidget{parent}
+StoryLoaderScalarPropertyRow::StoryLoaderScalarPropertyRow(const char *title, bool canDelete, QWidget *parent) : QWidget{parent}
 {
 
   auto label = new QLabel{title, this};
@@ -36,7 +36,7 @@ StoryLoaderPropertyRow::StoryLoaderPropertyRow(const char *title, bool canDelete
   }
 }
 
-void StoryLoaderPropertyRow::setCount(int count)
+void StoryLoaderScalarPropertyRow::setCount(int count)
 {
   auto data = comboBox->currentData();
   auto value = data.isValid() ? data.toInt() : -1;
@@ -50,12 +50,12 @@ void StoryLoaderPropertyRow::setCount(int count)
   comboBox->setCurrentIndex(value >= count ? 0 : value + 1);
 }
 
-QComboBox *StoryLoaderPropertyRow::getComboBox() const
+int StoryLoaderScalarPropertyRow::getValue() const
 {
-  return comboBox;
+  return comboBox->currentData().toInt();
 };
 
-QPushButton *StoryLoaderPropertyRow::getDeleteButton() const
+QPushButton *StoryLoaderScalarPropertyRow::getDeleteButton() const
 {
   return deleteButton;
 };

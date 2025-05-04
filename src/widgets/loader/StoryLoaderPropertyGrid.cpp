@@ -14,13 +14,13 @@
 StoryLoaderPropertyGrid::StoryLoaderPropertyGrid(QWidget *parent) : QWidget{parent}
 {
   // Default properties
-  defaultRows[StoryLoader::DefaultProperty::X] = new StoryLoaderPropertyRow{"x", this};
-  defaultRows[StoryLoader::DefaultProperty::Y] = new StoryLoaderPropertyRow{"y", this};
-  defaultRows[StoryLoader::DefaultProperty::Z] = new StoryLoaderPropertyRow{"z", this};
-  defaultRows[StoryLoader::DefaultProperty::VX] = new StoryLoaderPropertyRow{"Vx", this};
-  defaultRows[StoryLoader::DefaultProperty::VY] = new StoryLoaderPropertyRow{"Vy", this};
-  defaultRows[StoryLoader::DefaultProperty::VZ] = new StoryLoaderPropertyRow{"Vz", this};
-  defaultRows[StoryLoader::DefaultProperty::R] = new StoryLoaderPropertyRow{"Radio", this};
+  defaultRows[StoryLoader::DefaultProperty::X] = new StoryLoaderScalarPropertyRow{"x", this};
+  defaultRows[StoryLoader::DefaultProperty::Y] = new StoryLoaderScalarPropertyRow{"y", this};
+  defaultRows[StoryLoader::DefaultProperty::Z] = new StoryLoaderScalarPropertyRow{"z", this};
+  defaultRows[StoryLoader::DefaultProperty::VX] = new StoryLoaderScalarPropertyRow{"Vx", this};
+  defaultRows[StoryLoader::DefaultProperty::VY] = new StoryLoaderScalarPropertyRow{"Vy", this};
+  defaultRows[StoryLoader::DefaultProperty::VZ] = new StoryLoaderScalarPropertyRow{"Vz", this};
+  defaultRows[StoryLoader::DefaultProperty::R] = new StoryLoaderScalarPropertyRow{"Radio", this};
 
   auto scrollArea = new QScrollArea{this};
   scrollArea->setWidget(new QWidget{this});
@@ -54,7 +54,7 @@ std::map<StoryLoader::DefaultProperty, int> StoryLoaderPropertyGrid::getDefaultP
   auto values = std::map<StoryLoader::DefaultProperty, int>{};
 
   for (auto [property, row] : defaultRows)
-    values[property] = row->getComboBox()->currentData().toInt();
+    values[property] = row->getValue();
 
   return values;
 }
@@ -64,7 +64,7 @@ std::map<std::string, int> StoryLoaderPropertyGrid::getCustomProperties() const
   auto values = std::map<std::string, int>{};
 
   for (auto [property, row] : customRows)
-    values[property] = row->getComboBox()->currentData().toInt();
+    values[property] = row->getValue();
 
   return values;
 }
@@ -75,7 +75,7 @@ void StoryLoaderPropertyGrid::addCustomProperty(std::string property)
 
   if (row == customRows.end())
   {
-    auto row = new StoryLoaderPropertyRow{property.c_str(), true, this};
+    auto row = new StoryLoaderScalarPropertyRow{property.c_str(), true, this};
     row->setCount(count);
     connect(row->getDeleteButton(), &QPushButton::clicked, this, [=, this]
             { removeCustomProperty(property); });
