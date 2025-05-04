@@ -24,7 +24,7 @@ public:
 
   void setStory(const Story &story);
 
-  Story &getStory();
+  const Story &getStory() const;
 
   double getTime() const;
   double getDuration() const;

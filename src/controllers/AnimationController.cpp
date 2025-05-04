@@ -59,7 +59,7 @@ void AnimationController::setStory(const Story &story)
   this->story = story;
 }
 
-Story &AnimationController::getStory()
+const Story &AnimationController::getStory() const
 {
   return story;
 }

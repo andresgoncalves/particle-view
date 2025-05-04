@@ -29,14 +29,13 @@ VelocityRenderer::VelocityRenderer()
 
 void VelocityRenderer::render(const Particle &particle, const AppContext &appContext)
 {
+  auto metadata = appContext.animationController.getStory().metadata;
+
   float width = 0.25f;
-  float height = 10.f * particle.velocity.length();
+  float height = 5.0f * metadata.maxRadius * particle.velocity.length() / (metadata.maxVelocity > 0 ? metadata.maxVelocity : 1.0f);
 
-  // if (height < 0.1f)
-  //   return;
-
-  auto headModelMatrix = getHeadModelMatrix(particle.position, particle.velocity, 0.25f, 10.f * particle.velocity.length());
-  auto bodyModelMatrix = getBodyModelMatrix(particle.position, particle.velocity, 0.25f, 10.f * particle.velocity.length());
+  auto headModelMatrix = getHeadModelMatrix(particle.position, particle.velocity, width, height);
+  auto bodyModelMatrix = getBodyModelMatrix(particle.position, particle.velocity, width, height);
 
   shaderProgram.bind();
   vertexArray.bind();
