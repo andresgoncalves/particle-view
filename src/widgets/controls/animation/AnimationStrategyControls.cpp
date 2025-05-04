@@ -2,8 +2,8 @@
 
 #include <QtWidgets/QHBoxLayout>
 
-#include "../../controllers/animation/StepAnimationStrategy.h"
-#include "../../controllers/animation/LinearAnimationStrategy.h"
+#include "../../../controllers/animation/StepAnimationStrategy.h"
+#include "../../../controllers/animation/LinearAnimationStrategy.h"
 
 AnimationStrategyControls::AnimationStrategyControls(AppContext &appContext, QWidget *parent) : appContext{appContext}, ControlSection{"Modo de animación", parent}
 {

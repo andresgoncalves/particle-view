@@ -3,8 +3,8 @@
 #include <QtWidgets/QVBoxLayout>
 
 #include "ToolControls.h"
-#include "ViewControls.h"
-#include "AnimationControls.h"
+#include "view/ViewControls.h"
+#include "animation/AnimationControls.h"
 
 SceneControlPanel::SceneControlPanel(AppContext &appContext, QWidget *parent) : appContext{appContext}, QScrollArea{parent}
 {

@@ -4,8 +4,8 @@
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QComboBox>
 
-#include "ControlSection.h"
-#include "../../controllers/AppContext.h"
+#include "../ControlSection.h"
+#include "../../../controllers/AppContext.h"
 
 class AnimationStrategyControls : public ControlSection
 {

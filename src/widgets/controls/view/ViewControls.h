@@ -3,9 +3,9 @@
 
 #include <QtWidgets/QWidget>
 
-#include "ControlSection.h"
-#include "NumericControl.h"
-#include "../../controllers/AppContext.h"
+#include "../ControlSection.h"
+#include "../NumericControl.h"
+#include "../../../controllers/AppContext.h"
 
 class ViewControls : public ControlSection
 {

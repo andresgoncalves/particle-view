@@ -16,16 +16,16 @@ add_library(widgets STATIC
   controls/NumericControl.cpp
   controls/ToolControls.cpp
 
-  controls/ViewControls.cpp
-  controls/ViewOriginControls.cpp
-  controls/ViewTranslationControls.cpp
-  controls/ViewRotationControls.cpp
-  controls/ViewScaleControls.cpp
+  controls/view/ViewControls.cpp
+  controls/view/ViewOriginControls.cpp
+  controls/view/ViewTranslationControls.cpp
+  controls/view/ViewRotationControls.cpp
+  controls/view/ViewScaleControls.cpp
 
-  controls/AnimationControls.cpp
-  controls/AnimationTimeControls.cpp
-  controls/AnimationSpeedControls.cpp
-  controls/AnimationStrategyControls.cpp
+  controls/animation/AnimationControls.cpp
+  controls/animation/AnimationTimeControls.cpp
+  controls/animation/AnimationSpeedControls.cpp
+  controls/animation/AnimationStrategyControls.cpp
 
   loader/StoryLoaderDialog.cpp
   loader/StoryLoaderPropertyGrid.cpp
