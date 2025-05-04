@@ -12,8 +12,8 @@ StoryLoaderAddPropertyDialog::StoryLoaderAddPropertyDialog(QWidget *parent) : QD
   propertyTextField->setPlaceholderText("Nombre de la variable");
 
   typeComboBox = new QComboBox{this};
-  typeComboBox->addItem("Escalar", PropertyType::Scalar);
-  typeComboBox->addItem("Vector", PropertyType::Vector);
+  typeComboBox->addItem("Escalar", Particle::PropertyType::Scalar);
+  typeComboBox->addItem("Vector", Particle::PropertyType::Vector);
 
   auto addButton = new QPushButton{"Agregar", this};
   connect(addButton, &QPushButton::clicked, this, [=, this]
@@ -40,7 +40,7 @@ std::string StoryLoaderAddPropertyDialog::getProperty() const
   return propertyTextField->text().toStdString();
 }
 
-StoryLoaderAddPropertyDialog::PropertyType StoryLoaderAddPropertyDialog::getType() const
+Particle::PropertyType StoryLoaderAddPropertyDialog::getType() const
 {
-  return static_cast<PropertyType>(typeComboBox->currentData().toInt());
+  return static_cast<Particle::PropertyType>(typeComboBox->currentData().toInt());
 }

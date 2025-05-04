@@ -6,6 +6,7 @@
 #include <QtWidgets/QVBoxLayout>
 
 #include "StoryLoaderScalarPropertyRow.h"
+#include "StoryLoaderVectorPropertyRow.h"
 #include "../../loaders/StoryLoader.h"
 
 class StoryLoaderPropertyGrid : public QWidget
@@ -16,9 +17,10 @@ public:
   void setCount(int count);
 
   std::map<StoryLoader::DefaultProperty, int> getDefaultProperties() const;
-  std::map<std::string, int> getCustomProperties() const;
+  std::map<std::string, int> getScalarProperties() const;
+  std::map<std::string, std::array<int, 3>> getVectorProperties() const;
 
-  void addCustomProperty(std::string property);
+  void addCustomProperty(std::string property, Particle::PropertyType type);
   void removeCustomProperty(std::string property);
 
 private:
@@ -27,7 +29,8 @@ private:
   QVBoxLayout *itemLayout;
 
   std::map<StoryLoader::DefaultProperty, StoryLoaderScalarPropertyRow *> defaultRows;
-  std::map<std::string, StoryLoaderScalarPropertyRow *> customRows;
+  std::map<std::string, StoryLoaderScalarPropertyRow *> scalarRows;
+  std::map<std::string, StoryLoaderVectorPropertyRow *> vectorRows;
 };
 
 #endif

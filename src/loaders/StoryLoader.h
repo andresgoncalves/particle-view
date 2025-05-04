@@ -26,7 +26,7 @@ public:
 
   std::map<DefaultProperty, int> defaultProperties;
   std::map<std::string, int> scalarProperties;
-  std::map<std::string, int[3]> vectorProperties;
+  std::map<std::string, std::array<int, 3>> vectorProperties;
 
 private:
   Particle loadParticle(std::istream &input);

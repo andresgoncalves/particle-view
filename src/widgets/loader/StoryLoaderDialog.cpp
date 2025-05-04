@@ -48,7 +48,7 @@ StoryLoaderDialog::StoryLoaderDialog(AppContext &appContext, QWidget *parent) : 
     auto addPropertyDialog = new StoryLoaderAddPropertyDialog{this};
     if (addPropertyDialog->exec() == QDialog::Accepted)
     {
-      propertyGrid->addCustomProperty(addPropertyDialog->getProperty());
+      propertyGrid->addCustomProperty(addPropertyDialog->getProperty(), addPropertyDialog->getType());
     }
     addPropertyDialog->deleteLater();
   };
@@ -66,8 +66,8 @@ StoryLoaderDialog::StoryLoaderDialog(AppContext &appContext, QWidget *parent) : 
 
     auto loader = StoryLoader{
         .defaultProperties = propertyGrid->getDefaultProperties(),
-        .scalarProperties = propertyGrid->getCustomProperties(),
-        .vectorProperties = {},
+        .scalarProperties = propertyGrid->getScalarProperties(),
+        .vectorProperties = propertyGrid->getVectorProperties(),
     };
 
     auto input = std::ifstream{fileName};

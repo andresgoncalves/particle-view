@@ -43,7 +43,7 @@ void StoryLoaderPropertyGrid::setCount(int count)
 {
   for (auto [_, row] : defaultRows)
     row->setCount(count);
-  for (auto [_, row] : customRows)
+  for (auto [_, row] : scalarRows)
     row->setCount(count);
 
   this->count = count;
@@ -59,28 +59,35 @@ std::map<StoryLoader::DefaultProperty, int> StoryLoaderPropertyGrid::getDefaultP
   return values;
 }
 
-std::map<std::string, int> StoryLoaderPropertyGrid::getCustomProperties() const
+std::map<std::string, int> StoryLoaderPropertyGrid::getScalarProperties() const
 {
   auto values = std::map<std::string, int>{};
 
-  for (auto [property, row] : customRows)
+  for (auto [property, row] : scalarRows)
     values[property] = row->getValue();
 
   return values;
 }
 
-void StoryLoaderPropertyGrid::addCustomProperty(std::string property)
+void StoryLoaderPropertyGrid::addCustomProperty(std::string property, Particle::PropertyType type)
 {
-  auto row = customRows.find(property);
-
-  if (row == customRows.end())
+  if (scalarRows.find(property) == scalarRows.end() && vectorRows.find(property) == vectorRows.end())
   {
-    auto row = new StoryLoaderScalarPropertyRow{property.c_str(), true, this};
+    StoryLoaderPropertyRow *row = nullptr;
+    if (type == Particle::PropertyType::Scalar)
+    {
+      row = new StoryLoaderScalarPropertyRow{property.c_str(), true, this};
+      scalarRows[property] = static_cast<StoryLoaderScalarPropertyRow *>(row);
+    }
+    else
+    {
+      row = new StoryLoaderVectorPropertyRow{property.c_str(), true, this};
+      vectorRows[property] = static_cast<StoryLoaderVectorPropertyRow *>(row);
+    }
     row->setCount(count);
     connect(row->getDeleteButton(), &QPushButton::clicked, this, [=, this]
             { removeCustomProperty(property); });
 
-    customRows[property] = row;
     itemLayout->addWidget(row);
   }
   else
@@ -91,12 +98,19 @@ void StoryLoaderPropertyGrid::addCustomProperty(std::string property)
 
 void StoryLoaderPropertyGrid::removeCustomProperty(std::string property)
 {
-  auto row = customRows.find(property);
-
-  if (row != customRows.end())
+  auto scalarRow = scalarRows.find(property);
+  if (scalarRow != scalarRows.end())
   {
-    itemLayout->removeWidget(row->second);
-    row->second->deleteLater();
-    customRows.erase(row);
+    itemLayout->removeWidget(scalarRow->second);
+    scalarRow->second->deleteLater();
+    scalarRows.erase(scalarRow);
+  }
+
+  auto vectorRow = vectorRows.find(property);
+  if (vectorRow != vectorRows.end())
+  {
+    itemLayout->removeWidget(vectorRow->second);
+    vectorRow->second->deleteLater();
+    vectorRows.erase(vectorRow);
   }
 }

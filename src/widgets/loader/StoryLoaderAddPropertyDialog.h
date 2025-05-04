@@ -7,19 +7,15 @@
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QComboBox>
 
+#include "../../models/Particle.h"
+
 class StoryLoaderAddPropertyDialog : public QDialog
 {
 public:
-  enum PropertyType
-  {
-    Scalar,
-    Vector
-  };
-
   StoryLoaderAddPropertyDialog(QWidget *parent = nullptr);
 
   std::string getProperty() const;
-  PropertyType getType() const;
+  Particle::PropertyType getType() const;
 
 private:
   QLineEdit *propertyTextField;

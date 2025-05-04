@@ -7,42 +7,23 @@
 
 StoryLoaderVectorPropertyRow::StoryLoaderVectorPropertyRow(const char *title, QWidget *parent) : StoryLoaderVectorPropertyRow{title, false, parent} {}
 
-StoryLoaderVectorPropertyRow::StoryLoaderVectorPropertyRow(const char *title, bool canDelete, QWidget *parent) : QWidget{parent}
+StoryLoaderVectorPropertyRow::StoryLoaderVectorPropertyRow(const char *title, bool canDelete, QWidget *parent) : StoryLoaderPropertyRow{title, canDelete, parent}
 {
-  auto label = new QLabel{title, this};
-
   comboBoxes = {
       new QComboBox{this},
       new QComboBox{this},
       new QComboBox{this},
   };
 
-  auto comboBoxLayout = new QVBoxLayout{};
+  auto widget = new QWidget{this};
+
+  auto comboBoxLayout = new QVBoxLayout{widget};
   comboBoxLayout->addWidget(comboBoxes[0]);
   comboBoxLayout->addWidget(comboBoxes[1]);
   comboBoxLayout->addWidget(comboBoxes[2]);
+  comboBoxLayout->setContentsMargins({});
 
-  auto layout = new QGridLayout{this};
-  layout->setAlignment(Qt::AlignVCenter);
-  layout->addWidget(label, 0, 0);
-  layout->addLayout(comboBoxLayout, 0, 1);
-  layout->setContentsMargins({});
-
-  layout->setColumnStretch(0, 1);
-  layout->setColumnStretch(1, 1);
-  layout->setColumnStretch(2, 0);
-  layout->setColumnMinimumWidth(2, 64);
-  layout->setHorizontalSpacing(8);
-
-  if (canDelete)
-  {
-    deleteButton = new QPushButton{"X", this};
-    layout->addWidget(deleteButton, 0, 2);
-  }
-  else
-  {
-    layout->addWidget(new QWidget{this}, 0, 2);
-  }
+  setWidget(widget);
 }
 
 void StoryLoaderVectorPropertyRow::setCount(int count)
@@ -69,9 +50,4 @@ std::array<int, 3> StoryLoaderVectorPropertyRow::getValues() const
       comboBoxes[1]->currentData().toInt(),
       comboBoxes[2]->currentData().toInt(),
   };
-};
-
-QPushButton *StoryLoaderVectorPropertyRow::getDeleteButton() const
-{
-  return deleteButton;
 };

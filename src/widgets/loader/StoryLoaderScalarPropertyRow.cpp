@@ -7,33 +7,10 @@
 
 StoryLoaderScalarPropertyRow::StoryLoaderScalarPropertyRow(const char *title, QWidget *parent) : StoryLoaderScalarPropertyRow{title, false, parent} {}
 
-StoryLoaderScalarPropertyRow::StoryLoaderScalarPropertyRow(const char *title, bool canDelete, QWidget *parent) : QWidget{parent}
+StoryLoaderScalarPropertyRow::StoryLoaderScalarPropertyRow(const char *title, bool canDelete, QWidget *parent) : StoryLoaderPropertyRow{title, canDelete, parent}
 {
-
-  auto label = new QLabel{title, this};
-
   comboBox = new QComboBox{this};
-
-  auto layout = new QGridLayout{this};
-  layout->addWidget(label, 0, 0);
-  layout->addWidget(comboBox, 0, 1);
-  layout->setContentsMargins({});
-
-  layout->setColumnStretch(0, 1);
-  layout->setColumnStretch(1, 1);
-  layout->setColumnStretch(2, 0);
-  layout->setColumnMinimumWidth(2, 64);
-  layout->setHorizontalSpacing(8);
-
-  if (canDelete)
-  {
-    deleteButton = new QPushButton{"X", this};
-    layout->addWidget(deleteButton, 0, 2);
-  }
-  else
-  {
-    layout->addWidget(new QWidget{this}, 0, 2);
-  }
+  setWidget(comboBox);
 }
 
 void StoryLoaderScalarPropertyRow::setCount(int count)
@@ -53,9 +30,4 @@ void StoryLoaderScalarPropertyRow::setCount(int count)
 int StoryLoaderScalarPropertyRow::getValue() const
 {
   return comboBox->currentData().toInt();
-};
-
-QPushButton *StoryLoaderScalarPropertyRow::getDeleteButton() const
-{
-  return deleteButton;
 };

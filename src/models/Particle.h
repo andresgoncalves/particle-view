@@ -6,6 +6,12 @@
 
 struct Particle
 {
+  enum PropertyType
+  {
+    Scalar,
+    Vector
+  };
+
   QVector3D position = {0.0f, 0.0f, 0.0f};
   QVector3D velocity = {0.0f, 0.0f, 0.0f};
   float radius = 1.0f;

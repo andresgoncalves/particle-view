@@ -29,6 +29,7 @@ add_library(widgets STATIC
 
   loader/StoryLoaderDialog.cpp
   loader/StoryLoaderPropertyGrid.cpp
+  loader/StoryLoaderPropertyRow.cpp
   loader/StoryLoaderScalarPropertyRow.cpp
   loader/StoryLoaderVectorPropertyRow.cpp
   loader/StoryLoaderAddPropertyDialog.cpp
