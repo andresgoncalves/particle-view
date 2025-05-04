@@ -18,10 +18,10 @@ public:
   std::map<StoryLoader::DefaultProperty, int> getDefaultProperties() const;
   std::map<std::string, int> getCustomProperties() const;
 
-private:
   void addCustomProperty(std::string property);
   void removeCustomProperty(std::string property);
 
+private:
   int count;
 
   QVBoxLayout *itemLayout;

@@ -6,6 +6,7 @@
 #include <QtWidgets/QtWidgets>
 
 #include "StoryLoaderPropertyGrid.h"
+#include "StoryLoaderAddPropertyDialog.h"
 #include "../controls/NumericControl.h"
 
 StoryLoaderDialog::StoryLoaderDialog(AppContext &appContext, QWidget *parent) : appContext{appContext}, QDialog{parent}
@@ -41,6 +42,18 @@ StoryLoaderDialog::StoryLoaderDialog(AppContext &appContext, QWidget *parent) : 
   columnControl->onChange<int>([&](int value)
                                { propertyGrid->setCount(value); });
 
+  auto addPropertyButton = new QPushButton{"Agregar variable", this};
+  auto addPropertyCallback = [=, this]
+  {
+    auto addPropertyDialog = new StoryLoaderAddPropertyDialog{this};
+    if (addPropertyDialog->exec() == QDialog::Accepted)
+    {
+      propertyGrid->addCustomProperty(addPropertyDialog->getProperty());
+    }
+    addPropertyDialog->deleteLater();
+  };
+  connect(addPropertyButton, &QPushButton::clicked, this, addPropertyCallback);
+
   auto loadButton = new QPushButton{"Cargar", this};
   auto loadCallback = [&]()
   {
@@ -70,12 +83,17 @@ StoryLoaderDialog::StoryLoaderDialog(AppContext &appContext, QWidget *parent) : 
   };
   connect(loadButton, &QPushButton::clicked, this, loadCallback);
 
+  auto buttonsLayout = new QHBoxLayout{};
+  buttonsLayout->setAlignment(Qt::AlignRight);
+  buttonsLayout->addWidget(addPropertyButton);
+  buttonsLayout->addWidget(loadButton);
+
   auto verticalLayout = new QVBoxLayout{this};
   verticalLayout->addWidget(selectFileLabel);
   verticalLayout->addLayout(horizontalLayout);
   verticalLayout->addWidget(columnControl);
   verticalLayout->addWidget(propertyGrid);
-  verticalLayout->addWidget(loadButton);
+  verticalLayout->addLayout(buttonsLayout);
 
   setMinimumWidth(320);
 }

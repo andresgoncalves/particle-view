@@ -9,6 +9,8 @@
 #include <QtWidgets/QScrollArea>
 #include <QtWidgets/QMessageBox>
 
+#include "StoryLoaderAddPropertyDialog.h"
+
 StoryLoaderPropertyGrid::StoryLoaderPropertyGrid(QWidget *parent) : QWidget{parent}
 {
   // Default properties
@@ -31,19 +33,8 @@ StoryLoaderPropertyGrid::StoryLoaderPropertyGrid(QWidget *parent) : QWidget{pare
   for (auto [_, row] : defaultRows)
     itemLayout->addWidget(row);
 
-  auto addPropertyTextField = new QLineEdit{this};
-  addPropertyTextField->setPlaceholderText("Nueva variable");
-  auto addPropertyButton = new QPushButton{"Agregar", this};
-  connect(addPropertyButton, &QPushButton::clicked, this, [=, this]
-          { addCustomProperty(addPropertyTextField->text().toStdString()); addPropertyTextField->setText(""); });
-
-  auto addPropertyLayout = new QHBoxLayout{};
-  addPropertyLayout->addWidget(addPropertyTextField);
-  addPropertyLayout->addWidget(addPropertyButton);
-
   auto layout = new QVBoxLayout{this};
   layout->addWidget(scrollArea);
-  layout->addLayout(addPropertyLayout);
 
   setCount(0);
 }
@@ -105,7 +96,7 @@ void StoryLoaderPropertyGrid::removeCustomProperty(std::string property)
   if (row != customRows.end())
   {
     itemLayout->removeWidget(row->second);
-    delete row->second;
+    row->second->deleteLater();
     customRows.erase(row);
   }
 }
