@@ -59,7 +59,12 @@ StoryLoaderDialog::StoryLoaderDialog(AppContext &appContext, QWidget *parent) : 
     auto input = std::ifstream{fileName};
 
     auto story = loader.load(input);
+
     appContext.animationController.setStory(story);
+    appContext.viewController.setOrigin((story.metadata.start + story.metadata.end) / 2);
+
+    auto diagonalSize = story.metadata.start.distanceToPoint(story.metadata.end);
+    appContext.viewController.setBaseScale(diagonalSize > 0 ? 1.f / diagonalSize : 1.f);
 
     accept();
   };

@@ -37,6 +37,7 @@ public:
   void setTranslation(const QVector3D &vector);
   void setRotation(const QVector3D &angles);
   void setScale(float factor);
+  void setBaseScale(float factor);
 
   void rotateX(float angle, ReferenceFrame referenceFrame = Model);
   void rotateY(float angle, ReferenceFrame referenceFrame = Model);
@@ -63,9 +64,11 @@ public:
   void updateViewProjectionMatrix();
 
   QVector2D getViewport() const;
-  QVector3D getRotation() const;
+  QVector3D getOrigin() const;
   QVector3D getTranslation() const;
+  QVector3D getRotation() const;
   float getScale() const;
+  float getBaseScale() const;
 
   QMatrix4x4 getScaleMatrix() const;
   QMatrix4x4 getRotationMatrix() const;
@@ -89,12 +92,14 @@ public:
   Observable<QVector3D> translationObservable = translationVector;
   Observable<QVector3D> originObservable = originVector;
   Observable<float> scaleObservable = scaleFactor;
+  Observable<float> baseScaleObservable = baseScaleFactor;
 
 private:
   QVector3D rotationAngles = {};
   QVector3D translationVector = {};
   QVector3D originVector = {};
   float scaleFactor = 1.0f;
+  float baseScaleFactor = 1.0f;
 
   QVector2D viewport = {1.0f, 1.0f};
 

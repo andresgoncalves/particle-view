@@ -71,6 +71,12 @@ void ViewController::setScale(float factor)
   scaleObservable.notify();
 };
 
+void ViewController::setBaseScale(float factor)
+{
+  scaleFactor = factor;
+  baseScaleObservable.notify();
+};
+
 void ViewController::rotateX(float angle, ReferenceFrame referenceFrame)
 {
   rotate({angle, 0.0f, 0.0f}, referenceFrame);
@@ -171,9 +177,9 @@ void ViewController::updateViewProjectionMatrix()
   viewProjectionMatrix = getProjectionMatrix() * getViewMatrix();
 }
 
-QVector3D ViewController::getRotation() const
+QVector3D ViewController::getOrigin() const
 {
-  return rotationAngles;
+  return originVector;
 };
 
 QVector3D ViewController::getTranslation() const
@@ -181,9 +187,19 @@ QVector3D ViewController::getTranslation() const
   return translationVector;
 };
 
+QVector3D ViewController::getRotation() const
+{
+  return rotationAngles;
+};
+
 float ViewController::getScale() const
 {
   return scaleFactor;
+};
+
+float ViewController::getBaseScale() const
+{
+  return baseScaleFactor;
 };
 
 QVector2D ViewController::getViewport() const
@@ -224,7 +240,7 @@ QMatrix4x4 ViewController::getTranslationMatrix() const
 QMatrix4x4 ViewController::getScaleMatrix() const
 {
   auto scaleMatrix = QMatrix4x4{};
-  scaleMatrix.scale(scaleFactor);
+  scaleMatrix.scale(scaleFactor * baseScaleFactor);
   return scaleMatrix;
 }
 
