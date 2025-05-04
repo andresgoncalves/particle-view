@@ -42,7 +42,7 @@ void VectorRenderer::render(const std::pair<Particle, std::string> &input, const
   auto largestVector = largestVectorIt == metadata.largestVectors.end() && largestVectorIt->second > 0 ? largestVectorIt->second : 1.0f;
 
   float width = 0.25f;
-  float height = 5.0f * metadata.maxRadius * vector.length() / largestVector;
+  float height = 5.0f * metadata.largestRadius * vector.length() / largestVector;
 
   auto headModelMatrix = getHeadModelMatrix(particle.position, vector, width, height);
   auto bodyModelMatrix = getBodyModelMatrix(particle.position, vector, width, height);

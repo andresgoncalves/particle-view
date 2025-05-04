@@ -17,7 +17,7 @@ struct Story
     QVector3D end;
     double startTime;
     double endTime;
-    float maxRadius;
+    float largestRadius;
     std::map<std::string, float> largestScalars;
     std::map<std::string, float> largestVectors;
   } metadata;

@@ -18,7 +18,7 @@ struct Scene
   {
     QVector3D start;
     QVector3D end;
-    float maxRadius;
+    float largestRadius;
     std::map<std::string, float> largestScalars;
     std::map<std::string, float> largestVectors;
   } metadata;
