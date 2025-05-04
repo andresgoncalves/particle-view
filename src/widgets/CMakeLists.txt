@@ -9,11 +9,15 @@ add_library(widgets STATIC
   AppWindow.cpp
   GraphicsWidget.cpp
   TimeSliderWidget.cpp
+
   utils/KeyEventFilter.cpp
 
-  controls/SceneControlPanel.cpp
   controls/ControlSection.cpp
   controls/NumericControl.cpp
+
+  controls/SceneControlPanel.cpp
+  controls/DisplayControlPanel.cpp
+
   controls/ToolControls.cpp
 
   controls/view/ViewControls.cpp
@@ -26,6 +30,8 @@ add_library(widgets STATIC
   controls/animation/AnimationTimeControls.cpp
   controls/animation/AnimationSpeedControls.cpp
   controls/animation/AnimationStrategyControls.cpp
+
+  controls/display/DisplayControls.cpp
 
   loader/StoryLoaderDialog.cpp
   loader/StoryLoaderPropertyGrid.cpp

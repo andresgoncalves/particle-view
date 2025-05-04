@@ -12,9 +12,18 @@ SceneRenderer::SceneRenderer()
 
 void SceneRenderer::render(const Scene &scene, const AppContext &appContext)
 {
-  // for (auto &particle : scene.particles)
-  //   particleRenderer->render(particle, appContext);
+  auto displayParticles = appContext.displayController.getDisplayParticles();
+  auto displayedVectors = appContext.displayController.getDisplayedVectors();
 
-  for (auto &particle : scene.particles)
-    vectorRenderer->render({particle, Particle::VelocityProperty}, appContext);
+  if (displayParticles)
+  {
+    for (auto &particle : scene.particles)
+      particleRenderer->render(particle, appContext);
+  }
+
+  for (auto property : displayedVectors)
+  {
+    for (auto &particle : scene.particles)
+      vectorRenderer->render({particle, property}, appContext);
+  }
 }

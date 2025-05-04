@@ -19,8 +19,6 @@ StoryLoaderPropertyGrid::StoryLoaderPropertyGrid(QWidget *parent) : QWidget{pare
   defaultRows[StoryLoader::DefaultProperty::Z] = new StoryLoaderScalarPropertyRow{"z", this};
   defaultRows[StoryLoader::DefaultProperty::R] = new StoryLoaderScalarPropertyRow{"Radio", this};
 
-  vectorRows[Particle::VelocityProperty] = new StoryLoaderVectorPropertyRow{"Velocidad", this};
-
   auto scrollArea = new QScrollArea{this};
   scrollArea->setWidget(new QWidget{this});
   scrollArea->setWidgetResizable(true);

@@ -6,8 +6,6 @@
 
 struct Particle
 {
-  inline static const std::string VelocityProperty = "_velocity";
-
   enum PropertyType
   {
     Scalar,

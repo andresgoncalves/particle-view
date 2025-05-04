@@ -50,6 +50,10 @@ GraphicsWidget::GraphicsWidget(AppContext &appContext, QWidget *parent) : appCon
                                                      { update(); });
   appContext.animationController.timeObservable.subscribe(this, [&](double)
                                                           { update(); });
+  appContext.displayController.displayParticlesObservable.subscribe(this, [&](bool)
+                                                                    { update(); });
+  appContext.displayController.displayedVectorsObservable.subscribe(this, [&](std::set<std::string>)
+                                                                    { update(); });
 }
 
 void GraphicsWidget::update()

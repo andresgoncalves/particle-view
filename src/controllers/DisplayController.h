@@ -25,7 +25,7 @@ public:
   Observable<std::set<std::string>> displayedVectorsObservable = displayedVectors;
 
 private:
-  bool displayParticles;
+  bool displayParticles = true;
   std::set<std::string> displayedVectors;
 };
 
