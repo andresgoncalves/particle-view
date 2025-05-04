@@ -7,6 +7,7 @@ add_library(controllers STATIC
   ViewController.cpp
   AnimationController.cpp
   TransformController.cpp
+  DisplayController.cpp
   animation/StepAnimationStrategy.cpp
   animation/LinearAnimationStrategy.cpp
 )
