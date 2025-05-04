@@ -1,5 +1,5 @@
-#ifndef RENDER_CONTROLLER_H
-#define RENDER_CONTROLLER_H
+#ifndef VIEW_CONTROLLER_H
+#define VIEW_CONTROLLER_H
 
 #include <set>
 #include <QtGui/QMatrix4x4>
@@ -93,6 +93,8 @@ public:
   Observable<QVector3D> originObservable = originVector;
   Observable<float> scaleObservable = scaleFactor;
   Observable<float> baseScaleObservable = baseScaleFactor;
+
+  BaseObservable<nullptr_t> viewObservable;
 
 private:
   QVector3D rotationAngles = {};
