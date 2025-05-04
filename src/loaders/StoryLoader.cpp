@@ -7,7 +7,7 @@ Story StoryLoader::load(std::istream &input)
 {
   auto story = Story{};
 
-  while (!input.eof())
+  for (int frame = 1; !input.eof(); frame++)
   {
     size_t count;
     float time;
@@ -20,6 +20,7 @@ Story StoryLoader::load(std::istream &input)
 
     auto scene = loadScene(input, count);
 
+    scene.frame = frame;
     scene.time = time;
     scene.metadata = getMetadata(scene);
 
@@ -269,6 +270,8 @@ Story::Metadata StoryLoader::getMetadata(const Story &story) const
           end[1]->second.metadata.end.y(),
           end[2]->second.metadata.end.z(),
       },
+      .startTime = story.scenes.begin()->first,
+      .endTime = std::prev(story.scenes.end())->first,
       .maxRadius = maxRadius->second.metadata.maxRadius,
       .maxVelocity = maxVelocity->second.metadata.maxVelocity,
       .largestScalars = largestScalars,

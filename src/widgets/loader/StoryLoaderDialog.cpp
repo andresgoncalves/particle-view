@@ -75,10 +75,11 @@ StoryLoaderDialog::StoryLoaderDialog(AppContext &appContext, QWidget *parent) : 
     auto story = loader.load(input);
 
     appContext.animationController.setStory(story);
+    appContext.animationController.setAnimationSpeed(6.0 * (story.metadata.endTime - story.metadata.startTime) / story.scenes.size());
     appContext.viewController.setOrigin((story.metadata.start + story.metadata.end) / 2);
 
     auto diagonalSize = story.metadata.start.distanceToPoint(story.metadata.end);
-    appContext.viewController.setBaseScale(diagonalSize > 0 ? 1.f / diagonalSize : 1.f);
+    appContext.viewController.setBaseScale(diagonalSize > 0 ? 1.0f / diagonalSize : 1.0f);
 
     accept();
   };

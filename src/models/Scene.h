@@ -10,6 +10,7 @@
 
 struct Scene
 {
+  int frame;
   double time;
   std::vector<Particle> particles;
 
