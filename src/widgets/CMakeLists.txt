@@ -35,6 +35,7 @@ add_library(widgets STATIC
   controls/display/DisplayRuleControls.cpp
   controls/display/DisplayRuleGrid.cpp
   controls/display/DisplayRuleRow.cpp
+  controls/display/DisplayRuleDialog.cpp
 
   loader/StoryLoaderDialog.cpp
   loader/StoryLoaderPropertyGrid.cpp

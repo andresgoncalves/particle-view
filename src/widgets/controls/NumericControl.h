@@ -24,7 +24,14 @@ public:
   void setValue(double value);
 
   template <typename T>
-  void onChange(std::function<void(T)> callback) const;
+  T getValue() const;
+
+  template <typename T>
+  void onChange(std::function<void(T)> callback) const
+  {
+    connect(lineEdit, &QLineEdit::editingFinished, this, [&, callback = callback]
+            { callback(getValue<T>()); });
+  };
 
 protected:
   QLabel *label;

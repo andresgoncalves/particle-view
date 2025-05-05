@@ -45,22 +45,19 @@ void NumericControl::setValue(double value)
 }
 
 template <>
-void NumericControl::onChange<int>(std::function<void(int)> callback) const
+int NumericControl::getValue<int>() const
 {
-  connect(lineEdit, &QLineEdit::editingFinished, this, [&, callback = callback]
-          { callback(lineEdit->text().toInt()); });
+  return lineEdit->text().toInt();
 }
 
 template <>
-void NumericControl::onChange<float>(std::function<void(float)> callback) const
+float NumericControl::getValue<float>() const
 {
-  connect(lineEdit, &QLineEdit::editingFinished, this, [&, callback = callback]
-          { callback(lineEdit->text().toFloat()); });
+  return lineEdit->text().toFloat();
 }
 
 template <>
-void NumericControl::onChange<double>(std::function<void(double)> callback) const
+double NumericControl::getValue<double>() const
 {
-  connect(lineEdit, &QLineEdit::editingFinished, this, [&, callback = callback]
-          { callback(lineEdit->text().toDouble()); });
+  return lineEdit->text().toDouble();
 }
