@@ -11,6 +11,9 @@ struct Story
 {
   std::map<double, Scene> scenes;
 
+  std::set<std::string> scalarProperties;
+  std::set<std::string> vectorProperties;
+
   struct Metadata
   {
     QVector3D start;

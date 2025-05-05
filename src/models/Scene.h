@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <map>
+#include <set>
 
 #include <QtGui/QVector3D>
 
@@ -13,6 +14,9 @@ struct Scene
   int frame;
   double time;
   std::vector<Particle> particles;
+
+  std::set<std::string> scalarProperties;
+  std::set<std::string> vectorProperties;
 
   struct Metadata
   {

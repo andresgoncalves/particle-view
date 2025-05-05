@@ -11,20 +11,10 @@ DisplayRuleDialog::DisplayRuleDialog(AppContext &appContext, QWidget *parent) : 
   propertyComboBox = new QComboBox{this};
 
   auto story = appContext.animationController.getStory();
-  if (story.scenes.size() > 0)
-  {
-    auto scene = story.scenes.begin()->second;
-    if (scene.particles.size() > 0)
-    {
-      auto scalarProperties = scene.particles.begin()->scalarProperties;
-      for (auto [property, _] : scalarProperties)
-        propertyComboBox->addItem(property.c_str(), Particle::PropertyType::Scalar);
-
-      auto vectorProperties = scene.particles.begin()->vectorProperties;
-      for (auto [property, _] : vectorProperties)
-        propertyComboBox->addItem(property.c_str(), Particle::PropertyType::Vector);
-    }
-  }
+  for (auto property : story.scalarProperties)
+    propertyComboBox->addItem(property.c_str(), Particle::PropertyType::Scalar);
+  for (auto property : story.vectorProperties)
+    propertyComboBox->addItem(property.c_str(), Particle::PropertyType::Vector);
 
   ruleComboBox = new QComboBox{this};
   ruleComboBox->addItem("=", DisplayRuleItem::Equal);

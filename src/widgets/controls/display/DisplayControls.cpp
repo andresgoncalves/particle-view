@@ -43,23 +43,15 @@ void DisplayControls::refreshProperties()
   vectorCheckBoxes.clear();
 
   auto story = appContext.animationController.getStory();
-  if (story.scenes.size() > 0)
+  for (auto property : story.vectorProperties)
   {
-    auto scene = story.scenes.begin()->second;
-    if (scene.particles.size() > 0)
-    {
-      auto vectorProperties = scene.particles.begin()->vectorProperties;
-      for (auto [property, _] : vectorProperties)
-      {
-        auto checkBox = new QCheckBox{property.c_str(), this};
-        checkBox->setChecked(appContext.displayController.getDisplayVector(property));
-        connect(checkBox, &QCheckBox::checkStateChanged, this, [=, this](Qt::CheckState checkState)
-                { appContext.displayController.setDisplayVector(property, checkState != Qt::Unchecked); });
+    auto checkBox = new QCheckBox{property.c_str(), this};
+    checkBox->setChecked(appContext.displayController.getDisplayVector(property));
+    connect(checkBox, &QCheckBox::checkStateChanged, this, [=, this](Qt::CheckState checkState)
+            { appContext.displayController.setDisplayVector(property, checkState != Qt::Unchecked); });
 
-        content->layout()->addWidget(checkBox);
+    content->layout()->addWidget(checkBox);
 
-        vectorCheckBoxes[property] = checkBox;
-      }
-    }
+    vectorCheckBoxes[property] = checkBox;
   }
 }
