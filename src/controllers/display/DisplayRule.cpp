@@ -1,117 +1,26 @@
-
 #include "DisplayRule.h"
 
-DisplayRule::DisplayRule(DisplayRule::Predicate predicate) : predicate{predicate} {}
-
-bool DisplayRule::test(const Particle &particle) const
+std::optional<float> DisplayRule::getValue(const Particle &particle, std::string property, Particle::PropertyType type) const
 {
-  return predicate(particle);
-}
-
-DisplayRule::Predicate DisplayRule::Scalar::equal(std::string property, float value)
-{
-  return [=](const Particle &particle)
+  if (type == Particle::PropertyType::Scalar)
   {
     auto it = particle.scalarProperties.find(property);
-    return it != particle.scalarProperties.end() && it->second == value;
-  };
-}
-
-DisplayRule::Predicate DisplayRule::Scalar::less(std::string property, float value)
-{
-  return [=](const Particle &particle)
-  {
-    auto it = particle.scalarProperties.find(property);
-    return it != particle.scalarProperties.end() && it->second < value;
-  };
-}
-
-DisplayRule::Predicate DisplayRule::Scalar::greater(std::string property, float value)
-{
-  return [=](const Particle &particle)
-  {
-    auto it = particle.scalarProperties.find(property);
-    return it != particle.scalarProperties.end() && it->second > value;
-  };
-}
-
-DisplayRule::Predicate DisplayRule::Scalar::equalOrLess(std::string property, float value)
-{
-  return [=](const Particle &particle)
-  {
-    auto it = particle.scalarProperties.find(property);
-    return it != particle.scalarProperties.end() && it->second <= value;
-  };
-}
-
-DisplayRule::Predicate DisplayRule::Scalar::equalOrGreater(std::string property, float value)
-{
-  return [=](const Particle &particle)
-  {
-    auto it = particle.scalarProperties.find(property);
-    return it != particle.scalarProperties.end() && it->second >= value;
-  };
-}
-
-DisplayRule::Predicate DisplayRule::Scalar::between(std::string property, float min, float max)
-{
-  return [=](const Particle &particle)
-  {
-    auto it = particle.scalarProperties.find(property);
-    return it != particle.scalarProperties.end() && it->second >= min && it->second <= max;
-  };
-}
-
-DisplayRule::Predicate DisplayRule::Vector::equal(std::string property, float value)
-{
-  return [=](const Particle &particle)
+    return it != particle.scalarProperties.end() ? std::make_optional(it->second) : std::nullopt;
+  }
+  else
   {
     auto it = particle.vectorProperties.find(property);
-    return it != particle.vectorProperties.end() && it->second.length() == value;
-  };
+    return it != particle.vectorProperties.end() ? std::make_optional(it->second.length()) : std::nullopt;
+  }
 }
 
-DisplayRule::Predicate DisplayRule::Vector::less(std::string property, float value)
+void DisplayRule::setEnabled(bool enabled)
 {
-  return [=](const Particle &particle)
-  {
-    auto it = particle.vectorProperties.find(property);
-    return it != particle.vectorProperties.end() && it->second.length() < value;
-  };
+  this->enabled = enabled;
+  enabledObservable.notify();
 }
 
-DisplayRule::Predicate DisplayRule::Vector::greater(std::string property, float value)
+bool DisplayRule::isEnabled() const
 {
-  return [=](const Particle &particle)
-  {
-    auto it = particle.vectorProperties.find(property);
-    return it != particle.vectorProperties.end() && it->second.length() > value;
-  };
-}
-
-DisplayRule::Predicate DisplayRule::Vector::equalOrLess(std::string property, float value)
-{
-  return [=](const Particle &particle)
-  {
-    auto it = particle.vectorProperties.find(property);
-    return it != particle.vectorProperties.end() && it->second.length() <= value;
-  };
-}
-
-DisplayRule::Predicate DisplayRule::Vector::equalOrGreater(std::string property, float value)
-{
-  return [=](const Particle &particle)
-  {
-    auto it = particle.vectorProperties.find(property);
-    return it != particle.vectorProperties.end() && it->second.length() >= value;
-  };
-}
-
-DisplayRule::Predicate DisplayRule::Vector::between(std::string property, float min, float max)
-{
-  return [=](const Particle &particle)
-  {
-    auto it = particle.vectorProperties.find(property);
-    return it != particle.vectorProperties.end() && it->second.length() >= min && it->second.length() <= max;
-  };
+  return enabled;
 }

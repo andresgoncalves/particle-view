@@ -56,6 +56,8 @@ GraphicsWidget::GraphicsWidget(AppContext &appContext, QWidget *parent) : appCon
                                                                     { update(); });
   appContext.displayController.displayedVectorsObservable.subscribe(this, [&](std::set<std::string>)
                                                                     { update(); });
+  appContext.displayController.displayRulesObservable.subscribe(this, [&]()
+                                                                { update(); });
 }
 
 void GraphicsWidget::update()

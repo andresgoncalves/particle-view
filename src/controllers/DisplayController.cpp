@@ -43,3 +43,23 @@ std::set<std::string> DisplayController::getDisplayedVectors() const
 {
   return displayedVectors;
 }
+
+DisplayController::DisplayRules DisplayController::getDisplayRules() const
+{
+  return displayRules;
+}
+
+DisplayController::DisplayRules::iterator DisplayController::addDisplayRule(std::shared_ptr<DisplayRule> displayRule)
+{
+  displayRules.push_back(displayRule);
+  displayRule->enabledObservable.subscribe(this, [&](bool enabled)
+                                           { displayRulesObservable.notify(); });
+  displayRulesObservable.notify();
+  return std::prev(displayRules.end());
+}
+
+void DisplayController::removeDisplayRule(DisplayController::DisplayRules::iterator it)
+{
+  displayRules.erase(it);
+  displayRulesObservable.notify();
+}

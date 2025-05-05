@@ -69,6 +69,12 @@ void ParticleRenderer::render(const Particle &particle, const AppContext &appCon
 
 bool ParticleRenderer::shouldRender(const Particle &particle, const AppContext &appContext)
 {
+  for (auto &displayRule : appContext.displayController.getDisplayRules())
+  {
+    if (displayRule->isEnabled() && displayRule->test(particle))
+      return false;
+  }
+
   switch (appContext.viewController.projectionMode)
   {
   case ViewController::Perspective:
