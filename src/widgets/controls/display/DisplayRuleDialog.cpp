@@ -4,9 +4,19 @@
 
 #include "../NumericControl.h"
 
-DisplayRuleDialog::DisplayRuleDialog(AppContext &appContext, QWidget *parent) : QDialog{parent}
+DisplayRuleDialog::DisplayRuleDialog(AppContext &appContext, QWidget *parent)
+    : DisplayRuleDialog{false, appContext, parent} {}
+
+DisplayRuleDialog::DisplayRuleDialog(AbstractBinaryDisplayRule &displayRule, AppContext &appContext, QWidget *parent) : DisplayRuleDialog{true, appContext, parent}
 {
-  setWindowTitle("Agregar regla");
+  propertyComboBox->setCurrentText(displayRule.getProperty().c_str());
+  ruleComboBox->setCurrentText(displayRule.getSymbol().c_str());
+  valueControl->setValue(displayRule.getCompareValue());
+}
+
+DisplayRuleDialog::DisplayRuleDialog(bool edit, AppContext &appContext, QWidget *parent) : QDialog{parent}
+{
+  setWindowTitle(edit ? "Editar regla" : "Agregar regla");
 
   propertyComboBox = new QComboBox{this};
 
@@ -17,12 +27,12 @@ DisplayRuleDialog::DisplayRuleDialog(AppContext &appContext, QWidget *parent) : 
     propertyComboBox->addItem(property.c_str(), Particle::PropertyType::Vector);
 
   ruleComboBox = new QComboBox{this};
-  ruleComboBox->addItem("=", DisplayRuleItem::Equal);
-  ruleComboBox->addItem("≠", DisplayRuleItem::NotEqual);
-  ruleComboBox->addItem("<", DisplayRuleItem::Less);
-  ruleComboBox->addItem(">", DisplayRuleItem::Greater);
-  ruleComboBox->addItem("≤", DisplayRuleItem::LessEqual);
-  ruleComboBox->addItem("≥", DisplayRuleItem::GreaterEqual);
+  ruleComboBox->addItem("=", DisplayRuleType::Equal);
+  ruleComboBox->addItem("≠", DisplayRuleType::NotEqual);
+  ruleComboBox->addItem("<", DisplayRuleType::Less);
+  ruleComboBox->addItem(">", DisplayRuleType::Greater);
+  ruleComboBox->addItem("≤", DisplayRuleType::LessEqual);
+  ruleComboBox->addItem("≥", DisplayRuleType::GreaterEqual);
 
   valueControl = new NumericControl{this};
 
@@ -32,17 +42,26 @@ DisplayRuleDialog::DisplayRuleDialog(AppContext &appContext, QWidget *parent) : 
   inputLayout->addWidget(ruleComboBox);
   inputLayout->addWidget(valueControl);
 
-  auto addButton = new QPushButton{"Agregar", this};
-  connect(addButton, &QPushButton::clicked, this, [=, this]
-          { this->accept(); });
-  auto cancelButton = new QPushButton{"Cancelar", this};
-  connect(cancelButton, &QPushButton::clicked, this, [=, this]
-          { this->reject(); });
-
   auto buttonsLayout = new QHBoxLayout{};
   buttonsLayout->setAlignment(Qt::AlignRight);
-  buttonsLayout->addWidget(cancelButton);
+
+  auto addButton = new QPushButton{"Guardar", this};
+  connect(addButton, &QPushButton::clicked, this, [=, this]
+          { this->done(DialogResult::Accept); });
   buttonsLayout->addWidget(addButton);
+
+  if (edit)
+  {
+    auto deleteButton = new QPushButton{"Borrar", this};
+    connect(deleteButton, &QPushButton::clicked, this, [=, this]
+            { this->done(DialogResult::Delete); });
+    buttonsLayout->addWidget(deleteButton);
+  }
+
+  auto cancelButton = new QPushButton{"Cancelar", this};
+  connect(cancelButton, &QPushButton::clicked, this, [=, this]
+          { this->done(DialogResult::Cancel); });
+  buttonsLayout->addWidget(cancelButton);
 
   auto layout = new QVBoxLayout{this};
   layout->addLayout(inputLayout);
@@ -56,7 +75,7 @@ std::shared_ptr<DisplayRule> DisplayRuleDialog::getDisplayRule() const
   auto value = valueControl->getValue<float>();
   auto property = propertyComboBox->currentText().toStdString();
   auto propertyType = static_cast<Particle::PropertyType>(propertyComboBox->currentData().toInt());
-  auto displayRule = static_cast<DisplayRuleItem>(ruleComboBox->currentData().toInt());
+  auto displayRule = static_cast<DisplayRuleType>(ruleComboBox->currentData().toInt());
 
   switch (displayRule)
   {

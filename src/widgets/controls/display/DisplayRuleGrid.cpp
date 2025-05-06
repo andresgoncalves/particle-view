@@ -12,7 +12,7 @@ DisplayRuleGrid::DisplayRuleGrid(AppContext &appContext, QWidget *parent) : appC
   auto displayRules = appContext.displayController.getDisplayRules();
   for (auto ruleIt = displayRules.begin(); ruleIt != displayRules.end(); ruleIt++)
   {
-    auto row = new DisplayRuleRow{*ruleIt, this};
+    auto row = new DisplayRuleRow{ruleIt, appContext, this};
     rows.push_back(row);
     auto rowIt = std::prev(rows.end());
     itemLayout->addWidget(row);
@@ -29,7 +29,7 @@ void DisplayRuleGrid::addDisplayRule(std::shared_ptr<DisplayRule> displayRule)
 {
   auto ruleIt = appContext.displayController.addDisplayRule(displayRule);
 
-  auto row = new DisplayRuleRow{displayRule, this};
+  auto row = new DisplayRuleRow{ruleIt, appContext, this};
   rows.push_back(row);
   auto rowIt = std::prev(rows.end());
   itemLayout->addWidget(row);

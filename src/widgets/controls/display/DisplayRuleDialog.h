@@ -13,7 +13,14 @@
 class DisplayRuleDialog : public QDialog
 {
 public:
-  enum DisplayRuleItem
+  enum DialogResult
+  {
+    Cancel = QDialog::Rejected,
+    Accept = QDialog::Accepted,
+    Delete,
+  };
+
+  enum DisplayRuleType
   {
     Equal,
     NotEqual,
@@ -24,10 +31,13 @@ public:
   };
 
   DisplayRuleDialog(AppContext &appContext, QWidget *parent = nullptr);
+  DisplayRuleDialog(AbstractBinaryDisplayRule &displayRule, AppContext &appContext, QWidget *parent = nullptr);
 
   std::shared_ptr<DisplayRule> getDisplayRule() const;
 
 private:
+  DisplayRuleDialog(bool edit, AppContext &appContext, QWidget *parent = nullptr);
+
   QComboBox *propertyComboBox;
   QComboBox *ruleComboBox;
   NumericControl *valueControl;

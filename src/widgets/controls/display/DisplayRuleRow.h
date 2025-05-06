@@ -4,16 +4,16 @@
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QPushButton>
 
-#include "../../../controllers/display/DisplayRule.h"
+#include "../../../controllers/AppContext.h"
 
 class DisplayRuleRow : public QWidget
 {
 public:
-  DisplayRuleRow(std::shared_ptr<DisplayRule> displayRule, QWidget *parent = nullptr);
+  DisplayRuleRow(DisplayController::DisplayRules::iterator displayRule, AppContext &appContext, QWidget *parent = nullptr);
   ~DisplayRuleRow();
 
 private:
-  std::shared_ptr<DisplayRule> displayRule;
+  DisplayController::DisplayRules::iterator displayRule;
 };
 
 #endif

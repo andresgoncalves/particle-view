@@ -58,6 +58,14 @@ DisplayController::DisplayRules::iterator DisplayController::addDisplayRule(std:
   return std::prev(displayRules.end());
 }
 
+void DisplayController::replaceDisplayRule(DisplayRules::iterator it, std::shared_ptr<DisplayRule> displayRule)
+{
+  *it = displayRule;
+  displayRule->enabledObservable.subscribe(this, [&](bool enabled)
+                                           { displayRulesObservable.notify(); });
+  displayRulesObservable.notify();
+}
+
 void DisplayController::removeDisplayRule(DisplayController::DisplayRules::iterator it)
 {
   displayRules.erase(it);

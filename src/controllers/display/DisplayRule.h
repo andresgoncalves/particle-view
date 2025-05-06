@@ -11,7 +11,7 @@
 class DisplayRule
 {
 public:
-  ~DisplayRule() = default;
+  virtual ~DisplayRule() = default;
 
   virtual bool test(const Particle &particle) const = 0;
   virtual std::string getText() const = 0;
@@ -28,8 +28,29 @@ protected:
   bool enabled = true;
 };
 
+class AbstractBinaryDisplayRule : public DisplayRule
+{
+public:
+  virtual bool test(const Particle &particle) const override = 0;
+
+  Particle::PropertyType getType() const;
+  std::string getText() const override;
+  std::string getProperty() const;
+  std::string getSymbol() const;
+
+  float getCompareValue() const;
+
+protected:
+  AbstractBinaryDisplayRule(std::string property, Particle::PropertyType type, float compareValue, std::string symbol);
+
+  Particle::PropertyType type;
+  std::string property;
+  std::string symbol;
+  float compareValue;
+};
+
 template <typename Comparator>
-class BinaryDisplayRule : public DisplayRule
+class BinaryDisplayRule : public AbstractBinaryDisplayRule
 {
 public:
   bool test(const Particle &particle) const override
@@ -55,7 +76,7 @@ public:
     return type;
   }
 
-  float geCompareValue() const
+  float getCompareValue() const
   {
     return compareValue;
   }
@@ -67,16 +88,10 @@ public:
 
 protected:
   BinaryDisplayRule(std::string property, Particle::PropertyType type, float compareValue, std::string symbol, Comparator compare = {})
-      : property{property}, type{type}, compareValue{compareValue}, symbol{symbol}, compare{compare}
+      : AbstractBinaryDisplayRule{property, type, compareValue, symbol}, compare{compare}
   {
   }
 
-private:
-  std::string property;
-  Particle::PropertyType type;
-  float compareValue;
-
-  std::string symbol;
   Comparator compare;
 };
 

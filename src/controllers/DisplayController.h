@@ -27,6 +27,7 @@ public:
   DisplayRules getDisplayRules() const;
 
   DisplayRules::iterator addDisplayRule(std::shared_ptr<DisplayRule> displayRule);
+  void replaceDisplayRule(DisplayRules::iterator it, std::shared_ptr<DisplayRule> displayRule);
   void removeDisplayRule(DisplayRules::iterator it);
 
   Observable<bool> displayParticlesObservable = displayParticles;

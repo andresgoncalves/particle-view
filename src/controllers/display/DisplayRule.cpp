@@ -24,3 +24,35 @@ bool DisplayRule::isEnabled() const
 {
   return enabled;
 }
+
+AbstractBinaryDisplayRule::AbstractBinaryDisplayRule(std::string property, Particle::PropertyType type, float compareValue, std::string symbol)
+    : property{property}, type{type}, compareValue{compareValue}, symbol{symbol}
+{
+}
+
+std::string AbstractBinaryDisplayRule::getText() const
+{
+  auto stream = std::stringstream{};
+  stream << property << " " << symbol << " " << compareValue;
+  return stream.str();
+}
+
+std::string AbstractBinaryDisplayRule::getProperty() const
+{
+  return property;
+}
+
+Particle::PropertyType AbstractBinaryDisplayRule::getType() const
+{
+  return type;
+}
+
+float AbstractBinaryDisplayRule::getCompareValue() const
+{
+  return compareValue;
+}
+
+std::string AbstractBinaryDisplayRule::getSymbol() const
+{
+  return symbol;
+}
