@@ -6,6 +6,8 @@
 
 struct Particle
 {
+  inline static const std::string radiusProperty = "Radio";
+
   enum PropertyType
   {
     Scalar,

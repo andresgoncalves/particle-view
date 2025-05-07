@@ -16,7 +16,7 @@ public:
     X,
     Y,
     Z,
-    R,
+    Radius,
   };
 
   Story load(std::istream &input);

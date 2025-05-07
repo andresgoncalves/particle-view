@@ -17,7 +17,7 @@ StoryLoaderPropertyGrid::StoryLoaderPropertyGrid(QWidget *parent) : QWidget{pare
   defaultRows[StoryLoader::DefaultProperty::X] = new StoryLoaderScalarPropertyRow{"x", this};
   defaultRows[StoryLoader::DefaultProperty::Y] = new StoryLoaderScalarPropertyRow{"y", this};
   defaultRows[StoryLoader::DefaultProperty::Z] = new StoryLoaderScalarPropertyRow{"z", this};
-  defaultRows[StoryLoader::DefaultProperty::R] = new StoryLoaderScalarPropertyRow{"Radio", this};
+  defaultRows[StoryLoader::DefaultProperty::Radius] = new StoryLoaderScalarPropertyRow{"Radio", this};
 
   auto scrollArea = new QScrollArea{this};
   scrollArea->setWidget(new QWidget{this});

@@ -96,8 +96,10 @@ Particle StoryLoader::loadParticle(std::istream &input)
     return it != defaultValues.end() ? it->second : fallback;
   };
 
+  scalarValues[Particle::radiusProperty] = getDefaultValue(DefaultProperty::Radius, 1.0f);
+
   auto particle = Particle{
-      .radius = getDefaultValue(DefaultProperty::R, 1.0f),
+      .radius = getDefaultValue(DefaultProperty::Radius, 1.0f),
       .position = {
           getDefaultValue(DefaultProperty::X, 0.0f),
           getDefaultValue(DefaultProperty::Y, 0.0f),
