@@ -1,5 +1,5 @@
-#ifndef DISPLAY_RULE_GRID
-#define DISPLAY_RULE_GRID
+#ifndef DISPLAY_RULE_GRID_H
+#define DISPLAY_RULE_GRID_H
 
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QComboBox>
@@ -13,10 +13,11 @@ class DisplayRuleGrid : public QWidget
 public:
   DisplayRuleGrid(AppContext &appContext, QWidget *parent = nullptr);
 
-  void addDisplayRule(std::shared_ptr<DisplayRule> rule);
-  void removeRow(std::list<DisplayRuleRow *>::iterator it);
+  void addRow(DisplayController::DisplayRules::iterator displayRule);
 
 private:
+  void removeRow(std::list<DisplayRuleRow *>::iterator it);
+
   QVBoxLayout *itemLayout;
   std::list<DisplayRuleRow *> rows;
 

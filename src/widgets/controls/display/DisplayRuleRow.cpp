@@ -4,40 +4,16 @@
 #include <QtWidgets/QCheckBox>
 #include <QtWidgets/QGridLayout>
 
-#include "DisplayRuleDialog.h"
-
-DisplayRuleRow::DisplayRuleRow(DisplayController::DisplayRules::iterator displayRule, AppContext &appContext, QWidget *parent) : displayRule{displayRule}, QWidget{parent}
+DisplayRuleRow::DisplayRuleRow(std::shared_ptr<DisplayRule> displayRule, AppContext &appContext, QWidget *parent) : displayRule{displayRule}, QWidget{parent}
 {
+  checkBox = new QCheckBox{this};
+  checkBox->setChecked(displayRule->isEnabled());
+  connect(checkBox, &QCheckBox::checkStateChanged, [this](Qt::CheckState checkState)
+          { this->displayRule->setEnabled(checkState != Qt::Unchecked); });
 
-  auto checkBox = new QCheckBox{this};
-  checkBox->setChecked((*displayRule)->isEnabled());
-  connect(checkBox, &QCheckBox::checkStateChanged, [=](Qt::CheckState checkState)
-          { (*displayRule)->setEnabled(checkState != Qt::Unchecked); });
+  label = new QLabel{displayRule->getText().c_str(), this};
 
-  auto label = new QLabel{(*displayRule)->getText().c_str(), this};
-
-  auto editButton = new QPushButton{"⋮", this};
-  auto editCallback = [=, &appContext, this]
-  {
-    if (auto binaryDisplayRule = dynamic_cast<AbstractBinaryDisplayRule *>((*displayRule).get()))
-    {
-      auto displayRuleDialog = new DisplayRuleDialog{*binaryDisplayRule, appContext, this};
-      switch (displayRuleDialog->exec())
-      {
-      case DisplayRuleDialog::DialogResult::Accept:
-        appContext.displayController.replaceDisplayRule(displayRule, displayRuleDialog->getDisplayRule());
-        checkBox->setChecked((*displayRule)->isEnabled());
-        label->setText((*displayRule)->getText().c_str());
-        break;
-      case DisplayRuleDialog::DialogResult::Delete:
-        // displayRule = displayRuleDialog->getDisplayRule();
-        // displayRuleGrid->addDisplayRule(displayRule);
-        break;
-      }
-      displayRuleDialog->deleteLater();
-    }
-  };
-  connect(editButton, &QPushButton::clicked, editCallback);
+  editButton = new QPushButton{"⋮", this};
 
   auto layout = new QGridLayout{this};
   layout->setAlignment(Qt::AlignVCenter);
@@ -54,5 +30,17 @@ DisplayRuleRow::DisplayRuleRow(DisplayController::DisplayRules::iterator display
 
 DisplayRuleRow::~DisplayRuleRow()
 {
-  (*displayRule)->enabledObservable.unsubscribe(this);
+  displayRule->enabledObservable.unsubscribe(this);
 }
+
+void DisplayRuleRow::setDisplayRule(std::shared_ptr<DisplayRule> displayRule)
+{
+  this->displayRule = displayRule;
+  checkBox->setChecked(displayRule->isEnabled());
+  label->setText(displayRule->getText().c_str());
+}
+
+void DisplayRuleRow::onEdit(std::function<void()> editCallback) const
+{
+  connect(editButton, &QPushButton::clicked, editCallback);
+};

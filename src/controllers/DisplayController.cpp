@@ -49,6 +49,11 @@ DisplayController::DisplayRules DisplayController::getDisplayRules() const
   return displayRules;
 }
 
+DisplayController::DisplayRules &DisplayController::getDisplayRules()
+{
+  return displayRules;
+}
+
 DisplayController::DisplayRules::iterator DisplayController::addDisplayRule(std::shared_ptr<DisplayRule> displayRule)
 {
   displayRules.push_back(displayRule);
@@ -66,7 +71,7 @@ void DisplayController::replaceDisplayRule(DisplayRules::iterator it, std::share
   displayRulesObservable.notify();
 }
 
-void DisplayController::removeDisplayRule(DisplayController::DisplayRules::iterator it)
+void DisplayController::removeDisplayRule(DisplayRules::iterator it)
 {
   displayRules.erase(it);
   displayRulesObservable.notify();

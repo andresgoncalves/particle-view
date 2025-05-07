@@ -25,6 +25,7 @@ public:
   bool getDisplayVector(std::string property) const;
   std::set<std::string> getDisplayedVectors() const;
   DisplayRules getDisplayRules() const;
+  DisplayRules &getDisplayRules();
 
   DisplayRules::iterator addDisplayRule(std::shared_ptr<DisplayRule> displayRule);
   void replaceDisplayRule(DisplayRules::iterator it, std::shared_ptr<DisplayRule> displayRule);

@@ -2,6 +2,8 @@
 
 #include <QtWidgets/QVBoxLayout>
 
+#include "DisplayRuleDialog.h"
+
 DisplayRuleGrid::DisplayRuleGrid(AppContext &appContext, QWidget *parent) : appContext{appContext}, QWidget{parent}
 {
   itemLayout = new QVBoxLayout{this};
@@ -10,35 +12,37 @@ DisplayRuleGrid::DisplayRuleGrid(AppContext &appContext, QWidget *parent) : appC
   itemLayout->setContentsMargins({});
 
   auto displayRules = appContext.displayController.getDisplayRules();
-  for (auto ruleIt = displayRules.begin(); ruleIt != displayRules.end(); ruleIt++)
-  {
-    auto row = new DisplayRuleRow{ruleIt, appContext, this};
-    rows.push_back(row);
-    auto rowIt = std::prev(rows.end());
-    itemLayout->addWidget(row);
-
-    auto deleteCallback = [=, &appContext, this]
-    {
-      removeRow(rowIt);
-      appContext.displayController.removeDisplayRule(ruleIt);
-    };
-  }
+  for (auto displayRule = displayRules.begin(); displayRule != displayRules.end(); displayRule++)
+    addRow(displayRule);
 }
 
-void DisplayRuleGrid::addDisplayRule(std::shared_ptr<DisplayRule> displayRule)
+void DisplayRuleGrid::addRow(DisplayController::DisplayRules::iterator displayRuleIterator)
 {
-  auto ruleIt = appContext.displayController.addDisplayRule(displayRule);
-
-  auto row = new DisplayRuleRow{ruleIt, appContext, this};
+  auto row = new DisplayRuleRow{*displayRuleIterator, appContext, this};
   rows.push_back(row);
-  auto rowIt = std::prev(rows.end());
   itemLayout->addWidget(row);
 
-  auto deleteCallback = [=, this]
+  auto rowIterator = std::prev(rows.end());
+  auto editCallback = [=, this]
   {
-    removeRow(rowIt);
-    appContext.displayController.removeDisplayRule(ruleIt);
+    if (auto binaryDisplayRule = dynamic_cast<AbstractBinaryDisplayRule *>((*displayRuleIterator).get()))
+    {
+      auto displayRuleDialog = new DisplayRuleDialog{*binaryDisplayRule, appContext, this};
+      switch (displayRuleDialog->exec())
+      {
+      case DisplayRuleDialog::DialogResult::Accept:
+        appContext.displayController.replaceDisplayRule(displayRuleIterator, displayRuleDialog->getDisplayRule());
+        row->setDisplayRule(*displayRuleIterator);
+        break;
+      case DisplayRuleDialog::DialogResult::Delete:
+        removeRow(rowIterator);
+        appContext.displayController.removeDisplayRule(displayRuleIterator);
+        break;
+      }
+      displayRuleDialog->deleteLater();
+    }
   };
+  row->onEdit(editCallback);
 }
 
 void DisplayRuleGrid::removeRow(std::list<DisplayRuleRow *>::iterator it)

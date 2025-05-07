@@ -16,7 +16,8 @@ DisplayRuleControls::DisplayRuleControls(AppContext &appContext, QWidget *parent
     auto displayRuleDialog = new DisplayRuleDialog{appContext, this};
     if (displayRuleDialog->exec() == QDialog::Accepted)
     {
-      displayRuleGrid->addDisplayRule(displayRuleDialog->getDisplayRule());
+      auto it = appContext.displayController.addDisplayRule(displayRuleDialog->getDisplayRule());
+      displayRuleGrid->addRow(it);
     }
     displayRuleDialog->deleteLater();
   };
