@@ -50,6 +50,7 @@ DisplayRuleDialog::DisplayRuleDialog(bool edit, AppContext &appContext, QWidget 
   {
     auto color = QColor{colorTextField->text()};
     auto colorDialog = new QColorDialog{color, this};
+    colorDialog->setOption(QColorDialog::ShowAlphaChannel, true);
     if (colorDialog->exec() == QDialog::Accepted)
     {
       colorTextField->setText(colorDialog->currentColor().name());

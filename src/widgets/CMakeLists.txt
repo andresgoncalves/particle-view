@@ -32,6 +32,7 @@ add_library(widgets STATIC
   controls/animation/AnimationStrategyControls.cpp
 
   controls/display/DisplayControls.cpp
+  controls/display/DisplayColorControls.cpp
   controls/display/DisplayRuleControls.cpp
   controls/display/DisplayRuleGrid.cpp
   controls/display/DisplayRuleRow.cpp

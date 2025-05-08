@@ -3,11 +3,13 @@
 #include <QtWidgets/QVBoxLayout>
 
 #include "display/DisplayControls.h"
+#include "display/DisplayColorControls.h"
 #include "display/DisplayRuleControls.h"
 
 DisplayControlPanel::DisplayControlPanel(AppContext &appContext, QWidget *parent) : appContext{appContext}, QScrollArea{parent}
 {
   auto displayControls = new DisplayControls{appContext, this};
+  auto displayColorControls = new DisplayColorControls{appContext, this};
   auto displayRuleControls = new DisplayRuleControls{appContext, this};
 
   auto widget = new QWidget{this};
@@ -17,6 +19,7 @@ DisplayControlPanel::DisplayControlPanel(AppContext &appContext, QWidget *parent
   auto layout = new QVBoxLayout{widget};
   layout->setAlignment(Qt::AlignTop);
   layout->addWidget(displayControls);
+  layout->addWidget(displayColorControls);
   layout->addWidget(displayRuleControls);
   layout->setContentsMargins(0, 8, 0, 8);
 }
