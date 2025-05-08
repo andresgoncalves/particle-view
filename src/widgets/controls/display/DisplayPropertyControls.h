@@ -1,5 +1,5 @@
-#ifndef DISPLAY_CONTROLS_H
-#define DISPLAY_CONTROLS_H
+#ifndef DISPLAY_PROPERTY_CONTROLS_H
+#define DISPLAY_PROPERTY_CONTROLS_H
 
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QCheckBox>
@@ -7,11 +7,11 @@
 #include "../ControlSection.h"
 #include "../../../controllers/AppContext.h"
 
-class DisplayControls : public ControlSection
+class DisplayPropertyControls : public ControlSection
 {
 public:
-  DisplayControls(AppContext &appContext, QWidget *parent = nullptr);
-  ~DisplayControls();
+  DisplayPropertyControls(AppContext &appContext, QWidget *parent = nullptr);
+  ~DisplayPropertyControls();
 
 private:
   void refreshProperties();

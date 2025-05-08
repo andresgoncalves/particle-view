@@ -1,9 +1,9 @@
-#include "DisplayControls.h"
+#include "DisplayPropertyControls.h"
 
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QCheckBox>
 
-DisplayControls::DisplayControls(AppContext &appContext, QWidget *parent) : appContext{appContext}, ControlSection{"Visualización", parent}
+DisplayPropertyControls::DisplayPropertyControls(AppContext &appContext, QWidget *parent) : appContext{appContext}, ControlSection{"Visualización", parent}
 {
   auto layout = new QVBoxLayout{content};
   layout->setContentsMargins(0, 0, 0, 0);
@@ -28,12 +28,12 @@ DisplayControls::DisplayControls(AppContext &appContext, QWidget *parent) : appC
                                                            { refreshProperties(); });
 }
 
-DisplayControls::~DisplayControls()
+DisplayPropertyControls::~DisplayPropertyControls()
 {
   appContext.displayController.displayedVectorsObservable.unsubscribe(this);
 }
 
-void DisplayControls::refreshProperties()
+void DisplayPropertyControls::refreshProperties()
 {
   for (auto [property, checkBox] : vectorCheckBoxes)
   {

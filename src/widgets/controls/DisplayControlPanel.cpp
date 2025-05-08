@@ -2,13 +2,13 @@
 
 #include <QtWidgets/QVBoxLayout>
 
-#include "display/DisplayControls.h"
+#include "display/DisplayPropertyControls.h"
 #include "display/DisplayColorControls.h"
 #include "display/DisplayRuleControls.h"
 
 DisplayControlPanel::DisplayControlPanel(AppContext &appContext, QWidget *parent) : appContext{appContext}, QScrollArea{parent}
 {
-  auto displayControls = new DisplayControls{appContext, this};
+  auto displayControls = new DisplayPropertyControls{appContext, this};
   auto displayColorControls = new DisplayColorControls{appContext, this};
   auto displayRuleControls = new DisplayRuleControls{appContext, this};
 
