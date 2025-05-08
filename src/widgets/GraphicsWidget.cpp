@@ -58,6 +58,10 @@ GraphicsWidget::GraphicsWidget(AppContext &appContext, QWidget *parent) : appCon
                                                                     { update(); });
   appContext.displayController.displayRulesObservable.subscribe(this, [&]()
                                                                 { update(); });
+  appContext.displayController.defaultColorObservable.subscribe(this, [&](QColor color)
+                                                                { update(); });
+  appContext.displayController.backgroundColorObservable.subscribe(this, [&](QColor color)
+                                                                   { update(); });
 }
 
 void GraphicsWidget::update()
@@ -69,7 +73,6 @@ void GraphicsWidget::update()
 void GraphicsWidget::initializeGL()
 {
   initializeOpenGLFunctions();
-  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
   glEnable(GL_DEPTH_TEST);
   glDepthFunc(GL_LESS);
   sceneRenderer = std::make_unique<SceneRenderer>();
@@ -92,6 +95,11 @@ void GraphicsWidget::paintGL()
 {
   auto scene = appContext.animationController.getScene();
 
+  glClearColor(
+      appContext.displayController.getBackgroundColor().redF(),
+      appContext.displayController.getBackgroundColor().greenF(),
+      appContext.displayController.getBackgroundColor().blueF(),
+      1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   sceneRenderer->render(scene, appContext);

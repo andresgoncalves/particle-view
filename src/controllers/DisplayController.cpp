@@ -54,6 +54,26 @@ DisplayController::DisplayRules &DisplayController::getDisplayRules()
   return displayRules;
 }
 
+void DisplayController::setDefaultColor(QColor color)
+{
+  this->defaultColor = color;
+}
+
+void DisplayController::setBackgroundColor(QColor color)
+{
+  this->backgroundColor = color;
+}
+
+QColor DisplayController::getDefaultColor() const
+{
+  return defaultColor;
+}
+
+QColor DisplayController::getBackgroundColor() const
+{
+  return backgroundColor;
+}
+
 DisplayController::DisplayRules::iterator DisplayController::addDisplayRule(std::shared_ptr<DisplayRule> displayRule)
 {
   displayRules.push_back(displayRule);

@@ -45,17 +45,13 @@ void ParticleRenderer::render(const Particle &particle, const AppContext &appCon
   shaderProgram.bind();
   vertexArray.bind();
 
-  auto color = QVector3D{1.0f, 1.0f, 1.0f};
+  auto color = appContext.displayController.getDefaultColor();
   for (auto displayRule : appContext.displayController.getDisplayRules())
   {
     if (displayRule->isEnabled() && displayRule->test(particle))
-      color = {
-          displayRule->getColor().redF(),
-          displayRule->getColor().greenF(),
-          displayRule->getColor().blueF(),
-      };
+      color = displayRule->getColor();
   }
-  shaderProgram.setUniformValue("color", color);
+  shaderProgram.setUniformValue("color", QVector3D{color.redF(), color.greenF(), color.blueF()});
 
   shaderProgram.setUniformValue("modelViewProjectionMatrix", modelViewProjectionMatrix);
 
