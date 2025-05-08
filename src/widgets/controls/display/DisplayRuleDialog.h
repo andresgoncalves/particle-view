@@ -40,6 +40,7 @@ private:
 
   QComboBox *propertyComboBox;
   QComboBox *ruleComboBox;
+  QLineEdit *colorTextField;
   NumericControl *valueControl;
 };
 

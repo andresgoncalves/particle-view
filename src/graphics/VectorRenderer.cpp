@@ -50,19 +50,17 @@ void VectorRenderer::render(const std::pair<Particle, std::string> &input, const
   shaderProgram.bind();
   vertexArray.bind();
 
-  auto type = particle.scalarProperties.find("type");
-  if (type == particle.scalarProperties.end())
+  auto color = QVector3D{1.0f, 1.0f, 1.0f};
+  for (auto displayRule : appContext.displayController.getDisplayRules())
   {
-    shaderProgram.setUniformValue("color", {0.0f, 0.0f, 1.0f});
+    if (displayRule->isEnabled() && displayRule->test(particle))
+      color = {
+          displayRule->getColor().redF(),
+          displayRule->getColor().greenF(),
+          displayRule->getColor().blueF(),
+      };
   }
-  else if (type->second == 1)
-  {
-    shaderProgram.setUniformValue("color", {1.0f, 0.0f, 0.0f});
-  }
-  else
-  {
-    shaderProgram.setUniformValue("color", {1.0f, 1.0f, 0.0f});
-  }
+  shaderProgram.setUniformValue("color", color);
 
   indexBuffers.arrowHead.bind();
   shaderProgram.setUniformValue("modelViewProjectionMatrix", appContext.viewController.getViewProjectionMatrix() * headModelMatrix);

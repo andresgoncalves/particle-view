@@ -45,19 +45,17 @@ void ParticleRenderer::render(const Particle &particle, const AppContext &appCon
   shaderProgram.bind();
   vertexArray.bind();
 
-  auto type = particle.scalarProperties.find("type");
-  if (type == particle.scalarProperties.end())
+  auto color = QVector3D{1.0f, 1.0f, 1.0f};
+  for (auto displayRule : appContext.displayController.getDisplayRules())
   {
-    shaderProgram.setUniformValue("color", {0.0f, 0.0f, 1.0f});
+    if (displayRule->isEnabled() && displayRule->test(particle))
+      color = {
+          displayRule->getColor().redF(),
+          displayRule->getColor().greenF(),
+          displayRule->getColor().blueF(),
+      };
   }
-  else if (type->second == 1)
-  {
-    shaderProgram.setUniformValue("color", {1.0f, 0.0f, 0.0f});
-  }
-  else
-  {
-    shaderProgram.setUniformValue("color", {1.0f, 1.0f, 0.0f});
-  }
+  shaderProgram.setUniformValue("color", color);
 
   shaderProgram.setUniformValue("modelViewProjectionMatrix", modelViewProjectionMatrix);
 
@@ -69,12 +67,6 @@ void ParticleRenderer::render(const Particle &particle, const AppContext &appCon
 
 bool ParticleRenderer::shouldRender(const Particle &particle, const AppContext &appContext)
 {
-  for (auto displayRule : appContext.displayController.getDisplayRules())
-  {
-    if (displayRule->isEnabled() && displayRule->test(particle))
-      return false;
-  }
-
   switch (appContext.viewController.projectionMode)
   {
   case ViewController::Perspective:
@@ -100,7 +92,7 @@ void ParticleRenderer::drawElements(ViewController::ParticleShape mode)
   case ViewController::Solid:
     indexBuffers.solid.bind();
     glDrawElements(GL_TRIANGLES, indexBuffers.solid.size(), GL_UNSIGNED_INT, nullptr);
-    shaderProgram.setUniformValue("color", {0.0f, 0.0f, 0.0f});
+    shaderProgram.setUniformValue("color", QVector3D{0.0f, 0.0f, 0.0f});
   case ViewController::Skeleton:
     indexBuffers.skeleton.bind();
     glDrawElements(GL_LINES, indexBuffers.skeleton.size(), GL_UNSIGNED_INT, nullptr);

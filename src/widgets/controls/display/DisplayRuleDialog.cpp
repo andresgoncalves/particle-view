@@ -12,6 +12,7 @@ DisplayRuleDialog::DisplayRuleDialog(AbstractBinaryDisplayRule &displayRule, App
   propertyComboBox->setCurrentText(displayRule.getProperty().c_str());
   ruleComboBox->setCurrentText(displayRule.getSymbol().c_str());
   valueControl->setValue(displayRule.getCompareValue());
+  colorTextField->setText(displayRule.getColor().name());
 }
 
 DisplayRuleDialog::DisplayRuleDialog(bool edit, AppContext &appContext, QWidget *parent) : QDialog{parent}
@@ -36,11 +37,32 @@ DisplayRuleDialog::DisplayRuleDialog(bool edit, AppContext &appContext, QWidget 
 
   valueControl = new NumericControl{this};
 
-  auto inputLayout = new QHBoxLayout{};
-  inputLayout->setAlignment(Qt::AlignHCenter);
-  inputLayout->addWidget(propertyComboBox);
-  inputLayout->addWidget(ruleComboBox);
-  inputLayout->addWidget(valueControl);
+  auto ruleLayout = new QHBoxLayout{};
+  ruleLayout->setAlignment(Qt::AlignVCenter);
+  ruleLayout->addWidget(propertyComboBox);
+  ruleLayout->addWidget(ruleComboBox);
+  ruleLayout->addWidget(valueControl);
+
+  colorTextField = new QLineEdit{this};
+  auto colorLabel = new QLabel{"Color", this};
+  auto colorButton = new QPushButton{"Seleccionar", this};
+  auto colorButtonCallback = [=, this]
+  {
+    auto color = QColor{colorTextField->text()};
+    auto colorDialog = new QColorDialog{color, this};
+    if (colorDialog->exec() == QDialog::Accepted)
+    {
+      colorTextField->setText(colorDialog->currentColor().name());
+    }
+    colorDialog->deleteLater();
+  };
+  connect(colorButton, &QPushButton::clicked, this, colorButtonCallback);
+
+  auto colorLayout = new QHBoxLayout{};
+  colorLayout->setAlignment(Qt::AlignVCenter);
+  colorLayout->addWidget(colorLabel);
+  colorLayout->addWidget(colorTextField);
+  colorLayout->addWidget(colorButton);
 
   auto buttonsLayout = new QHBoxLayout{};
   buttonsLayout->setAlignment(Qt::AlignRight);
@@ -64,7 +86,8 @@ DisplayRuleDialog::DisplayRuleDialog(bool edit, AppContext &appContext, QWidget 
   buttonsLayout->addWidget(cancelButton);
 
   auto layout = new QVBoxLayout{this};
-  layout->addLayout(inputLayout);
+  layout->addLayout(ruleLayout);
+  layout->addLayout(colorLayout);
   layout->addLayout(buttonsLayout);
 
   setMinimumWidth(320);
@@ -75,21 +98,32 @@ std::shared_ptr<DisplayRule> DisplayRuleDialog::getDisplayRule() const
   auto value = valueControl->getValue<float>();
   auto property = propertyComboBox->currentText().toStdString();
   auto propertyType = static_cast<Particle::PropertyType>(propertyComboBox->currentData().toInt());
-  auto displayRule = static_cast<DisplayRuleType>(ruleComboBox->currentData().toInt());
+  auto ruleType = static_cast<DisplayRuleType>(ruleComboBox->currentData().toInt());
 
-  switch (displayRule)
+  auto displayRule = std::shared_ptr<DisplayRule>{};
+  switch (ruleType)
   {
   case Equal:
-    return std::make_shared<DisplayRuleEqual>(property, propertyType, value);
+    displayRule = std::make_shared<DisplayRuleEqual>(property, propertyType, value);
+    break;
   case NotEqual:
-    return std::make_shared<DisplayRuleNotEqual>(property, propertyType, value);
+    displayRule = std::make_shared<DisplayRuleNotEqual>(property, propertyType, value);
+    break;
   case Less:
-    return std::make_shared<DisplayRuleLess>(property, propertyType, value);
+    displayRule = std::make_shared<DisplayRuleLess>(property, propertyType, value);
+    break;
   case Greater:
-    return std::make_shared<DisplayRuleGreater>(property, propertyType, value);
+    displayRule = std::make_shared<DisplayRuleGreater>(property, propertyType, value);
+    break;
   case LessEqual:
-    return std::make_shared<DisplayRuleLessEqual>(property, propertyType, value);
+    displayRule = std::make_shared<DisplayRuleLessEqual>(property, propertyType, value);
+    break;
   case GreaterEqual:
-    return std::make_shared<DisplayRuleGreaterEqual>(property, propertyType, value);
+    displayRule = std::make_shared<DisplayRuleGreaterEqual>(property, propertyType, value);
+    break;
   }
+
+  displayRule->setColor(colorTextField->text());
+
+  return displayRule;
 }

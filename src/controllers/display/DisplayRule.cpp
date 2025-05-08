@@ -20,9 +20,19 @@ void DisplayRule::setEnabled(bool enabled)
   enabledObservable.notify();
 }
 
+void DisplayRule::setColor(QColor color)
+{
+  this->color = color;
+}
+
 bool DisplayRule::isEnabled() const
 {
   return enabled;
+}
+
+QColor DisplayRule::getColor() const
+{
+  return color;
 }
 
 AbstractBinaryDisplayRule::AbstractBinaryDisplayRule(std::string property, Particle::PropertyType type, float compareValue, std::string symbol)

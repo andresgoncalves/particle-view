@@ -5,6 +5,8 @@
 #include <optional>
 #include <sstream>
 
+#include <QtGui/QColor>
+
 #include "../Observable.h"
 #include "../../models/Particle.h"
 
@@ -17,8 +19,10 @@ public:
   virtual std::string getText() const = 0;
 
   void setEnabled(bool enabled);
+  void setColor(QColor color);
 
   bool isEnabled() const;
+  QColor getColor() const;
 
   Observable<bool> enabledObservable = enabled;
 
@@ -26,6 +30,7 @@ protected:
   virtual std::optional<float> getValue(const Particle &particle, std::string property, Particle::PropertyType type) const;
 
   bool enabled = true;
+  QColor color;
 };
 
 class AbstractBinaryDisplayRule : public DisplayRule
