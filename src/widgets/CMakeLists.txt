@@ -33,6 +33,7 @@ add_library(widgets STATIC
 
   controls/display/DisplayPropertyControls.cpp
   controls/display/DisplayColorControls.cpp
+  controls/display/DisplayColorRuleDialog.cpp
   controls/display/DisplayRuleControls.cpp
   controls/display/DisplayRuleGrid.cpp
   controls/display/DisplayRuleRow.cpp
