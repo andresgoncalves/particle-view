@@ -7,6 +7,7 @@
 
 #include "Observable.h"
 #include "display/DisplayRule.h"
+#include "display/ColorRule.h"
 
 class DisplayController
 {

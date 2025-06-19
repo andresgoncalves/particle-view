@@ -3,7 +3,7 @@
 
 #include <functional>
 #include <optional>
-#include <sstream>
+#include <string>
 
 #include <QtGui/QColor>
 
