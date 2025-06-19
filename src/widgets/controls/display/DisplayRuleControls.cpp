@@ -1,5 +1,6 @@
 #include "DisplayRuleControls.h"
 
+#include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QPushButton>
 
@@ -23,9 +24,21 @@ DisplayRuleControls::DisplayRuleControls(AppContext &appContext, QWidget *parent
   };
   connect(addRuleButton, &QPushButton::clicked, this, addRuleCallback);
 
+  auto clearRulesButton = new QPushButton{"Limpiar reglas", this};
+  auto clearRulesCallback = [&, displayRuleGrid]()
+  {
+    displayRuleGrid->clear();
+    appContext.displayController.clearDisplayRules();
+  };
+  connect(clearRulesButton, &QPushButton::clicked, this, clearRulesCallback);
+
+  auto buttonLayout = new QHBoxLayout{};
+  buttonLayout->addWidget(addRuleButton);
+  buttonLayout->addWidget(clearRulesButton);
+
   auto layout = new QVBoxLayout{content};
   layout->addWidget(displayRuleGrid);
-  layout->addWidget(addRuleButton);
-  layout->setAlignment(addRuleButton, Qt::AlignLeft);
+  layout->addLayout(buttonLayout);
+  layout->setAlignment(buttonLayout, Qt::AlignLeft);
   layout->setContentsMargins({});
 }

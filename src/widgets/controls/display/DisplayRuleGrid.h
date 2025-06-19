@@ -14,6 +14,7 @@ public:
   DisplayRuleGrid(AppContext &appContext, QWidget *parent = nullptr);
 
   void addRow(DisplayController::DisplayRules::iterator displayRule);
+  void clear();
 
 private:
   void removeRow(std::list<DisplayRuleRow *>::iterator it);

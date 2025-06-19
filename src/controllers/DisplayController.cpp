@@ -96,3 +96,9 @@ void DisplayController::removeDisplayRule(DisplayRules::iterator it)
   displayRules.erase(it);
   displayRulesObservable.notify();
 }
+
+void DisplayController::clearDisplayRules()
+{
+  displayRules.clear();
+  displayRulesObservable.notify();
+}

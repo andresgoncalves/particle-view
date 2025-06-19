@@ -51,3 +51,14 @@ void DisplayRuleGrid::removeRow(std::list<DisplayRuleRow *>::iterator it)
   (*it)->deleteLater();
   rows.erase(it);
 }
+
+void DisplayRuleGrid::clear()
+{
+
+  for (auto it = rows.begin(); it != rows.end(); it++)
+  {
+    itemLayout->removeWidget(*it);
+    (*it)->deleteLater();
+  }
+  rows.clear();
+}

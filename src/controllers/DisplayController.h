@@ -36,6 +36,7 @@ public:
   DisplayRules::iterator addDisplayRule(std::shared_ptr<DisplayRule> displayRule);
   void replaceDisplayRule(DisplayRules::iterator it, std::shared_ptr<DisplayRule> displayRule);
   void removeDisplayRule(DisplayRules::iterator it);
+  void clearDisplayRules();
 
   Observable<bool> displayParticlesObservable = displayParticles;
   Observable<std::set<std::string>> displayedVectorsObservable = displayedVectors;
