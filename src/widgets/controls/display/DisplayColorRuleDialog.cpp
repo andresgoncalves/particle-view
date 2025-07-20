@@ -4,10 +4,7 @@
 
 #include "../NumericControl.h"
 
-DisplayColorRuleDialog::DisplayColorRuleDialog(AppContext &appContext, QWidget *parent)
-    : DisplayColorRuleDialog{false, appContext, parent} {}
-
-DisplayColorRuleDialog::DisplayColorRuleDialog(std::shared_ptr<ColorRule> colorRule, AppContext &appContext, QWidget *parent) : DisplayColorRuleDialog{true, appContext, parent}
+DisplayColorRuleDialog::DisplayColorRuleDialog(std::shared_ptr<ColorRule> colorRule, AppContext &appContext, QWidget *parent) : DisplayColorRuleDialog{appContext, parent}
 {
   if (auto gradientColorRule = dynamic_cast<GradientColorRule *>(colorRule.get()))
   {
@@ -19,9 +16,9 @@ DisplayColorRuleDialog::DisplayColorRuleDialog(std::shared_ptr<ColorRule> colorR
   }
 }
 
-DisplayColorRuleDialog::DisplayColorRuleDialog(bool edit, AppContext &appContext, QWidget *parent) : QDialog{parent}
+DisplayColorRuleDialog::DisplayColorRuleDialog(AppContext &appContext, QWidget *parent) : QDialog{parent}
 {
-  setWindowTitle(edit ? "Editar regla" : "Agregar regla");
+  setWindowTitle("Seleccionar color");
 
   propertyComboBox = new QComboBox{this};
 
@@ -31,8 +28,8 @@ DisplayColorRuleDialog::DisplayColorRuleDialog(bool edit, AppContext &appContext
   for (auto property : story.vectorProperties)
     propertyComboBox->addItem(property.c_str(), Particle::PropertyType::Vector);
 
-  startValueControl = new NumericControl{this};
-  endValueControl = new NumericControl{this};
+  startValueControl = new NumericControl{"Inicio", this};
+  endValueControl = new NumericControl{"Fin", this};
 
   auto colorButtonCallback = [=, this](QLineEdit *colorTextField)
   {
@@ -49,7 +46,7 @@ DisplayColorRuleDialog::DisplayColorRuleDialog(bool edit, AppContext &appContext
   startColorTextField = new QLineEdit{this};
   auto startColorLabel = new QLabel{"Inicio", this};
   auto startColorButton = new QPushButton{"Seleccionar", this};
-  connect(startColorButton, &QPushButton::clicked, this, [=]
+  connect(startColorButton, &QPushButton::clicked, this, [=, this]
           { colorButtonCallback(startColorTextField); });
 
   auto startColorLayout = new QHBoxLayout{};
@@ -61,7 +58,7 @@ DisplayColorRuleDialog::DisplayColorRuleDialog(bool edit, AppContext &appContext
   endColorTextField = new QLineEdit{this};
   auto endColorLabel = new QLabel{"Fin", this};
   auto endColorButton = new QPushButton{"Seleccionar", this};
-  connect(endColorButton, &QPushButton::clicked, this, [=]
+  connect(endColorButton, &QPushButton::clicked, this, [=, this]
           { colorButtonCallback(endColorTextField); });
 
   auto endColorLayout = new QHBoxLayout{};
@@ -84,6 +81,9 @@ DisplayColorRuleDialog::DisplayColorRuleDialog(bool edit, AppContext &appContext
   buttonsLayout->addWidget(cancelButton);
 
   auto layout = new QVBoxLayout{this};
+  layout->addWidget(propertyComboBox);
+  layout->addWidget(startValueControl);
+  layout->addWidget(endValueControl);
   layout->addLayout(startColorLayout);
   layout->addLayout(endColorLayout);
   layout->addLayout(buttonsLayout);

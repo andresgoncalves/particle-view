@@ -4,7 +4,7 @@
 
 FixedColorRule::FixedColorRule(QColor color) : fixedColor{color} {}
 
-QColor FixedColorRule::getColor(Particle) const
+QColor FixedColorRule::getColor(const Particle &) const
 {
   return fixedColor;
 }
@@ -21,7 +21,7 @@ GradientColorRule::GradientColorRule(
                                           startValue{startValue}, endValue{endValue},
                                           startColor{startColor}, endColor{endColor} {}
 
-QColor GradientColorRule::getColor(Particle particle) const
+QColor GradientColorRule::getColor(const Particle &particle) const
 {
   auto defaultValue = startValue;
 
@@ -29,10 +29,10 @@ QColor GradientColorRule::getColor(Particle particle) const
 
   auto normalizedValue = std::clamp((value - startValue) / (endValue - startValue), 0.0f, 1.0f);
 
-  auto color = QColor{
-      startColor.red() + normalizedValue * (endColor.red() - startColor.red()),
-      startColor.green() + normalizedValue * (endColor.green() - startColor.green()),
-      startColor.blue() + normalizedValue * (endColor.blue() - startColor.blue())};
+  auto color = QColor::fromRgbF(
+      startColor.redF() + normalizedValue * (endColor.redF() - startColor.redF()),
+      startColor.greenF() + normalizedValue * (endColor.greenF() - startColor.greenF()),
+      startColor.blueF() + normalizedValue * (endColor.blueF() - startColor.blueF()));
 
   return color;
 }

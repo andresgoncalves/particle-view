@@ -28,10 +28,10 @@ public:
   DisplayRules getDisplayRules() const;
   DisplayRules &getDisplayRules();
 
-  void setDefaultColor(QColor color);
+  void setParticleColorRule(std::shared_ptr<ColorRule> colorRule);
   void setBackgroundColor(QColor color);
 
-  QColor getDefaultColor() const;
+  std::shared_ptr<ColorRule> getParticleColorRule() const;
   QColor getBackgroundColor() const;
 
   DisplayRules::iterator addDisplayRule(std::shared_ptr<DisplayRule> displayRule);
@@ -43,7 +43,7 @@ public:
   Observable<std::set<std::string>> displayedVectorsObservable = displayedVectors;
   BaseObservable<void> displayRulesObservable;
 
-  Observable<QColor> defaultColorObservable = defaultColor;
+  BaseObservable<void> particleColorRuleObservable;
   Observable<QColor> backgroundColorObservable = backgroundColor;
 
 private:
@@ -51,7 +51,7 @@ private:
   std::set<std::string> displayedVectors;
   DisplayRules displayRules;
 
-  QColor defaultColor = {255, 255, 255};
+  std::shared_ptr<ColorRule> particleColorRule = std::make_shared<FixedColorRule>(QColor{255, 255, 255});
   QColor backgroundColor = {0, 0, 0};
 };
 

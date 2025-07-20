@@ -54,9 +54,9 @@ DisplayController::DisplayRules &DisplayController::getDisplayRules()
   return displayRules;
 }
 
-void DisplayController::setDefaultColor(QColor color)
+void DisplayController::setParticleColorRule(std::shared_ptr<ColorRule> colorRule)
 {
-  this->defaultColor = color;
+  this->particleColorRule = colorRule;
 }
 
 void DisplayController::setBackgroundColor(QColor color)
@@ -64,9 +64,9 @@ void DisplayController::setBackgroundColor(QColor color)
   this->backgroundColor = color;
 }
 
-QColor DisplayController::getDefaultColor() const
+std::shared_ptr<ColorRule> DisplayController::getParticleColorRule() const
 {
-  return defaultColor;
+  return particleColorRule;
 }
 
 QColor DisplayController::getBackgroundColor() const

@@ -6,30 +6,27 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QLineEdit>
 
+#include "DisplayColorRuleDialog.h"
+
 DisplayColorControls::DisplayColorControls(AppContext &appContext, QWidget *parent) : appContext{appContext}, ControlSection{"Colores", parent}
 {
-  auto defaultColorTextField = new QLineEdit{this};
-  defaultColorTextField->setText(appContext.displayController.getDefaultColor().name());
-  auto defaultColorLabel = new QLabel{"Partícula", this};
-  auto defaultColorButton = new QPushButton{"Seleccionar", this};
-  auto defaultColorButtonCallback = [=, &appContext, this]
+  auto particleColorLabel = new QLabel{"Partícula", this};
+  auto particleColorButton = new QPushButton{"Seleccionar", this};
+  auto particleColorButtonCallback = [=, &appContext, this]
   {
-    auto color = QColor{defaultColorTextField->text()};
-    auto colorDialog = new QColorDialog{color, this};
-    colorDialog->setOption(QColorDialog::ShowAlphaChannel, true);
+    auto colorDialog = new DisplayColorRuleDialog{appContext.displayController.getParticleColorRule(), appContext, parent};
     if (colorDialog->exec() == QDialog::Accepted)
     {
-      appContext.displayController.setDefaultColor(colorDialog->currentColor().name());
+      appContext.displayController.setParticleColorRule(colorDialog->getColorRule());
     }
     colorDialog->deleteLater();
   };
-  connect(defaultColorButton, &QPushButton::clicked, this, defaultColorButtonCallback);
+  connect(particleColorButton, &QPushButton::clicked, this, particleColorButtonCallback);
 
-  auto defaultColorLayout = new QHBoxLayout{};
-  defaultColorLayout->setAlignment(Qt::AlignVCenter);
-  defaultColorLayout->addWidget(defaultColorLabel);
-  defaultColorLayout->addWidget(defaultColorTextField);
-  defaultColorLayout->addWidget(defaultColorButton);
+  auto particleColorLayout = new QHBoxLayout{};
+  particleColorLayout->setAlignment(Qt::AlignVCenter);
+  particleColorLayout->addWidget(particleColorLabel);
+  particleColorLayout->addWidget(particleColorButton);
 
   auto backgroundColorTextField = new QLineEdit{this};
   backgroundColorTextField->setText(appContext.displayController.getBackgroundColor().name());
@@ -54,18 +51,15 @@ DisplayColorControls::DisplayColorControls(AppContext &appContext, QWidget *pare
   backgroundColorLayout->addWidget(backgroundColorButton);
 
   auto layout = new QVBoxLayout{content};
-  layout->addLayout(defaultColorLayout);
+  layout->addLayout(particleColorLayout);
   layout->addLayout(backgroundColorLayout);
   layout->setContentsMargins({});
 
-  appContext.displayController.defaultColorObservable.subscribe(this, [=](QColor color)
-                                                                { defaultColorTextField->setText(color.name()); });
   appContext.displayController.backgroundColorObservable.subscribe(this, [=](QColor color)
                                                                    { backgroundColorTextField->setText(color.name()); });
 }
 
 DisplayColorControls::~DisplayColorControls()
 {
-  appContext.displayController.defaultColorObservable.unsubscribe(this);
   appContext.displayController.backgroundColorObservable.unsubscribe(this);
 }

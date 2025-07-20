@@ -14,7 +14,7 @@ class ColorRule
 public:
   virtual ~ColorRule() = default;
 
-  virtual QColor getColor(Particle particle) const = 0;
+  virtual QColor getColor(const Particle &particle) const = 0;
 };
 
 class FixedColorRule : public ColorRule
@@ -22,7 +22,7 @@ class FixedColorRule : public ColorRule
 public:
   FixedColorRule(QColor color);
 
-  QColor getColor(Particle particle) const override;
+  QColor getColor(const Particle &particle) const override;
 
   QColor getFixedColor() const;
 
@@ -38,7 +38,7 @@ public:
       float startValue, float endValue,
       QColor startColor, QColor endColor);
 
-  QColor getColor(Particle particle) const override;
+  QColor getColor(const Particle &particle) const override;
 
   std::string getProperty() const;
   Particle::PropertyType getType() const;

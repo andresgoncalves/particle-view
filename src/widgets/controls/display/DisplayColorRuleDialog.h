@@ -26,8 +26,6 @@ public:
   std::shared_ptr<ColorRule> getColorRule() const;
 
 private:
-  DisplayColorRuleDialog(bool edit, AppContext &appContext, QWidget *parent = nullptr);
-
   QComboBox *propertyComboBox;
   NumericControl *startValueControl;
   NumericControl *endValueControl;

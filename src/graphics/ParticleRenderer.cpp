@@ -40,12 +40,15 @@ void ParticleRenderer::render(const Particle &particle, const AppContext &appCon
   modelMatrix.translate(particle.position);
   modelMatrix.scale(particle.radius);
 
+  auto color = appContext.displayController.getParticleColorRule()->getColor(particle);
+  if (color.alpha() == 0)
+    return;
+
   auto modelViewProjectionMatrix = appContext.viewController.getViewProjectionMatrix() * modelMatrix;
 
   shaderProgram.bind();
   vertexArray.bind();
 
-  auto color = appContext.displayController.getDefaultColor();
   for (auto displayRule : appContext.displayController.getDisplayRules())
   {
     if (displayRule->isEnabled() && displayRule->test(particle))

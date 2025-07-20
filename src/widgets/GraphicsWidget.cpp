@@ -58,8 +58,8 @@ GraphicsWidget::GraphicsWidget(AppContext &appContext, QWidget *parent) : appCon
                                                                     { update(); });
   appContext.displayController.displayRulesObservable.subscribe(this, [&]()
                                                                 { update(); });
-  appContext.displayController.defaultColorObservable.subscribe(this, [&](QColor color)
-                                                                { update(); });
+  appContext.displayController.particleColorRuleObservable.subscribe(this, [&]()
+                                                                     { update(); });
   appContext.displayController.backgroundColorObservable.subscribe(this, [&](QColor color)
                                                                    { update(); });
 }
