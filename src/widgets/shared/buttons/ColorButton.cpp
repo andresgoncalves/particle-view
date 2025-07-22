@@ -29,8 +29,8 @@ void ColorButton::setColorStrategy(ColorStrategy *colorStrategy)
 {
   if (auto solidColorStrategy = dynamic_cast<SolidColorStrategy *>(colorStrategy))
     setSolidColor(solidColorStrategy->getSolidColor());
-  else if (auto gradientColorStrategy = dynamic_cast<ColorScaleStrategy *>(colorStrategy))
-    setColorScale(gradientColorStrategy->getStart().second, gradientColorStrategy->getEnd().second);
+  else if (auto colorScaleStrategy = dynamic_cast<ColorScaleStrategy *>(colorStrategy))
+    setColorScale(colorScaleStrategy->getStart().second, colorScaleStrategy->getEnd().second);
 }
 
 void ColorButton::paintEvent(QPaintEvent *)

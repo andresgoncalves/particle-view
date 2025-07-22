@@ -29,7 +29,7 @@ private:
   /** Solid color controls */
   SolidColorControl *solidColorControls;
   /** Color scale controls */
-  ColorScaleControl *gradientColorControls;
+  ColorScaleControl *colorScaleControls;
 
   /** Application context */
   AppContext &appContext;

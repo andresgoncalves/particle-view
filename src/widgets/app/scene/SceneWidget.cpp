@@ -86,8 +86,8 @@ void SceneWidget::paintGL()
   axesRenderer->render(appContext, painter, size());
 
   // Render color scale
-  if (auto gradientColorStrategy = dynamic_cast<ColorScaleStrategy *>(appContext.displayController.getDisplayParticles().second.get()))
-    colorScaleRenderer->render(*gradientColorStrategy, appContext, painter, size());
+  if (auto colorScaleStrategy = dynamic_cast<ColorScaleStrategy *>(appContext.displayController.getDisplayParticles().second.get()))
+    colorScaleRenderer->render(*colorScaleStrategy, appContext, painter, size());
 }
 
 void SceneWidget::mousePressEvent(QMouseEvent *event)

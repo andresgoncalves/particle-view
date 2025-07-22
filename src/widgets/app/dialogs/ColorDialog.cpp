@@ -13,12 +13,12 @@ ColorDialog::ColorDialog(AppContext &appContext, QWidget *parent) : appContext{a
 {
   // Control variants
   solidColorControls = new SolidColorControl{appContext, this};
-  gradientColorControls = new ColorScaleControl{appContext, this};
+  colorScaleControls = new ColorScaleControl{appContext, this};
 
   // Stacked widget
   auto stackedColorControls = new QStackedWidget{this};
   stackedColorControls->addWidget(solidColorControls);
-  stackedColorControls->addWidget(gradientColorControls);
+  stackedColorControls->addWidget(colorScaleControls);
 
   // Color strategy control
   colorStrategyComboBox = new QComboBox{this};
@@ -54,9 +54,9 @@ void ColorDialog::setColorStrategy(ColorStrategy *colorStrategy) const
     solidColorControls->setColorStrategy(solidColorStrategy);
     colorStrategyComboBox->setCurrentIndex(0);
   }
-  else if (auto gradientColorStrategy = dynamic_cast<ColorScaleStrategy *>(colorStrategy))
+  else if (auto colorScaleStrategy = dynamic_cast<ColorScaleStrategy *>(colorStrategy))
   {
-    gradientColorControls->setColorStrategy(gradientColorStrategy);
+    colorScaleControls->setColorStrategy(colorScaleStrategy);
     colorStrategyComboBox->setCurrentIndex(1);
   }
 }
@@ -68,7 +68,7 @@ std::shared_ptr<ColorStrategy> ColorDialog::getColorStrategy() const
   case 0:
     return solidColorControls->getColorStrategy();
   case 1:
-    return gradientColorControls->getColorStrategy();
+    return colorScaleControls->getColorStrategy();
   }
   return std::make_shared<SolidColorStrategy>(QColor{0, 0, 0});
 }

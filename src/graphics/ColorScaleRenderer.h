@@ -17,9 +17,15 @@ public:
   ColorScaleRenderer();
 
   /** Render axes in viewport */
-  void render(const ColorScaleStrategy &gradientColorStrategy, const AppContext &appContext) override;
+  void render(const ColorScaleStrategy &colorScaleStrategy, const AppContext &appContext) override;
   /** Render axes in viewport */
-  void render(const ColorScaleStrategy &gradientColorStrategy, const AppContext &appContext, QPainter &painter, QSize viewportSize) override;
+  void render(const ColorScaleStrategy &colorScaleStrategy, const AppContext &appContext, QPainter &painter, QSize viewportSize) override;
+
+private:
+  /** Paint color scale */
+  void paintColorScale(QRectF colorScaleRect, const ColorScaleStrategy &colorScaleStrategy, const AppContext &appContext, QPainter &painter, QSize viewportSize);
+  /** Paint labels */
+  void paintLabels(QRectF colorScaleRect, const ColorScaleStrategy &colorScaleStrategy, const AppContext &appContext, QPainter &painter, QSize viewportSize);
 };
 
 #endif
