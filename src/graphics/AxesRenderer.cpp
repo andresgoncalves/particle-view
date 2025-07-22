@@ -140,15 +140,11 @@ void AxesRenderer::paintLabels(QMatrix4x4 modelViewProjectionMatrices[3], const 
   for (int i = 0; i < 3; i++)
   {
     auto normalizedPoint = (modelViewProjectionMatrices[i] * QVector3D{0.0f, 1.25f, 0.0f} + QVector3D{1.0f, 1.0f, 1.0f}) / 2.0f;
-    auto textSize = fontMetrics.boundingRect(axisLabels[i]).size();
-    auto textRect = QRectF{
-        normalizedPoint.x() * viewportSize.width() - textSize.width() / 2,
-        (1.0f - normalizedPoint.y()) * viewportSize.height() - textSize.height() / 2,
-        textSize.width(),
-        textSize.height()};
-
+    auto textRect = fontMetrics.boundingRect(axisLabels[i]);
+    textRect.adjust(-2, -2, 2, 2);
+    textRect.moveCenter({normalizedPoint.x() * viewportSize.width(),
+                         (1.0f - normalizedPoint.y()) * viewportSize.height()});
     painter.setPen(axisColors[i]);
     painter.drawText(textRect, Qt::AlignCenter, axisLabels[i]);
   }
-  painter.end();
 }

@@ -2,6 +2,7 @@
 
 #include <graphics/AxesRenderer.h>
 #include <graphics/SceneRenderer.h>
+#include <graphics/ColorScaleRenderer.h>
 #include <models/Particle.h>
 #include <models/Scene.h>
 
@@ -39,6 +40,7 @@ void SceneWidget::initializeGL()
   // Set default renderers
   sceneRenderer = std::make_unique<SceneRenderer>();
   axesRenderer = std::make_unique<AxesRenderer>();
+  colorScaleRenderer = std::make_unique<ColorScaleRenderer>();
 }
 
 void SceneWidget::resizeGL(int width, int height)
@@ -61,6 +63,8 @@ void SceneWidget::paintGL()
 
   // Get painter
   auto painter = QPainter{this};
+
+  // Clear buffers
   painter.beginNativePainting();
   glEnable(GL_DEPTH_TEST);
 
@@ -73,12 +77,17 @@ void SceneWidget::paintGL()
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   // Render scene
+
   sceneRenderer->render(scene, appContext);
   glClear(GL_DEPTH_BUFFER_BIT);
+  painter.endNativePainting();
 
   // Render axes
-  painter.endNativePainting();
   axesRenderer->render(appContext, painter, size());
+
+  // Render color scale
+  if (auto gradientColorStrategy = dynamic_cast<GradientColorStrategy *>(appContext.displayController.getDisplayParticles().second.get()))
+    colorScaleRenderer->render(*gradientColorStrategy, appContext, painter, size());
 }
 
 void SceneWidget::mousePressEvent(QMouseEvent *event)

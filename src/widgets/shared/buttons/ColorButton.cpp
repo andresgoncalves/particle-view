@@ -18,7 +18,8 @@ void ColorButton::setSolidColor(QColor color)
 
 void ColorButton::setGradientColor(QColor start, QColor end)
 {
-  auto gradient = QLinearGradient{0, 0, (double)width(), 0};
+  auto gradient = QLinearGradient{0, 0, 1, 0};
+  gradient.setCoordinateMode(QLinearGradient::ObjectBoundingMode);
   gradient.setColorAt(0, start);
   gradient.setColorAt(1, end);
   brush = gradient;

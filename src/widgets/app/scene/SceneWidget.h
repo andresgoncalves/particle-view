@@ -8,6 +8,7 @@
 #include <controllers/AppContext.h>
 #include <graphics/Renderer.h>
 #include <models/Scene.h>
+#include <utils/color/GradientColorStrategy.h>
 
 /** Widget where the scene is rendered */
 class SceneWidget : public QOpenGLWidget, protected QOpenGLFunctions
@@ -46,6 +47,9 @@ private:
   /** Renderer used for drawing scene */
   std::unique_ptr<Renderer<Scene>>
       sceneRenderer;
+  /** Renderer used for drawing color scale */
+  std::unique_ptr<Renderer<GradientColorStrategy>>
+      colorScaleRenderer;
 
   /** Application context */
   AppContext &appContext;

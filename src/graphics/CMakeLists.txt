@@ -7,6 +7,7 @@ add_library(graphics STATIC
   SceneRenderer.cpp
   ParticleRenderer.cpp
   VectorRenderer.cpp
+  ColorScaleRenderer.cpp
 
   shapes/ArrowFactory.cpp
   shapes/SphereFactory.cpp
