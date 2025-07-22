@@ -5,46 +5,51 @@ find_package(Qt6 REQUIRED COMPONENTS
 )
 
 add_library(widgets STATIC
-  AppWidget.cpp
-  AppWindow.cpp
-  GraphicsWidget.cpp
-  TimeSliderWidget.cpp
+  app/AppWindow.cpp
+  
+  app/layout/CenterPanel.cpp
+  app/layout/LeftPanel.cpp
+  app/layout/RightPanel.cpp
+  app/layout/BottomPanel.cpp
+  app/layout/MenuBar.cpp
+  app/layout/ToolBar.cpp
+  app/layout/StatusBar.cpp
 
-  utils/KeyEventFilter.cpp
+  app/tabs/ViewTab.cpp
+  app/tabs/AnimationTab.cpp
+  app/tabs/DisplayTab.cpp
 
-  controls/ControlSection.cpp
-  controls/NumericControl.cpp
+  app/scene/SceneWidget.cpp
 
-  controls/SceneControlPanel.cpp
-  controls/DisplayControlPanel.cpp
+  app/transform/TransformControls.cpp
 
-  controls/ToolControls.cpp
+  app/view/ViewOriginControls.cpp
+  app/view/ViewTranslationControls.cpp
+  app/view/ViewRotationControls.cpp
+  app/view/ViewScaleControls.cpp
 
-  controls/view/ViewControls.cpp
-  controls/view/ViewOriginControls.cpp
-  controls/view/ViewTranslationControls.cpp
-  controls/view/ViewRotationControls.cpp
-  controls/view/ViewScaleControls.cpp
+  app/animation/AnimationTimeSlider.cpp
+  app/animation/AnimationPlayControls.cpp
+  app/animation/AnimationTimeControls.cpp
+  app/animation/AnimationSpeedControls.cpp
+  app/animation/AnimationStrategyControls.cpp
 
-  controls/animation/AnimationControls.cpp
-  controls/animation/AnimationTimeControls.cpp
-  controls/animation/AnimationSpeedControls.cpp
-  controls/animation/AnimationStrategyControls.cpp
+  app/display/DisplayPropertyControls.cpp
 
-  controls/display/DisplayPropertyControls.cpp
-  controls/display/DisplayColorControls.cpp
-  controls/display/DisplayColorRuleDialog.cpp
-  controls/display/DisplayRuleControls.cpp
-  controls/display/DisplayRuleGrid.cpp
-  controls/display/DisplayRuleRow.cpp
-  controls/display/DisplayRuleDialog.cpp
+  app/color/SolidColorControl.cpp
+  app/color/GradientColorControl.cpp
 
-  loader/StoryLoaderDialog.cpp
-  loader/StoryLoaderPropertyGrid.cpp
-  loader/StoryLoaderPropertyRow.cpp
-  loader/StoryLoaderScalarPropertyRow.cpp
-  loader/StoryLoaderVectorPropertyRow.cpp
-  loader/StoryLoaderAddPropertyDialog.cpp
+  app/dialogs/ColorDialog.cpp
+
+  shared/dialogs/ColorPicker.cpp
+  shared/buttons/ColorButton.cpp
+
+  shared/sections/Section.cpp
+
+  shared/controls/TextControl.cpp
+  shared/controls/ColorControl.cpp
+  shared/controls/NumericControl.cpp
+  
 )
 
 target_link_libraries(widgets PRIVATE

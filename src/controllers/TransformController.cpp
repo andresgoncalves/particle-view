@@ -8,25 +8,25 @@ void TransformController::start(const QVector2D &point)
   startPoint = lastPoint = point;
 }
 
-void TransformController::move(const QVector2D &point)
+void TransformController::move(const QVector2D &point, bool alt)
 {
-  switch (transformType)
+  if (transformType == TransformType::Rotation)
   {
-  case RotationXY:
-    rotateXY(point);
-    break;
-  case RotationZ:
-    rotateZ(point);
-    break;
-  case TranslationXY:
-    translateXY(point);
-    break;
-  case TranslationZ:
-    translateZ(point);
-    break;
-  case Scale:
+    if (alt)
+      rotateZ(point);
+    else
+      rotateXY(point);
+  }
+  else if (transformType == TransformType::Translation)
+  {
+    if (alt)
+      translateZ(point);
+    else
+      translateXY(point);
+  }
+  else if (transformType == TransformType::Scale)
+  {
     scale(point);
-    break;
   }
 }
 

@@ -13,17 +13,20 @@ SceneRenderer::SceneRenderer()
 void SceneRenderer::render(const Scene &scene, const AppContext &appContext)
 {
   auto displayParticles = appContext.displayController.getDisplayParticles();
-  auto displayedVectors = appContext.displayController.getDisplayedVectors();
+  auto displayVectors = appContext.displayController.getDisplayVectors();
 
-  if (displayParticles)
+  if (displayParticles.first)
   {
     for (auto &particle : scene.particles)
       particleRenderer->render(particle, appContext);
   }
 
-  for (auto property : displayedVectors)
+  for (auto [property, displayProperty] : displayVectors)
   {
-    for (auto &particle : scene.particles)
-      vectorRenderer->render({particle, property}, appContext);
+    if (displayProperty.first)
+    {
+      for (auto &particle : scene.particles)
+        vectorRenderer->render({particle, property}, appContext);
+    }
   }
 }

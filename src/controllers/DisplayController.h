@@ -5,33 +5,35 @@
 #include <list>
 #include <string>
 
+#include <utils/color/ColorStrategy.h>
+
 #include "Observable.h"
 #include "display/DisplayRule.h"
-#include "display/ColorRule.h"
 
 class DisplayController
 {
 public:
   using DisplayRules = std::list<std::shared_ptr<DisplayRule>>;
+  using DisplayProperty = std::pair<bool, std::shared_ptr<ColorStrategy>>;
 
   DisplayController();
 
   void toggleParticles();
   void setDisplayParticles(bool value);
+  void setDisplayParticles(std::shared_ptr<ColorStrategy> colorStrategy);
 
   void toggleVector(std::string property);
   void setDisplayVector(std::string property, bool value);
+  void setDisplayVector(std::string property, std::shared_ptr<ColorStrategy> colorStrategy);
 
-  bool getDisplayParticles() const;
-  bool getDisplayVector(std::string property) const;
-  std::set<std::string> getDisplayedVectors() const;
+  DisplayProperty getDisplayParticles() const;
+  DisplayProperty getDisplayVector(std::string property) const;
+  std::map<std::string, DisplayProperty> getDisplayVectors() const;
+
   DisplayRules getDisplayRules() const;
   DisplayRules &getDisplayRules();
 
-  void setParticleColorRule(std::shared_ptr<ColorRule> colorRule);
   void setBackgroundColor(QColor color);
-
-  std::shared_ptr<ColorRule> getParticleColorRule() const;
   QColor getBackgroundColor() const;
 
   DisplayRules::iterator addDisplayRule(std::shared_ptr<DisplayRule> displayRule);
@@ -39,19 +41,20 @@ public:
   void removeDisplayRule(DisplayRules::iterator it);
   void clearDisplayRules();
 
-  Observable<bool> displayParticlesObservable = displayParticles;
-  Observable<std::set<std::string>> displayedVectorsObservable = displayedVectors;
-  BaseObservable<void> displayRulesObservable;
+  Observable<DisplayProperty> displayParticlesObservable = displayParticles;
+  Observable<std::map<std::string, DisplayProperty>> displayVectorsObservable = displayVectors;
 
-  BaseObservable<void> particleColorRuleObservable;
+  BaseObservable<void> displayRulesObservable;
   Observable<QColor> backgroundColorObservable = backgroundColor;
 
 private:
-  bool displayParticles = true;
-  std::set<std::string> displayedVectors;
+  /** Particle display boolean and color rules */
+  DisplayProperty displayParticles;
+  /** Map of properties display boolean and color rules */
+  std::map<std::string, DisplayProperty> displayVectors;
+
   DisplayRules displayRules;
 
-  std::shared_ptr<ColorRule> particleColorRule = std::make_shared<FixedColorRule>(QColor{255, 255, 255});
   QColor backgroundColor = {0, 0, 0};
 };
 

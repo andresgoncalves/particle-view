@@ -4,9 +4,9 @@
 #include <fstream>
 #include <iostream>
 
-#include "loaders/StoryLoader.h"
-#include "widgets/AppWindow.h"
-#include "controllers/AppContext.h"
+#include <loaders/StoryLoader.h>
+#include <widgets/app/AppWindow.h>
+#include <controllers/AppContext.h>
 
 int main(int argc, char **argv)
 {

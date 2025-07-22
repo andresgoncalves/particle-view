@@ -11,17 +11,15 @@ class TransformController
 public:
   enum TransformType
   {
-    TranslationXY,
-    TranslationZ,
-    RotationXY,
-    RotationZ,
+    Translation,
+    Rotation,
     Scale
   };
 
   TransformController(ViewController &viewController);
 
   void start(const QVector2D &point);
-  void move(const QVector2D &point);
+  void move(const QVector2D &point, bool alt = false);
   void end();
 
   void scroll(int delta);
@@ -43,7 +41,7 @@ private:
   bool transforming = false;
   QVector2D startPoint;
   QVector2D lastPoint;
-  TransformType transformType = TransformType::RotationXY;
+  TransformType transformType = TransformType::Rotation;
 
   ViewController &viewController;
 

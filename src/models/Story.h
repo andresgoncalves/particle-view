@@ -24,6 +24,9 @@ struct Story
     std::map<std::string, float> largestScalars;
     std::map<std::string, float> largestVectors;
   } metadata;
+
+  QVector3D getOrigin() const;
+  float getBaseScale() const;
 };
 
 #endif

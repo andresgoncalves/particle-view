@@ -13,7 +13,6 @@ add_library(controllers STATIC
   animation/LinearAnimationStrategy.cpp
 
   display/DisplayRule.cpp
-  display/ColorRule.cpp
 )
 
 target_link_libraries(controllers PRIVATE

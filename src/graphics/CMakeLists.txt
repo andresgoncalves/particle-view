@@ -3,7 +3,7 @@ find_package(Qt6 REQUIRED COMPONENTS
 )
 
 add_library(graphics STATIC
-  AxisRenderer.cpp
+  AxesRenderer.cpp
   SceneRenderer.cpp
   ParticleRenderer.cpp
   VectorRenderer.cpp

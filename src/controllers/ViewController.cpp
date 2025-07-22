@@ -79,7 +79,7 @@ void ViewController::setScale(float factor)
 
 void ViewController::setBaseScale(float factor)
 {
-  scaleFactor = factor;
+  baseScaleFactor = factor;
   baseScaleObservable.notify();
   viewObservable.notify();
 };

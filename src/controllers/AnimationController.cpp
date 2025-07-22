@@ -47,11 +47,26 @@ void AnimationController::updateTime()
   timeObservable.notify();
 }
 
+void AnimationController::skip()
+{
+  return skip(animationSpeed);
+}
+
 void AnimationController::skip(double delta)
 {
   auto duration = std::chrono::nanoseconds(static_cast<long long>(1e9 * delta / animationSpeed));
   startTime -= duration;
   updateTime();
+}
+
+void AnimationController::rewind()
+{
+  return rewind(animationSpeed);
+}
+
+void AnimationController::rewind(double delta)
+{
+  return skip(-delta);
 }
 
 void AnimationController::setStory(const Story &story)
@@ -80,11 +95,17 @@ void AnimationController::setAnimationSpeed(double animationSpeed)
 void AnimationController::setAnimationStrategy(std::unique_ptr<AnimationStrategy> animationStrategy)
 {
   this->animationStrategy = std::move(animationStrategy);
+  animationStrategyObservable.notify(this->animationStrategy.get());
 }
 
 double AnimationController::getAnimationSpeed() const
 {
   return animationSpeed;
+}
+
+AnimationStrategy *AnimationController::getAnimationStrategy() const
+{
+  return animationStrategy.get();
 }
 
 double AnimationController::getTime() const

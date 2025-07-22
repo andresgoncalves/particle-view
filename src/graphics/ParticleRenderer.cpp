@@ -40,7 +40,8 @@ void ParticleRenderer::render(const Particle &particle, const AppContext &appCon
   modelMatrix.translate(particle.position);
   modelMatrix.scale(particle.radius);
 
-  auto color = appContext.displayController.getParticleColorRule()->getColor(particle);
+  auto displayParticles = appContext.displayController.getDisplayParticles();
+  auto color = displayParticles.second->getColor(particle);
   if (color.alpha() == 0)
     return;
 

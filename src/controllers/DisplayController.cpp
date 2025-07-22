@@ -1,47 +1,68 @@
 #include "DisplayController.h"
 
-DisplayController::DisplayController() {}
+#include <utils/color/SolidColorStrategy.h>
+
+DisplayController::DisplayController() : displayParticles{true, std::make_unique<SolidColorStrategy>(QColor{255, 255, 255})} {}
 
 void DisplayController::toggleParticles()
 {
-  displayParticles = !displayParticles;
+  displayParticles.first = !displayParticles.first;
   displayParticlesObservable.notify();
 }
 
 void DisplayController::setDisplayParticles(bool value)
 {
-  displayParticles = value;
+  displayParticles.first = value;
+  displayParticlesObservable.notify();
+}
+
+void DisplayController::setDisplayParticles(std::shared_ptr<ColorStrategy> colorStrategy)
+{
+  displayParticles.second = colorStrategy;
   displayParticlesObservable.notify();
 }
 
 void DisplayController::toggleVector(std::string property)
 {
-  setDisplayVector(property, !getDisplayVector(property));
+  setDisplayVector(property, !getDisplayVector(property).first);
 }
 
 void DisplayController::setDisplayVector(std::string property, bool value)
 {
-  if (value)
-    displayedVectors.insert(property);
+  if (displayVectors.contains(property))
+    displayVectors[property].first = value;
   else
-    displayedVectors.erase(property);
+    displayVectors[property] = {value, std::make_shared<SolidColorStrategy>(QColor{0, 0, 0})};
 
-  displayedVectorsObservable.notify();
+  displayVectorsObservable.notify();
 }
 
-bool DisplayController::getDisplayParticles() const
+void DisplayController::setDisplayVector(std::string property, std::shared_ptr<ColorStrategy> colorStrategy)
+{
+  if (displayVectors.contains(property))
+    displayVectors[property].second = colorStrategy;
+  else
+    displayVectors[property] = {true, colorStrategy};
+
+  displayVectorsObservable.notify();
+}
+
+DisplayController::DisplayProperty DisplayController::getDisplayParticles() const
 {
   return displayParticles;
 }
 
-bool DisplayController::getDisplayVector(std::string property) const
+DisplayController::DisplayProperty DisplayController::getDisplayVector(std::string property) const
 {
-  return displayedVectors.contains(property);
+  auto displayVector = displayVectors.find(property);
+  if (displayVector != displayVectors.end())
+    return displayVector->second;
+  return {false, std::make_shared<SolidColorStrategy>(QColor{0, 0, 0})};
 }
 
-std::set<std::string> DisplayController::getDisplayedVectors() const
+std::map<std::string, DisplayController::DisplayProperty> DisplayController::getDisplayVectors() const
 {
-  return displayedVectors;
+  return displayVectors;
 }
 
 DisplayController::DisplayRules DisplayController::getDisplayRules() const
@@ -54,19 +75,9 @@ DisplayController::DisplayRules &DisplayController::getDisplayRules()
   return displayRules;
 }
 
-void DisplayController::setParticleColorRule(std::shared_ptr<ColorRule> colorRule)
-{
-  this->particleColorRule = colorRule;
-}
-
 void DisplayController::setBackgroundColor(QColor color)
 {
   this->backgroundColor = color;
-}
-
-std::shared_ptr<ColorRule> DisplayController::getParticleColorRule() const
-{
-  return particleColorRule;
 }
 
 QColor DisplayController::getBackgroundColor() const

@@ -15,7 +15,10 @@ public:
   void play();
   void pause();
   void reset();
+  void skip();
   void skip(double delta);
+  void rewind();
+  void rewind(double delta);
   void updateTime();
 
   void setTime(double time);
@@ -29,6 +32,7 @@ public:
   double getTime() const;
   double getDuration() const;
   double getAnimationSpeed() const;
+  AnimationStrategy *getAnimationStrategy() const;
 
   Scene getScene() const;
   Scene getScene(double time) const;
@@ -41,6 +45,7 @@ public:
   Observable<double> timeObservable = time;
   Observable<bool> playingObservable = playing;
   Observable<double> animationSpeedObservable = animationSpeed;
+  BaseObservable<AnimationStrategy *> animationStrategyObservable;
   BaseObservable<void> storyObservable;
 
 private:

@@ -50,7 +50,7 @@ void VectorRenderer::render(const std::pair<Particle, std::string> &input, const
   shaderProgram.bind();
   vertexArray.bind();
 
-  auto color = appContext.displayController.getParticleColorRule()->getColor(particle);
+  auto color = appContext.displayController.getDisplayVector(property).second->getColor(particle);
   for (auto displayRule : appContext.displayController.getDisplayRules())
   {
     if (displayRule->isEnabled() && displayRule->test(particle))
