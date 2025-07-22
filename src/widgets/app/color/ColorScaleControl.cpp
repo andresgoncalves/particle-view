@@ -1,12 +1,12 @@
-#include "GradientColorControl.h"
+#include "ColorScaleControl.h"
 
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QVBoxLayout>
 
 #include <widgets/shared/dialogs/ColorPicker.h>
-#include <utils/color/GradientColorStrategy.h>
+#include <utils/color/ColorScaleStrategy.h>
 
-GradientColorControl::GradientColorControl(AppContext &appContext, QWidget *parent) : appContext{appContext}, QWidget{parent}
+ColorScaleControl::ColorScaleControl(AppContext &appContext, QWidget *parent) : appContext{appContext}, QWidget{parent}
 {
   // Property control
   propertyComboBox = new QComboBox{this};
@@ -72,7 +72,7 @@ GradientColorControl::GradientColorControl(AppContext &appContext, QWidget *pare
   layout->setContentsMargins({});
 }
 
-void GradientColorControl::setColorStrategy(GradientColorStrategy *colorStrategy)
+void ColorScaleControl::setColorStrategy(ColorScaleStrategy *colorStrategy)
 {
   // Set property controls
   propertyComboBox->setCurrentText(colorStrategy->getProperty().c_str());
@@ -88,9 +88,9 @@ void GradientColorControl::setColorStrategy(GradientColorStrategy *colorStrategy
   endColorControl->getColorButton()->setSolidColor(endColor);
 }
 
-std::shared_ptr<GradientColorStrategy> GradientColorControl::getColorStrategy() const
+std::shared_ptr<ColorScaleStrategy> ColorScaleControl::getColorStrategy() const
 {
-  return std::make_shared<GradientColorStrategy>(
+  return std::make_shared<ColorScaleStrategy>(
       propertyComboBox->currentText().toStdString(),
       (Particle::PropertyType)propertyComboBox->currentData().toInt(),
       std::make_pair(startValueControl->getValue<float>(), startColor),

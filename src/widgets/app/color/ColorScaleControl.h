@@ -1,5 +1,5 @@
-#ifndef GRADIENT_COLOR_CONTROL_H
-#define GRADIENT_COLOR_CONTROL_H
+#ifndef COLOR_SCALE_CONTROL_H
+#define COLOR_SCALE_CONTROL_H
 
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QComboBox>
@@ -8,19 +8,19 @@
 #include <widgets/shared/controls/ColorControl.h>
 #include <widgets/shared/controls/NumericControl.h>
 #include <widgets/shared/sections/Section.h>
-#include <utils/color/GradientColorStrategy.h>
+#include <utils/color/ColorScaleStrategy.h>
 
 /** Color control */
-class GradientColorControl : public QWidget
+class ColorScaleControl : public QWidget
 {
 public:
   /** Creates a color control */
-  GradientColorControl(AppContext &appContext, QWidget *parent = nullptr);
+  ColorScaleControl(AppContext &appContext, QWidget *parent = nullptr);
 
   /** Set color strategy */
-  void setColorStrategy(GradientColorStrategy *colorStrategy);
+  void setColorStrategy(ColorScaleStrategy *colorStrategy);
   /** Get color strategy */
-  std::shared_ptr<GradientColorStrategy> getColorStrategy() const;
+  std::shared_ptr<ColorScaleStrategy> getColorStrategy() const;
 
 private:
   /** Start color */

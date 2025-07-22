@@ -86,7 +86,7 @@ void SceneWidget::paintGL()
   axesRenderer->render(appContext, painter, size());
 
   // Render color scale
-  if (auto gradientColorStrategy = dynamic_cast<GradientColorStrategy *>(appContext.displayController.getDisplayParticles().second.get()))
+  if (auto gradientColorStrategy = dynamic_cast<ColorScaleStrategy *>(appContext.displayController.getDisplayParticles().second.get()))
     colorScaleRenderer->render(*gradientColorStrategy, appContext, painter, size());
 }
 

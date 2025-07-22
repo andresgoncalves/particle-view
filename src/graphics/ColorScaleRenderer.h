@@ -5,21 +5,21 @@
 #include <QtOpenGL/QOpenGLShaderProgram>
 #include <QtOpenGL/QOpenGLVertexArrayObject>
 
-#include <utils/color/GradientColorStrategy.h>
+#include <utils/color/ColorScaleStrategy.h>
 
 #include "Renderer.h"
 
 /** Render color scale */
-class ColorScaleRenderer : public Renderer<GradientColorStrategy>
+class ColorScaleRenderer : public Renderer<ColorScaleStrategy>
 {
 public:
   /** Create axes renderer */
   ColorScaleRenderer();
 
   /** Render axes in viewport */
-  void render(const GradientColorStrategy &gradientColorStrategy, const AppContext &appContext) override;
+  void render(const ColorScaleStrategy &gradientColorStrategy, const AppContext &appContext) override;
   /** Render axes in viewport */
-  void render(const GradientColorStrategy &gradientColorStrategy, const AppContext &appContext, QPainter &painter, QSize viewportSize) override;
+  void render(const ColorScaleStrategy &gradientColorStrategy, const AppContext &appContext, QPainter &painter, QSize viewportSize) override;
 };
 
 #endif

@@ -19,7 +19,7 @@ public:
   void setSolidColor(QColor color);
 
   /** Set gradient color */
-  void setGradientColor(QColor start, QColor stop);
+  void setColorScale(QColor start, QColor stop);
 
   /** Set color strategy */
   void setColorStrategy(ColorStrategy *colorStrategy);

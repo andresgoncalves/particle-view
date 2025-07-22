@@ -1,15 +1,15 @@
-#include "GradientColorStrategy.h"
+#include "ColorScaleStrategy.h"
 
 #include <cmath>
 
-GradientColorStrategy::GradientColorStrategy(
+ColorScaleStrategy::ColorScaleStrategy(
     std::string property,
     Particle::PropertyType propertyType,
     std::pair<float, QColor> start,
     std::pair<float, QColor> end) : property{property}, propertyType{propertyType},
                                     start{start}, end{end} {}
 
-QColor GradientColorStrategy::getColor(const Particle &particle) const
+QColor ColorScaleStrategy::getColor(const Particle &particle) const
 {
   auto defaultValue = start.first;
 
@@ -25,27 +25,27 @@ QColor GradientColorStrategy::getColor(const Particle &particle) const
   return color;
 }
 
-std::string GradientColorStrategy::getProperty() const
+std::string ColorScaleStrategy::getProperty() const
 {
   return property;
 }
 
-Particle::PropertyType GradientColorStrategy::getPropertyType() const
+Particle::PropertyType ColorScaleStrategy::getPropertyType() const
 {
   return propertyType;
 }
 
-std::pair<float, QColor> GradientColorStrategy::getStart() const
+std::pair<float, QColor> ColorScaleStrategy::getStart() const
 {
   return start;
 }
 
-std::pair<float, QColor> GradientColorStrategy::getEnd() const
+std::pair<float, QColor> ColorScaleStrategy::getEnd() const
 {
   return end;
 }
 
-std::optional<float> GradientColorStrategy::getValue(const Particle &particle, std::string property, Particle::PropertyType propertyType) const
+std::optional<float> ColorScaleStrategy::getValue(const Particle &particle, std::string property, Particle::PropertyType propertyType) const
 {
   if (propertyType == Particle::PropertyType::Scalar)
   {

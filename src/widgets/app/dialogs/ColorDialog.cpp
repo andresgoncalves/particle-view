@@ -7,13 +7,13 @@
 
 #include <widgets/shared/controls/Control.h>
 #include <utils/color/SolidColorStrategy.h>
-#include <utils/color/GradientColorStrategy.h>
+#include <utils/color/ColorScaleStrategy.h>
 
 ColorDialog::ColorDialog(AppContext &appContext, QWidget *parent) : appContext{appContext}, QDialog{parent}
 {
   // Control variants
   solidColorControls = new SolidColorControl{appContext, this};
-  gradientColorControls = new GradientColorControl{appContext, this};
+  gradientColorControls = new ColorScaleControl{appContext, this};
 
   // Stacked widget
   auto stackedColorControls = new QStackedWidget{this};
@@ -54,7 +54,7 @@ void ColorDialog::setColorStrategy(ColorStrategy *colorStrategy) const
     solidColorControls->setColorStrategy(solidColorStrategy);
     colorStrategyComboBox->setCurrentIndex(0);
   }
-  else if (auto gradientColorStrategy = dynamic_cast<GradientColorStrategy *>(colorStrategy))
+  else if (auto gradientColorStrategy = dynamic_cast<ColorScaleStrategy *>(colorStrategy))
   {
     gradientColorControls->setColorStrategy(gradientColorStrategy);
     colorStrategyComboBox->setCurrentIndex(1);

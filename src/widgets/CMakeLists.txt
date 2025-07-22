@@ -37,7 +37,7 @@ add_library(widgets STATIC
   app/display/DisplayPropertyControls.cpp
 
   app/color/SolidColorControl.cpp
-  app/color/GradientColorControl.cpp
+  app/color/ColorScaleControl.cpp
 
   app/dialogs/ColorDialog.cpp
 

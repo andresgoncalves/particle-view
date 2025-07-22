@@ -4,7 +4,7 @@
 #include <QtGui/QLinearGradient>
 
 #include <utils/color/SolidColorStrategy.h>
-#include <utils/color/GradientColorStrategy.h>
+#include <utils/color/ColorScaleStrategy.h>
 
 ColorButton::ColorButton(QWidget *parent) : QPushButton{nullptr, parent}
 {
@@ -16,7 +16,7 @@ void ColorButton::setSolidColor(QColor color)
   brush = color;
 }
 
-void ColorButton::setGradientColor(QColor start, QColor end)
+void ColorButton::setColorScale(QColor start, QColor end)
 {
   auto gradient = QLinearGradient{0, 0, 1, 0};
   gradient.setCoordinateMode(QLinearGradient::ObjectBoundingMode);
@@ -29,8 +29,8 @@ void ColorButton::setColorStrategy(ColorStrategy *colorStrategy)
 {
   if (auto solidColorStrategy = dynamic_cast<SolidColorStrategy *>(colorStrategy))
     setSolidColor(solidColorStrategy->getSolidColor());
-  else if (auto gradientColorStrategy = dynamic_cast<GradientColorStrategy *>(colorStrategy))
-    setGradientColor(gradientColorStrategy->getStart().second, gradientColorStrategy->getEnd().second);
+  else if (auto gradientColorStrategy = dynamic_cast<ColorScaleStrategy *>(colorStrategy))
+    setColorScale(gradientColorStrategy->getStart().second, gradientColorStrategy->getEnd().second);
 }
 
 void ColorButton::paintEvent(QPaintEvent *)

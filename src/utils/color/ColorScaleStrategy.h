@@ -1,5 +1,5 @@
-#ifndef GRADIENT_COLOR_STRATEGY_H
-#define GRADIENT_COLOR_STRATEGY_H
+#ifndef COLOR_SCALE_STRATEGY_H
+#define COLOR_SCALE_STRATEGY_H
 
 #include "ColorStrategy.h"
 
@@ -7,12 +7,12 @@
 #include <optional>
 #include <utility>
 
-/** Gradient color strategy implementation */
-class GradientColorStrategy : public ColorStrategy
+/** Color scale strategy implementation */
+class ColorScaleStrategy : public ColorStrategy
 {
 public:
-  /** Create a gradient color strategy */
-  GradientColorStrategy(
+  /** Create a color scale strategy */
+  ColorScaleStrategy(
       std::string property,
       Particle::PropertyType propertyType,
       std::pair<float, QColor> start,

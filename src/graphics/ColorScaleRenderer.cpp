@@ -6,11 +6,11 @@ ColorScaleRenderer::ColorScaleRenderer()
 {
 }
 
-void ColorScaleRenderer::render(const GradientColorStrategy &gradientColorStrategy, const AppContext &appContext)
+void ColorScaleRenderer::render(const ColorScaleStrategy &gradientColorStrategy, const AppContext &appContext)
 {
 }
 
-void ColorScaleRenderer::render(const GradientColorStrategy &gradientColorStrategy, const AppContext &appContext, QPainter &painter, QSize viewportSize)
+void ColorScaleRenderer::render(const ColorScaleStrategy &gradientColorStrategy, const AppContext &appContext, QPainter &painter, QSize viewportSize)
 {
   // Get size
   auto colorScaleSize = QSizeF{

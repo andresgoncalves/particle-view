@@ -6,7 +6,7 @@
 
 #include <controllers/AppContext.h>
 #include <widgets/app/color/SolidColorControl.h>
-#include <widgets/app/color/GradientColorControl.h>
+#include <widgets/app/color/ColorScaleControl.h>
 #include <utils/color/ColorStrategy.h>
 
 /** Color dialog */
@@ -28,8 +28,8 @@ private:
   QComboBox *colorStrategyComboBox;
   /** Solid color controls */
   SolidColorControl *solidColorControls;
-  /** Gradient color controls */
-  GradientColorControl *gradientColorControls;
+  /** Color scale controls */
+  ColorScaleControl *gradientColorControls;
 
   /** Application context */
   AppContext &appContext;
