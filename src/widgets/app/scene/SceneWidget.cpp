@@ -34,7 +34,6 @@ void SceneWidget::initializeGL()
 {
   // Initialize GL
   initializeOpenGLFunctions();
-  glEnable(GL_DEPTH_TEST);
   glDepthFunc(GL_LESS);
 
   // Set default renderers
@@ -60,6 +59,11 @@ void SceneWidget::paintGL()
   // Get scene
   auto scene = appContext.animationController.getScene();
 
+  // Get painter
+  auto painter = QPainter{this};
+  painter.beginNativePainting();
+  glEnable(GL_DEPTH_TEST);
+
   // Clear buffers
   glClearColor(
       appContext.displayController.getBackgroundColor().redF(),
@@ -70,10 +74,11 @@ void SceneWidget::paintGL()
 
   // Render scene
   sceneRenderer->render(scene, appContext);
+  glClear(GL_DEPTH_BUFFER_BIT);
 
   // Render axes
-  glClear(GL_DEPTH_BUFFER_BIT);
-  axesRenderer->render(appContext);
+  painter.endNativePainting();
+  axesRenderer->render(appContext, painter, size());
 }
 
 void SceneWidget::mousePressEvent(QMouseEvent *event)

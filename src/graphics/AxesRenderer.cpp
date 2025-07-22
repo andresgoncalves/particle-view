@@ -31,14 +31,20 @@ AxesRenderer::AxesRenderer()
 
 void AxesRenderer::render(const AppContext &appContext)
 {
-  // Axis colors
-  QVector3D colors[] = {
-      QVector3D{1.0f, 0.0f, 0.0f},
-      QVector3D{0.0f, 1.0f, 0.0f},
-      QVector3D{0.0f, 0.0f, 1.0f},
-  };
+}
+
+void AxesRenderer::render(const AppContext &appContext, QPainter &painter, QSize viewportSize)
+{
+  // Axis size
+  float axisSize = appContext.viewController.axisSize;
+
+  // Locate axes in viewport
+  auto viewProjectionMatrix = appContext.viewController.getProjectionMatrix(ViewController::Ortho);
+  viewProjectionMatrix.translate((-appContext.viewController.getViewport().toVector3D() + QVector3D{axisSize * 1.25f, axisSize * 1.25f, -1.0f}));
+  viewProjectionMatrix.scale(axisSize);
+
   // Axis rotations
-  QMatrix4x4 modelMatrices[] = {
+  QMatrix4x4 modelMatrices[3] = {
       QMatrix4x4{},
       QMatrix4x4{},
       QMatrix4x4{},
@@ -50,30 +56,21 @@ void AxesRenderer::render(const AppContext &appContext)
   // Rotate to Z axis
   modelMatrices[2].rotate(QQuaternion::rotationTo({0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}));
 
-  // Axis size
-  float size = appContext.viewController.axisSize;
-
-  // Locate axes in viewport
-  auto viewProjectionMatrix = appContext.viewController.getProjectionMatrix(ViewController::Ortho);
-  viewProjectionMatrix.translate((-appContext.viewController.getViewport().toVector3D() + QVector3D{size, size, -1.0f}));
-  viewProjectionMatrix.scale(size);
-
-  // Bind objects
-  shaderProgram.bind();
-  vertexArray.bind();
-
-  // Draw each axis
+  // Model view projection matrices
+  QMatrix4x4 modelViewProjectionMatrices[3] = {
+      QMatrix4x4{},
+      QMatrix4x4{},
+      QMatrix4x4{},
+  };
   for (int i = 0; i < 3; i++)
   {
-    auto modelViewProjectionMatrix = viewProjectionMatrix * appContext.viewController.getRotationMatrix() * modelMatrices[i];
-    shaderProgram.setUniformValue("modelViewProjectionMatrix", modelViewProjectionMatrix);
-    shaderProgram.setUniformValue("color", colors[i]);
-    glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
+    modelViewProjectionMatrices[i] = viewProjectionMatrix * appContext.viewController.getRotationMatrix() * modelMatrices[i];
   }
 
-  // Release objects
-  vertexArray.release();
-  shaderProgram.release();
+  // Paint axes
+  paintAxes(modelViewProjectionMatrices, appContext, painter, viewportSize);
+  // Paint labels
+  paintLabels(modelViewProjectionMatrices, appContext, painter, viewportSize);
 }
 
 void AxesRenderer::loadShader()
@@ -108,4 +105,50 @@ void AxesRenderer::loadBuffers()
   glVertexAttribPointer(0, 3, GL_FLOAT, false, 3 * sizeof(vertices[0]), nullptr);
 
   vertexArray.release();
+}
+
+void AxesRenderer::paintAxes(QMatrix4x4 modelViewProjectionMatrices[3], const AppContext &appContext, QPainter &painter, QSize viewportSize)
+{
+  // Bind objects
+  painter.beginNativePainting();
+  shaderProgram.bind();
+  vertexArray.bind();
+
+  // Draw each axis
+  for (int i = 0; i < 3; i++)
+  {
+    shaderProgram.setUniformValue("modelViewProjectionMatrix", modelViewProjectionMatrices[i]);
+    shaderProgram.setUniformValue("color", QVector3D{
+                                               axisColors[i].redF(),
+                                               axisColors[i].greenF(),
+                                               axisColors[i].blueF()});
+    glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
+  }
+
+  // Release objects
+  vertexArray.release();
+  shaderProgram.release();
+  painter.endNativePainting();
+}
+
+void AxesRenderer::paintLabels(QMatrix4x4 modelViewProjectionMatrices[3], const AppContext &appContext, QPainter &painter, QSize viewportSize)
+{
+  // Paint each label
+  painter.setRenderHint(QPainter::Antialiasing);
+  painter.setFont(QFont("Helvetica", 20));
+  auto fontMetrics = QFontMetricsF{painter.font()};
+  for (int i = 0; i < 3; i++)
+  {
+    auto normalizedPoint = (modelViewProjectionMatrices[i] * QVector3D{0.0f, 1.25f, 0.0f} + QVector3D{1.0f, 1.0f, 1.0f}) / 2.0f;
+    auto textSize = fontMetrics.boundingRect(axisLabels[i]).size();
+    auto textRect = QRectF{
+        normalizedPoint.x() * viewportSize.width() - textSize.width() / 2,
+        (1.0f - normalizedPoint.y()) * viewportSize.height() - textSize.height() / 2,
+        textSize.width(),
+        textSize.height()};
+
+    painter.setPen(axisColors[i]);
+    painter.drawText(textRect, Qt::AlignCenter, axisLabels[i]);
+  }
+  painter.end();
 }
