@@ -1,5 +1,7 @@
 #include "ArrowFactory.h"
 
+#include <cmath>
+
 ArrowFactory::ArrowFactory(int divisions) : divisions{divisions} {}
 
 std::vector<float> ArrowFactory::buildVertices()
@@ -60,7 +62,7 @@ std::vector<int> ArrowFactory::buildBodyIndices()
 {
   auto indices = std::vector<int>{};
 
-  uint baseIndex = (divisions + 1) * 2;
+  int baseIndex = (divisions + 1) * 2;
 
   // Lados del cilindro
   for (int i = 0; i < divisions; i++)
@@ -94,8 +96,8 @@ std::vector<int> ArrowFactory::buildHeadIndices()
 {
   auto indices = std::vector<int>{};
 
-  uint baseIndex = (divisions + 1) * 2;
-  uint tipIndex = (divisions + 1) * 3 + 1;
+  int baseIndex = (divisions + 1) * 2;
+  int tipIndex = (divisions + 1) * 3 + 1;
 
   // Base del cono
   for (int i = 1; i <= divisions; i++)
