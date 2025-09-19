@@ -2,7 +2,7 @@
 
 ```sh
 # Install dependencies
-conan install . --build=missing
+conan install . --build=missing -c tools.system.package_manager:mode=install
 
 # Build makefile
 cmake --preset conan-release

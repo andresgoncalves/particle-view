@@ -1,0 +1,32 @@
+name: Build with Conan and CMake
+
+on:
+  push:
+    branches: [main, development]
+  pull_request:
+    branches: [main, development]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup CMake
+        uses: jwlawson/actions-setup-cmake@v2
+
+      - name: Setup Conan Client
+        uses: conan-io/setup-conan@v1
+        with:
+          cache_packages: true
+
+      - name: Install dependencies with Conan
+        run: conan install . --build=missing -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True
+
+      - name: Configure CMake
+        run: cmake --preset conan-release
+
+      - name: Build with CMake
+        run: cmake --build build/Release
