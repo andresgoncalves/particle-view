@@ -11,8 +11,6 @@ add_library(controllers STATIC
 
   animation/StepAnimationStrategy.cpp
   animation/LinearAnimationStrategy.cpp
-
-  display/DisplayRule.cpp
 )
 
 target_link_libraries(controllers PRIVATE
