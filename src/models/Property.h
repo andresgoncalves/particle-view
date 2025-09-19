@@ -3,6 +3,7 @@
 
 #include <string>
 #include <variant>
+#include <map>
 
 #include <QtGui/QVector2D>
 #include <QtGui/QVector3D>
@@ -63,8 +64,18 @@ enum class PropertyType
 class Property : private std::variant<ScalarProperty, VectorProperty, StringProperty>
 {
 public:
+  Property(ScalarProperty property) : std::variant<ScalarProperty, VectorProperty, StringProperty>{property}
+  {
+  }
+  Property(VectorProperty property) : std::variant<ScalarProperty, VectorProperty, StringProperty>{property}
+  {
+  }
+  Property(StringProperty property) : std::variant<ScalarProperty, VectorProperty, StringProperty>{property}
+  {
+  }
+
   template <PropertyType I>
-  constexpr auto getProperty() const noexcept
+  constexpr auto getValue() const noexcept
   {
     return std::get_if<static_cast<std::size_t>(I)>(this);
   }

@@ -1,5 +1,7 @@
 #include "ColorScaleControl.h"
 
+#include <algorithm>
+
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QVBoxLayout>
 
@@ -10,12 +12,36 @@ ColorScaleControl::ColorScaleControl(AppContext &appContext, QWidget *parent) : 
 {
   // Property control
   propertyComboBox = new QComboBox{this};
-  // Add scalar properties
-  for (auto property : appContext.animationController.getStory().scalarProperties)
-    propertyComboBox->addItem(property.c_str(), Particle::PropertyType::Scalar);
-  // Add vector properties
-  for (auto property : appContext.animationController.getStory().vectorProperties)
-    propertyComboBox->addItem(property.c_str(), Particle::PropertyType::Vector);
+  // Add properties
+  for (auto [propertyName, propertyType] : appContext.animationController.getStory().particleProperties)
+  {
+    switch (propertyType)
+    {
+    case PropertyType::Scalar:
+      // Add items
+      propertyValues.push_back({propertyName.c_str(), {}});
+      // Add values
+      propertyComboBox->addItem(propertyName.c_str());
+
+      break;
+
+    case PropertyType::Vector:
+      // Add items
+      propertyComboBox->addItem((propertyName + " (Magnitud)").c_str());
+      propertyComboBox->addItem((propertyName + " (Componente X)").c_str());
+      propertyComboBox->addItem((propertyName + " (Componente Y)").c_str());
+      propertyComboBox->addItem((propertyName + " (Componente Z)").c_str());
+      // Add values
+      propertyValues.push_back({propertyName.c_str(), VectorComponent::Magnitude});
+      propertyValues.push_back({propertyName.c_str(), VectorComponent::X});
+      propertyValues.push_back({propertyName.c_str(), VectorComponent::Y});
+      propertyValues.push_back({propertyName.c_str(), VectorComponent::Z});
+
+      break;
+    case PropertyType::String:
+      break;
+    }
+  }
   auto propertyControl = new Control<QComboBox>{"Propiedad", propertyComboBox, this};
 
   // Start value control
@@ -75,7 +101,14 @@ ColorScaleControl::ColorScaleControl(AppContext &appContext, QWidget *parent) : 
 void ColorScaleControl::setColorStrategy(ColorScaleStrategy *colorStrategy)
 {
   // Set property controls
-  propertyComboBox->setCurrentText(colorStrategy->getProperty().c_str());
+  auto search = [colorStrategy](std::pair<std::string, VectorComponent> item)
+  {
+    return item.first == colorStrategy->getProperty() &&
+           item.second == colorStrategy->getVectorComponent();
+  };
+  auto iterator = std::find_if(propertyValues.begin(), propertyValues.end(), search);
+  auto index = iterator != propertyValues.end() ? std::distance(propertyValues.begin(), iterator) : 0;
+  propertyComboBox->setCurrentIndex(index);
 
   // Set start controls
   startColor = colorStrategy->getStart().second;
@@ -90,9 +123,10 @@ void ColorScaleControl::setColorStrategy(ColorScaleStrategy *colorStrategy)
 
 std::shared_ptr<ColorScaleStrategy> ColorScaleControl::getColorStrategy() const
 {
+  auto [propertyName, vectorComponent] = propertyValues[propertyComboBox->currentIndex()];
   return std::make_shared<ColorScaleStrategy>(
-      propertyComboBox->currentText().toStdString(),
-      (Particle::PropertyType)propertyComboBox->currentData().toInt(),
+      propertyName,
       std::make_pair(startValueControl->getValue<float>(), startColor),
-      std::make_pair(endValueControl->getValue<float>(), endColor));
+      std::make_pair(endValueControl->getValue<float>(), endColor),
+      vectorComponent);
 }

@@ -14,17 +14,13 @@ struct Scene
   int frame;
   double time;
   std::vector<Particle> particles;
-
-  std::set<std::string> scalarProperties;
-  std::set<std::string> vectorProperties;
+  std::map<std::string, PropertyType> particleProperties;
 
   struct Metadata
   {
     QVector3D start;
     QVector3D end;
-    float largestRadius;
-    std::map<std::string, float> largestScalars;
-    std::map<std::string, float> largestVectors;
+    std::map<std::string, float> maxValues;
   } metadata;
 };
 

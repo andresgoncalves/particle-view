@@ -24,10 +24,8 @@ Story StoryLoader::load(std::istream &input)
     scene.time = time;
     scene.metadata = getMetadata(scene);
 
-    for (auto property : scene.scalarProperties)
-      story.scalarProperties.insert(property);
-    for (auto property : scene.vectorProperties)
-      story.vectorProperties.insert(property);
+    for (auto property : scene.particleProperties)
+      story.particleProperties.insert(property);
 
     story.scenes[time] = scene;
   }
@@ -50,10 +48,8 @@ Scene StoryLoader::loadScene(std::istream &input, size_t particleCount)
     auto particle = loadParticle(lineStream);
     scene.particles.push_back(particle);
 
-    for (auto [property, _] : particle.scalarProperties)
-      scene.scalarProperties.insert(property);
-    for (auto [property, _] : particle.vectorProperties)
-      scene.vectorProperties.insert(property);
+    for (auto [propertyName, property] : particle.properties)
+      scene.particleProperties.insert({propertyName, property.getType()});
   }
 
   return scene;
@@ -61,53 +57,44 @@ Scene StoryLoader::loadScene(std::istream &input, size_t particleCount)
 
 Particle StoryLoader::loadParticle(std::istream &input)
 {
-  std::vector<float> columnValues;
-  float value;
+  std::vector<std::string> rawValues;
+  std::string rawValue;
 
-  while (input >> value)
-    columnValues.push_back(value);
+  while (input >> rawValue)
+    rawValues.push_back(rawValue);
 
-  auto defaultValues = std::map<DefaultProperty, float>{};
-  auto scalarValues = std::map<std::string, float>{};
-  auto vectorValues = std::map<std::string, QVector3D>{};
+  auto particle = Particle{};
 
-  for (auto property : defaultProperties)
+  for (auto [propertyName, definition] : properties)
   {
-    if (property.second >= 0 && property.second < columnValues.size())
-      defaultValues[property.first] = columnValues[property.second];
-  }
-  for (auto property : scalarProperties)
-  {
-    if (property.second >= 0 && property.second < columnValues.size())
-      scalarValues[property.first] = columnValues[property.second];
-  }
-  for (auto property : vectorProperties)
-  {
-    for (int i = 0; i < 3; i++)
+    switch (definition.first)
     {
-      if (property.second[i] >= 0 && property.second[i] < columnValues.size())
-        vectorValues[property.first][i] = columnValues[property.second[i]];
+    case PropertyType::Scalar:
+    {
+      auto index = std::get<IndexType>(definition.second);
+      auto value = std::stof(rawValues[index]);
+      particle.setProperty(propertyName, ScalarProperty{value});
+      break;
+    }
+    case PropertyType::Vector:
+    {
+      auto [xIndex, yIndex, zIndex] = std::get<IndicesType>(definition.second);
+      particle.setProperty(propertyName, VectorProperty{{
+                                             std::stof(rawValues[xIndex]),
+                                             std::stof(rawValues[yIndex]),
+                                             std::stof(rawValues[zIndex]),
+                                         }});
+      break;
+    }
+    case PropertyType::String:
+    {
+      auto index = std::get<IndexType>(definition.second);
+      auto value = rawValues[index];
+      particle.setProperty(propertyName, StringProperty{value});
+      break;
+    }
     }
   }
-
-  auto getDefaultValue = [&](DefaultProperty property, float fallback)
-  {
-    auto it = defaultValues.find(property);
-    return it != defaultValues.end() ? it->second : fallback;
-  };
-
-  scalarValues[Particle::radiusProperty] = getDefaultValue(DefaultProperty::Radius, 1.0f);
-
-  auto particle = Particle{
-      .radius = getDefaultValue(DefaultProperty::Radius, 1.0f),
-      .position = {
-          getDefaultValue(DefaultProperty::X, 0.0f),
-          getDefaultValue(DefaultProperty::Y, 0.0f),
-          getDefaultValue(DefaultProperty::Z, 0.0f),
-      },
-      .scalarProperties = scalarValues,
-      .vectorProperties = vectorValues,
-  };
 
   return particle;
 }
@@ -119,78 +106,82 @@ Scene::Metadata StoryLoader::getMetadata(const Scene &scene) const
 
   std::vector<Particle>::const_iterator start[] = {
       std::min_element(scene.particles.begin(), scene.particles.end(), [](const Particle &a, const Particle &b)
-                       { return (a.position.x() - a.radius) < (b.position.x() - b.radius); }),
+                       { return (a.getPosition().x() - a.getRadius()) < (b.getPosition().x() - b.getRadius()); }),
       std::min_element(scene.particles.begin(), scene.particles.end(), [](const Particle &a, const Particle &b)
-                       { return (a.position.y() - a.radius) < (b.position.y() - b.radius); }),
+                       { return (a.getPosition().y() - a.getRadius()) < (b.getPosition().y() - b.getRadius()); }),
       std::min_element(scene.particles.begin(), scene.particles.end(), [](const Particle &a, const Particle &b)
-                       { return (a.position.z() - a.radius) < (b.position.z() - b.radius); }),
+                       { return (a.getPosition().z() - a.getRadius()) < (b.getPosition().z() - b.getRadius()); }),
   };
 
   std::vector<Particle>::const_iterator end[] = {
       std::max_element(scene.particles.begin(), scene.particles.end(), [](const Particle &a, const Particle &b)
-                       { return (a.position.x() + a.radius) < (b.position.x() + b.radius); }),
+                       { return (a.getPosition().x() + a.getRadius()) < (b.getPosition().x() + b.getRadius()); }),
       std::max_element(scene.particles.begin(), scene.particles.end(), [](const Particle &a, const Particle &b)
-                       { return (a.position.y() + a.radius) < (b.position.y() + b.radius); }),
+                       { return (a.getPosition().y() + a.getRadius()) < (b.getPosition().y() + b.getRadius()); }),
       std::max_element(scene.particles.begin(), scene.particles.end(), [](const Particle &a, const Particle &b)
-                       { return (a.position.z() + a.radius) < (b.position.z() + b.radius); }),
+                       { return (a.getPosition().z() + a.getRadius()) < (b.getPosition().z() + b.getRadius()); }),
   };
 
-  std::vector<Particle>::const_iterator largestRadius = std::max_element(scene.particles.begin(), scene.particles.end(), [](const Particle &a, const Particle &b)
-                                                                         { return a.radius < b.radius; });
-
-  auto largestScalars = std::map<std::string, float>{};
-  for (auto property : scene.scalarProperties)
+  auto maxValues = std::map<std::string, float>{};
+  for (auto [propertyName, propertyType] : scene.particleProperties)
   {
-    auto compare = [=](const Particle &a, const Particle &b)
+    switch (propertyType)
     {
-      auto aScalar = a.scalarProperties.find(property);
-      auto bScalar = b.scalarProperties.find(property);
-
-      if (aScalar == a.scalarProperties.end())
-        return true;
-      if (bScalar == b.scalarProperties.end())
-        return false;
-
-      return aScalar->second < bScalar->second;
-    };
-    auto largest = std::max_element(scene.particles.begin(), scene.particles.end(), compare);
-    largestScalars[property] = largest->scalarProperties.at(property);
-  }
-
-  auto largestVectors = std::map<std::string, float>{};
-  for (auto property : scene.vectorProperties)
-  {
-    auto compare = [=](const Particle &a, const Particle &b)
+    case PropertyType::Scalar:
     {
-      auto aVector = a.vectorProperties.find(property);
-      auto bVector = b.vectorProperties.find(property);
+      auto compareScalar = [=](const Particle &a, const Particle &b)
+      {
+        auto aValue = a.getProperty(propertyName);
+        auto bValue = b.getProperty(propertyName);
 
-      if (aVector == a.vectorProperties.end())
-        return true;
-      if (bVector == b.vectorProperties.end())
-        return false;
+        if (!aValue.has_value())
+          return true;
+        if (!bValue.has_value())
+          return false;
 
-      return aVector->second.length() < bVector->second.length();
-    };
-    auto largest = std::max_element(scene.particles.begin(), scene.particles.end(), compare);
-    largestVectors[property] = largest->vectorProperties.at(property).length();
+        return aValue.value().getValue<PropertyType::Scalar>() < bValue.value().getValue<PropertyType::Scalar>();
+      };
+
+      auto maxValue = std::max_element(scene.particles.begin(), scene.particles.end(), compareScalar);
+      maxValues[propertyName] = maxValue->getProperty(propertyName)->getValue<PropertyType::Scalar>()->value;
+      break;
+    }
+    case PropertyType::Vector:
+    {
+      auto compareVector = [=](const Particle &a, const Particle &b)
+      {
+        auto aValue = a.getProperty(propertyName);
+        auto bValue = b.getProperty(propertyName);
+
+        if (!aValue.has_value())
+          return true;
+        if (!bValue.has_value())
+          return false;
+
+        return aValue.value().getValue<PropertyType::Vector>()->value.length() < bValue.value().getValue<PropertyType::Vector>()->value.length();
+      };
+
+      auto maxValue = std::max_element(scene.particles.begin(), scene.particles.end(), compareVector);
+      maxValues[propertyName] = maxValue->getProperty(propertyName)->getValue<PropertyType::Vector>()->value.length();
+      break;
+    }
+    case PropertyType::String:
+      break;
+    }
   }
 
   auto metadata = Scene::Metadata{
       .start = {
-          start[0]->position.x() - start[0]->radius,
-          start[1]->position.y() - start[1]->radius,
-          start[2]->position.z() - start[2]->radius,
+          start[0]->getPosition().x() - start[0]->getRadius(),
+          start[1]->getPosition().y() - start[1]->getRadius(),
+          start[2]->getPosition().z() - start[2]->getRadius(),
       },
       .end = {
-          end[0]->position.x() + end[0]->radius,
-          end[1]->position.y() + end[1]->radius,
-          end[2]->position.z() + end[2]->radius,
+          end[0]->getPosition().x() + end[0]->getRadius(),
+          end[1]->getPosition().y() + end[1]->getRadius(),
+          end[2]->getPosition().z() + end[2]->getRadius(),
       },
-      .largestRadius = largestRadius->radius,
-      .largestScalars = largestScalars,
-      .largestVectors = largestVectors,
-  };
+      .maxValues = maxValues};
 
   return metadata;
 }
@@ -218,45 +209,23 @@ Story::Metadata StoryLoader::getMetadata(const Story &story) const
                        { return a.second.metadata.end.z() < b.second.metadata.end.z(); }),
   };
 
-  std::map<double, Scene>::const_iterator largestRadius = std::max_element(story.scenes.begin(), story.scenes.end(), [](const std::pair<double, Scene> &a, const std::pair<double, Scene> &b)
-                                                                           { return a.second.metadata.largestRadius < b.second.metadata.largestRadius; });
-
-  auto largestScalars = std::map<std::string, float>{};
-  for (auto property : story.scalarProperties)
+  auto maxValues = std::map<std::string, float>{};
+  for (auto [propertyName, PropertyType] : story.particleProperties)
   {
     auto compare = [=](const std::pair<double, Scene> &a, const std::pair<double, Scene> &b)
     {
-      auto aScalar = a.second.metadata.largestScalars.find(property);
-      auto bScalar = b.second.metadata.largestScalars.find(property);
+      auto aScalar = a.second.metadata.maxValues.find(propertyName);
+      auto bScalar = b.second.metadata.maxValues.find(propertyName);
 
-      if (aScalar == a.second.metadata.largestScalars.end())
+      if (aScalar == a.second.metadata.maxValues.end())
         return true;
-      if (bScalar == b.second.metadata.largestScalars.end())
+      if (bScalar == b.second.metadata.maxValues.end())
         return false;
 
       return aScalar->second < bScalar->second;
     };
-    auto largest = std::max_element(story.scenes.begin(), story.scenes.end(), compare);
-    largestScalars[property] = largest->second.metadata.largestScalars.at(property);
-  }
-
-  auto largestVectors = std::map<std::string, float>{};
-  for (auto property : story.vectorProperties)
-  {
-    auto compare = [=](const std::pair<double, Scene> &a, const std::pair<double, Scene> &b)
-    {
-      auto aVector = a.second.metadata.largestVectors.find(property);
-      auto bVector = b.second.metadata.largestVectors.find(property);
-
-      if (aVector == a.second.metadata.largestVectors.end())
-        return true;
-      if (bVector == b.second.metadata.largestVectors.end())
-        return false;
-
-      return aVector->second < bVector->second;
-    };
-    auto largest = std::max_element(story.scenes.begin(), story.scenes.end(), compare);
-    largestVectors[property] = largest->second.metadata.largestVectors.at(property);
+    auto maxValue = std::max_element(story.scenes.begin(), story.scenes.end(), compare);
+    maxValues[propertyName] = maxValue->second.metadata.maxValues.at(propertyName);
   }
 
   auto metadata = Story::Metadata{
@@ -272,10 +241,7 @@ Story::Metadata StoryLoader::getMetadata(const Story &story) const
       },
       .startTime = story.scenes.begin()->first,
       .endTime = std::prev(story.scenes.end())->first,
-      .largestRadius = largestRadius->second.metadata.largestRadius,
-      .largestScalars = largestScalars,
-      .largestVectors = largestVectors,
-  };
+      .maxValues = maxValues};
 
   return metadata;
 }

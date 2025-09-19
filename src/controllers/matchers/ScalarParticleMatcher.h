@@ -59,7 +59,7 @@ private:
     if (it != particle.properties.end())
     {
       auto property =
-          it->second.getProperty<PropertyType::Scalar>();
+          it->second.getValue<PropertyType::Scalar>();
 
       if (property != nullptr)
         return property->value;

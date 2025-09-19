@@ -31,21 +31,21 @@ void VectorRenderer::render(const std::pair<Particle, std::string> &input, const
 {
   auto [particle, property] = input;
 
-  auto vectorIt = particle.vectorProperties.find(property);
-  if (vectorIt == particle.vectorProperties.end())
+  auto vectorIt = particle.properties.find(property);
+  if (vectorIt == particle.properties.end() || vectorIt->second.getType() != PropertyType::Vector)
     return;
 
-  auto vector = vectorIt->second;
+  auto vector = vectorIt->second.getValue<PropertyType::Vector>()->value;
 
   auto metadata = appContext.animationController.getStory().metadata;
-  auto largestVectorIt = metadata.largestVectors.find(property);
-  auto largestVector = largestVectorIt == metadata.largestVectors.end() && largestVectorIt->second > 0 ? largestVectorIt->second : 1.0f;
+  auto maxValueIt = metadata.maxValues.find(property);
+  auto maxValue = maxValueIt == metadata.maxValues.end() && maxValueIt->second > 0 ? maxValueIt->second : 1.0f;
 
   float width = 0.25f;
-  float height = 5.0f * metadata.largestRadius * vector.length() / largestVector;
+  float height = 5.0f * metadata.maxValues[Particle::RADIUS_PROPERTY] * vector.length() / maxValue;
 
-  auto headModelMatrix = getHeadModelMatrix(particle.position, vector, width, height);
-  auto bodyModelMatrix = getBodyModelMatrix(particle.position, vector, width, height);
+  auto headModelMatrix = getHeadModelMatrix(particle.getPosition(), vector, width, height);
+  auto bodyModelMatrix = getBodyModelMatrix(particle.getPosition(), vector, width, height);
 
   shaderProgram.bind();
   vertexArray.bind();
@@ -53,7 +53,7 @@ void VectorRenderer::render(const std::pair<Particle, std::string> &input, const
   auto color = appContext.displayController.getDisplayVector(property).second->getColor(particle);
   for (auto displayRule : appContext.displayController.getDisplayRules())
   {
-    if (displayRule->isEnabled() && displayRule->test(particle))
+    if (displayRule->isEnabled() && displayRule->getMatcher()->match(particle))
       color = displayRule->getColor();
   }
   shaderProgram.setUniformValue("color", QVector3D{color.redF(), color.greenF(), color.blueF()});

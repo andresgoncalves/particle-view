@@ -59,7 +59,7 @@ private:
     if (it != particle.properties.end())
     {
       auto property =
-          it->second.getProperty<PropertyType::String>();
+          it->second.getValue<PropertyType::String>();
 
       if (property != nullptr)
         return property->value;

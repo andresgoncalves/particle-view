@@ -67,7 +67,7 @@ private:
     if (it != particle.properties.end())
     {
       auto property =
-          it->second.getProperty<PropertyType::Vector>();
+          it->second.getValue<PropertyType::Vector>();
 
       if (property != nullptr)
         return property->getComponent(vectorComponent);

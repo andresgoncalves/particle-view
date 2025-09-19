@@ -9,6 +9,8 @@
 class ParticleMatcher
 {
 public:
+  virtual ~ParticleMatcher() = default;
+
   /** Test a particle with current rule */
   virtual bool match(const Particle &particle) const = 0;
 

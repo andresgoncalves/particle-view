@@ -37,8 +37,8 @@ void ParticleRenderer::render(const Particle &particle, const AppContext &appCon
     return;
 
   auto modelMatrix = QMatrix4x4{};
-  modelMatrix.translate(particle.position);
-  modelMatrix.scale(particle.radius);
+  modelMatrix.translate(particle.getPosition());
+  modelMatrix.scale(particle.getRadius());
 
   auto displayParticles = appContext.displayController.getDisplayParticles();
   auto color = displayParticles.second->getColor(particle);
@@ -52,7 +52,7 @@ void ParticleRenderer::render(const Particle &particle, const AppContext &appCon
 
   for (auto displayRule : appContext.displayController.getDisplayRules())
   {
-    if (displayRule->isEnabled() && displayRule->test(particle))
+    if (displayRule->isEnabled() && displayRule->getMatcher()->match(particle))
       color = displayRule->getColor();
   }
   shaderProgram.setUniformValue("color", QVector3D{color.redF(), color.greenF(), color.blueF()});
@@ -76,9 +76,9 @@ bool ParticleRenderer::shouldRender(const Particle &particle, const AppContext &
     auto nearPlane = viewProjectionMatrix.row(3) + viewProjectionMatrix.row(2);
     nearPlane /= nearPlane.toVector3D().length();
 
-    float distance = QVector3D::dotProduct(nearPlane.toVector3D(), particle.position) + nearPlane.w();
+    float distance = QVector3D::dotProduct(nearPlane.toVector3D(), particle.getPosition()) + nearPlane.w();
 
-    return distance >= particle.radius;
+    return distance >= particle.getRadius();
   }
   default:
     return true;

@@ -43,31 +43,38 @@ DisplayPropertyControls::DisplayPropertyControls(AppContext &appContext, QWidget
 
     // Create vector controls
     auto story = appContext.animationController.getStory();
-    for (auto property : story.vectorProperties)
+    for (auto [propertyName, propertyType] : story.particleProperties)
     {
+      if (propertyType != PropertyType::Vector)
+        continue;
+
+      // Omit position vector
+      if (propertyName == Particle::POSITION_PROPERTY)
+        continue;
+
       // Create vector color control
-      auto vectorColorControl = new ColorControl{property.c_str(), true, this};
-      vectorColorControl->getCheckBox()->setChecked(appContext.displayController.getDisplayVector(property).first);
-      vectorColorControl->getColorButton()->setColorStrategy(appContext.displayController.getDisplayVector(property).second.get());
+      auto vectorColorControl = new ColorControl{propertyName.c_str(), true, this};
+      vectorColorControl->getCheckBox()->setChecked(appContext.displayController.getDisplayVector(propertyName).first);
+      vectorColorControl->getColorButton()->setColorStrategy(appContext.displayController.getDisplayVector(propertyName).second.get());
       // Connect checkbox callback
       connect(vectorColorControl->getCheckBox(), &QCheckBox::checkStateChanged, this, [=, &appContext](Qt::CheckState checkState)
-              { appContext.displayController.setDisplayVector(property, checkState != Qt::Unchecked); });
+              { appContext.displayController.setDisplayVector(propertyName, checkState != Qt::Unchecked); });
       // Connect color change callback
       connect(vectorColorControl->getColorButton(), &ColorButton::clicked, this,
               [=, this, &appContext]()
               {
                 auto colorDialog = new ColorDialog{appContext, this};
-                colorDialog->setColorStrategy(appContext.displayController.getDisplayVector(property).second.get());
+                colorDialog->setColorStrategy(appContext.displayController.getDisplayVector(propertyName).second.get());
 
                 if (colorDialog->exec() == QDialog::Accepted)
-                  appContext.displayController.setDisplayVector(property, colorDialog->getColorStrategy());
+                  appContext.displayController.setDisplayVector(propertyName, colorDialog->getColorStrategy());
 
                 colorDialog->deleteLater();
               });
 
       // Save checkbox
       layout->addWidget(vectorColorControl);
-      vectorColorControls[property] = vectorColorControl;
+      vectorColorControls[propertyName] = vectorColorControl;
     }
   };
   storyCallback();

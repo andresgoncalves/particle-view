@@ -25,7 +25,7 @@ Scene LinearAnimationStrategy::getScene(const Story &story, double time) const
       ++prevIt, ++nextIt)
   {
     auto particle = *prevIt;
-    particle.position = prevIt->position + (nextIt->position - prevIt->position) * ratio;
+    particle.setPosition(prevIt->getPosition() + (nextIt->getPosition() - prevIt->getPosition()) * ratio);
     scene.particles.push_back(particle);
   }
 

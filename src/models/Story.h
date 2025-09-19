@@ -10,9 +10,7 @@
 struct Story
 {
   std::map<double, Scene> scenes;
-
-  std::set<std::string> scalarProperties;
-  std::set<std::string> vectorProperties;
+  std::map<std::string, PropertyType> particleProperties;
 
   struct Metadata
   {
@@ -20,9 +18,7 @@ struct Story
     QVector3D end;
     double startTime;
     double endTime;
-    float largestRadius;
-    std::map<std::string, float> largestScalars;
-    std::map<std::string, float> largestVectors;
+    std::map<std::string, float> maxValues;
   } metadata;
 
   QVector3D getOrigin() const;

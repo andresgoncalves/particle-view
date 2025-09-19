@@ -13,18 +13,18 @@ class ColorScaleStrategy : public ColorStrategy
 public:
   /** Create a color scale strategy */
   ColorScaleStrategy(
-      std::string property,
-      Particle::PropertyType propertyType,
+      std::string propertyName,
       std::pair<float, QColor> start,
-      std::pair<float, QColor> end);
+      std::pair<float, QColor> end,
+      VectorComponent vectorComponent = VectorComponent::Magnitude);
 
   /** Get color for particle */
   QColor getColor(const Particle &particle) const override;
 
   /** Get property */
   std::string getProperty() const;
-  /** Get property type */
-  Particle::PropertyType getPropertyType() const;
+  /** Get vector component */
+  VectorComponent getVectorComponent() const;
   /** Get start value and color */
   std::pair<float, QColor> getStart() const;
   /** Get end value and color */
@@ -32,12 +32,12 @@ public:
 
 private:
   /** Extract property value from particle */
-  std::optional<float> getValue(const Particle &particle, std::string property, Particle::PropertyType type) const;
+  std::optional<float> getValue(const Particle &particle) const;
 
   /** Property */
-  std::string property;
-  /** Property type */
-  Particle::PropertyType propertyType;
+  std::string propertyName;
+  /** Vector component */
+  VectorComponent vectorComponent;
   /** Start value and color */
   std::pair<float, QColor> start;
   /** End value and color */

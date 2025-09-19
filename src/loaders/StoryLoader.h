@@ -5,25 +5,19 @@
 #include <vector>
 #include <string>
 #include <istream>
+#include <array>
 
 #include "../models/Story.h"
 
 class StoryLoader
 {
 public:
-  enum DefaultProperty
-  {
-    X,
-    Y,
-    Z,
-    Radius,
-  };
+  using IndexType = unsigned int;
+  using IndicesType = std::array<IndexType, 3>;
 
   Story load(std::istream &input);
 
-  std::map<DefaultProperty, int> defaultProperties;
-  std::map<std::string, int> scalarProperties;
-  std::map<std::string, std::array<int, 3>> vectorProperties;
+  std::map<std::string, std::pair<PropertyType, std::variant<IndexType, IndicesType>>> properties;
 
 private:
   Particle loadParticle(std::istream &input);

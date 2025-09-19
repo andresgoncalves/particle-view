@@ -39,6 +39,9 @@ private:
   /** End value control */
   NumericControl *endValueControl;
 
+  /** Property combo box values */
+  std::vector<std::pair<std::string, VectorComponent>> propertyValues;
+
   /** Application context */
   AppContext &appContext;
 };
