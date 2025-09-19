@@ -2,12 +2,13 @@
 #define RENDERER_H
 
 #include <QtGui/QPainter>
+#include <QtGui/QOpenGLFunctions>
 
 #include <controllers/AppContext.h>
 
 /** Interface template for rendering an object */
 template <typename T>
-class Renderer
+class Renderer : protected QOpenGLFunctions
 {
 public:
   virtual ~Renderer() = default;
@@ -22,7 +23,7 @@ public:
 };
 
 template <>
-class Renderer<void>
+class Renderer<void> : protected QOpenGLFunctions
 {
 public:
   virtual ~Renderer() = default;
