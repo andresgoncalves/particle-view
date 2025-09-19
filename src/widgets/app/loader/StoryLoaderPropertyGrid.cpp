@@ -1,0 +1,101 @@
+#include "StoryLoaderPropertyGrid.h"
+
+#include <map>
+
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QScrollArea>
+#include <QtWidgets/QMessageBox>
+
+#include "StoryLoaderAddPropertyDialog.h"
+#include "StoryLoaderScalarPropertyRow.h"
+#include "StoryLoaderVectorPropertyRow.h"
+#include "StoryLoaderStringPropertyRow.h"
+
+StoryLoaderPropertyGrid::StoryLoaderPropertyGrid(QWidget *parent) : QWidget{parent}
+{
+  // Default properties
+  propertyRows[Particle::POSITION_PROPERTY] = new StoryLoaderVectorPropertyRow{"Posición", this};
+  propertyRows[Particle::RADIUS_PROPERTY] = new StoryLoaderScalarPropertyRow{"Radio", this};
+
+  auto scrollArea = new QScrollArea{this};
+  scrollArea->setWidget(new QWidget{this});
+  scrollArea->setWidgetResizable(true);
+  scrollArea->setFrameStyle(0);
+  scrollArea->setMaximumHeight(640);
+
+  itemLayout = new QVBoxLayout{scrollArea->widget()};
+  itemLayout->setAlignment(Qt::AlignTop);
+  for (auto [_, row] : propertyRows)
+    itemLayout->addWidget(row);
+  auto layout = new QVBoxLayout{this};
+  layout->addWidget(scrollArea);
+
+  setCount(0);
+}
+
+void StoryLoaderPropertyGrid::setCount(int count)
+{
+  for (auto [_, row] : propertyRows)
+    row->setCount(count);
+  this->count = count;
+}
+
+std::map<std::string, StoryLoader::PropertyDefinition> StoryLoaderPropertyGrid::getProperties() const
+{
+  auto values = std::map<std::string, StoryLoader::PropertyDefinition>{};
+
+  for (auto [propertyName, row] : propertyRows)
+  {
+    if (auto scalarRow = dynamic_cast<StoryLoaderScalarPropertyRow *>(row))
+      values[propertyName] = {PropertyType::Scalar, scalarRow->getValue()};
+    else if (auto vectorRow = dynamic_cast<StoryLoaderVectorPropertyRow *>(row))
+      values[propertyName] = {PropertyType::Vector, vectorRow->getValues()};
+    else if (auto stringRow = dynamic_cast<StoryLoaderStringPropertyRow *>(row))
+      values[propertyName] = {PropertyType::String, stringRow->getValue()};
+  }
+
+  return values;
+}
+void StoryLoaderPropertyGrid::addCustomProperty(std::string property, PropertyType type)
+{
+  if (propertyRows.find(property) != propertyRows.end())
+  {
+    QMessageBox{QMessageBox::Icon::NoIcon, "Error", "Ya declaraste esta variable"}.exec();
+    return;
+  }
+
+  StoryLoaderPropertyRow *row = nullptr;
+  switch (type)
+  {
+  case PropertyType::Scalar:
+    row = new StoryLoaderScalarPropertyRow{property.c_str(), true, this};
+    propertyRows[property] = row;
+    break;
+  case PropertyType::Vector:
+    row = new StoryLoaderVectorPropertyRow{property.c_str(), true, this};
+    propertyRows[property] = row;
+    break;
+  case PropertyType::String:
+    row = new StoryLoaderStringPropertyRow{property.c_str(), true, this};
+    propertyRows[property] = row;
+    break;
+  }
+  row->setCount(count);
+  connect(row->getDeleteButton(), &QPushButton::clicked, this, [=, this]
+          { removeCustomProperty(property); });
+  itemLayout->addWidget(row);
+}
+
+void StoryLoaderPropertyGrid::removeCustomProperty(std::string property)
+{
+  auto row = propertyRows.find(property);
+  if (row != propertyRows.end())
+  {
+    itemLayout->removeWidget(row->second);
+    row->second->deleteLater();
+    propertyRows.erase(row);
+  }
+}

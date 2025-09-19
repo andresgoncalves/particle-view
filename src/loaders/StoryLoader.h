@@ -14,10 +14,11 @@ class StoryLoader
 public:
   using IndexType = unsigned int;
   using IndicesType = std::array<IndexType, 3>;
+  using PropertyDefinition = std::pair<PropertyType, std::variant<IndexType, IndicesType>>;
 
   Story load(std::istream &input);
 
-  std::map<std::string, std::pair<PropertyType, std::variant<IndexType, IndicesType>>> properties;
+  std::map<std::string, PropertyDefinition> properties;
 
 private:
   Particle loadParticle(std::istream &input);

@@ -41,6 +41,14 @@ add_library(widgets STATIC
 
   app/dialogs/ColorDialog.cpp
 
+  app/loader/StoryLoaderDialog.cpp
+  app/loader/StoryLoaderAddPropertyDialog.cpp
+  app/loader/StoryLoaderPropertyGrid.cpp
+  app/loader/StoryLoaderPropertyRow.cpp
+  app/loader/StoryLoaderScalarPropertyRow.cpp
+  app/loader/StoryLoaderVectorPropertyRow.cpp
+  app/loader/StoryLoaderStringPropertyRow.cpp
+
   shared/dialogs/ColorPicker.cpp
   shared/buttons/ColorButton.cpp
 

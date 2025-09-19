@@ -210,8 +210,11 @@ Story::Metadata StoryLoader::getMetadata(const Story &story) const
   };
 
   auto maxValues = std::map<std::string, float>{};
-  for (auto [propertyName, PropertyType] : story.particleProperties)
+  for (auto [propertyName, propertyType] : story.particleProperties)
   {
+    if (propertyType == PropertyType::String)
+      continue;
+
     auto compare = [=](const std::pair<double, Scene> &a, const std::pair<double, Scene> &b)
     {
       auto aScalar = a.second.metadata.maxValues.find(propertyName);
