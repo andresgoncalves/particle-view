@@ -1,5 +1,7 @@
 #include "SphereFactory.h"
 
+#include <cmath>
+
 SphereFactory::SphereFactory(int divisions) : divisions{divisions} {}
 
 std::vector<float> SphereFactory::buildVertices()

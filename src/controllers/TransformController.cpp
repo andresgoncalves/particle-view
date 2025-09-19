@@ -1,5 +1,7 @@
 #include "TransformController.h"
 
+#include <cmath>
+
 TransformController::TransformController(ViewController &viewController) : viewController{viewController} {}
 
 void TransformController::start(const QVector2D &point)
