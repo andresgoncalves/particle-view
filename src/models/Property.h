@@ -48,8 +48,9 @@ struct VectorProperty : public BaseProperty<QVector3D>
       return value.y();
     case VectorComponent::Z:
       return value.z();
+    default:
+      return value.length();
     }
-    return value.length();
   }
 };
 

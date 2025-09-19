@@ -22,11 +22,11 @@ add_subdirectory(src/utils)
 add_executable(main src/main.cpp)
 
 target_link_libraries(main PRIVATE
+  widgets
   controllers
+  models
   graphics
   loaders
-  models
-  widgets
   utils
 )
 

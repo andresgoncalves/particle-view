@@ -139,7 +139,7 @@ void AxesRenderer::paintLabels(QMatrix4x4 modelViewProjectionMatrices[3], const 
   auto fontMetrics = QFontMetricsF{painter.font()};
   for (int i = 0; i < 3; i++)
   {
-    auto normalizedPoint = (modelViewProjectionMatrices[i] * QVector3D{0.0f, 1.25f, 0.0f} + QVector3D{1.0f, 1.0f, 1.0f}) / 2.0f;
+    auto normalizedPoint = (modelViewProjectionMatrices[i].map({0.0f, 1.25f, 0.0f}) + QVector3D{1.0f, 1.0f, 1.0f}) / 2.0f;
     auto textRect = fontMetrics.boundingRect(axisLabels[i]);
     textRect.adjust(-2, -2, 2, 2);
     textRect.moveCenter({normalizedPoint.x() * viewportSize.width(),
