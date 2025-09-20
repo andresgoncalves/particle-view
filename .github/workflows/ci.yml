@@ -30,3 +30,25 @@ jobs:
 
       - name: Build with CMake
         run: cmake --build build/Release
+
+      - name: Prepare artifact
+        id: prepare_artifact
+        run: |
+          DATE=$(date +%Y%m%d)
+          COMMIT=${{ github.sha }}
+          BRANCH=${{ github.ref_name }}
+
+          if [[ "$BRANCH" == "main" ]]; then
+            NAME="particle-view-release-${DATE}-${COMMIT}"
+          else
+            NAME="particle-view-dev-${DATE}-${COMMIT}"
+          fi
+
+          echo "artifact_name=$NAME" >> $GITHUB_OUTPUT
+          cp build/Release/main particle-view
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.prepare_artifact.outputs.artifact_name }}
+          path: particle-view
