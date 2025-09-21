@@ -1,8 +1,5 @@
 #include "SceneWidget.h"
 
-#include <graphics/AxesRenderer.h>
-#include <graphics/SceneRenderer.h>
-#include <graphics/ColorScaleRenderer.h>
 #include <models/Particle.h>
 #include <models/Scene.h>
 
@@ -61,33 +58,33 @@ void SceneWidget::paintGL()
   // Get scene
   auto scene = appContext.animationController.getScene();
 
-  // Get painter
+  // Get render context
   auto painter = QPainter{this};
+  auto renderContext = RenderContext{
+      size(),
+      painter,
+      appContext,
+  };
 
   // Clear buffers
   painter.beginNativePainting();
-  glEnable(GL_DEPTH_TEST);
-
-  // Clear buffers
   glClearColor(
       appContext.displayController.getBackgroundColor().redF(),
       appContext.displayController.getBackgroundColor().greenF(),
       appContext.displayController.getBackgroundColor().blueF(),
       1.0f);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-  // Render scene
-
-  sceneRenderer->render(scene, appContext);
-  glClear(GL_DEPTH_BUFFER_BIT);
+  glClear(GL_COLOR_BUFFER_BIT);
   painter.endNativePainting();
 
+  // Render scene
+  sceneRenderer->render(scene, renderContext);
+
   // Render axes
-  axesRenderer->render(appContext, painter, size());
+  axesRenderer->render(renderContext);
 
   // Render color scale
   if (auto colorScaleStrategy = dynamic_cast<ColorScaleStrategy *>(appContext.displayController.getDisplayParticles().second.get()))
-    colorScaleRenderer->render(*colorScaleStrategy, appContext, painter, size());
+    colorScaleRenderer->render(*colorScaleStrategy, renderContext);
 }
 
 void SceneWidget::mousePressEvent(QMouseEvent *event)

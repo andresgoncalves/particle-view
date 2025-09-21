@@ -5,8 +5,10 @@
 #include <QtGui/QMouseEvent>
 #include <QtOpenGLWidgets/QOpenGLWidget>
 
+#include <graphics/renderers/AxesRenderer.h>
+#include <graphics/renderers/SceneRenderer.h>
+#include <graphics/renderers/ColorScaleRenderer.h>
 #include <controllers/AppContext.h>
-#include <graphics/Renderer.h>
 #include <models/Scene.h>
 #include <utils/color/ColorScaleStrategy.h>
 
@@ -42,13 +44,13 @@ private:
   QVector2D screenToView(const QVector2D &point) const;
 
   /** Renderer used for drawing axes */
-  std::unique_ptr<Renderer<void>>
+  std::unique_ptr<AxesRenderer>
       axesRenderer;
   /** Renderer used for drawing scene */
-  std::unique_ptr<Renderer<Scene>>
+  std::unique_ptr<SceneRenderer>
       sceneRenderer;
   /** Renderer used for drawing color scale */
-  std::unique_ptr<Renderer<ColorScaleStrategy>>
+  std::unique_ptr<ColorScaleRenderer>
       colorScaleRenderer;
 
   /** Application context */

@@ -3,14 +3,17 @@ find_package(Qt6 REQUIRED COMPONENTS
 )
 
 add_library(graphics STATIC
-  AxesRenderer.cpp
-  SceneRenderer.cpp
-  ParticleRenderer.cpp
-  VectorRenderer.cpp
-  ColorScaleRenderer.cpp
+
+  renderers/SceneRenderer.cpp
+  renderers/ParticleRenderer.cpp
+  renderers/VectorRenderer.cpp
+  renderers/AxesRenderer.cpp
+  renderers/ColorScaleRenderer.cpp
 
   shapes/ArrowFactory.cpp
   shapes/SphereFactory.cpp
+
+  shaders/GenericShader.cpp
 )
 
 target_link_libraries(graphics PRIVATE
