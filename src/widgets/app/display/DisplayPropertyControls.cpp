@@ -43,7 +43,7 @@ DisplayPropertyControls::DisplayPropertyControls(AppContext &appContext, QWidget
 
     // Create vector controls
     auto story = appContext.animationController.getStory();
-    for (auto [propertyName, propertyType] : story.particleProperties)
+    for (auto [propertyName, propertyType] : story.metadata.particleProperties)
     {
       if (propertyType != PropertyType::Vector)
         continue;

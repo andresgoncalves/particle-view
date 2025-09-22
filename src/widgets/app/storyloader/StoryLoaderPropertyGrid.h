@@ -19,10 +19,10 @@ public:
 
   void setCount(int count);
 
-  std::map<std::string, StoryLoader::PropertyDefinition> getProperties() const;
+  StoryLoader::PropertyDefinitionMap getProperties() const;
 
-  void addCustomProperty(std::string property, PropertyType type);
-  void removeCustomProperty(std::string property);
+  void addProperty(std::string property, PropertyType type, bool editable = true);
+  void removeProperty(std::string property);
 
 private:
   int count;

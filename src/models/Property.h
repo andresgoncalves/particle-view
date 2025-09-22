@@ -74,10 +74,10 @@ public:
   {
   }
 
-  template <PropertyType I>
+  template <PropertyType T>
   constexpr auto getValue() const noexcept
   {
-    return std::get_if<static_cast<std::size_t>(I)>(this);
+    return std::get_if<static_cast<std::size_t>(T)>(this);
   }
 
   constexpr PropertyType getType() const noexcept
@@ -85,5 +85,8 @@ public:
     return static_cast<PropertyType>(this->index());
   }
 };
+
+using PropertyMap = std::map<std::string, Property>;
+using PropertyTypeMap = std::map<std::string, PropertyType>;
 
 #endif

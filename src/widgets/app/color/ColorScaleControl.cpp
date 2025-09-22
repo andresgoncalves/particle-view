@@ -13,7 +13,7 @@ ColorScaleControl::ColorScaleControl(AppContext &appContext, QWidget *parent) : 
   // Property control
   propertyComboBox = new QComboBox{this};
   // Add properties
-  for (auto [propertyName, propertyType] : appContext.animationController.getStory().particleProperties)
+  for (auto [propertyName, propertyType] : appContext.animationController.getStory().metadata.particleProperties)
   {
     switch (propertyType)
     {

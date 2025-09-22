@@ -3,67 +3,139 @@
 #include <algorithm>
 #include <sstream>
 
-Story StoryLoader::load(std::istream &input)
+void StoryLoader::load(std::istream &input)
+{
+  data.clear();
+
+  while (!input.eof())
+  {
+    auto line = std::string{};
+    std::getline(input, line);
+
+    // Skip empty line
+    if (line.empty())
+      continue;
+
+    auto rowStream = std::istringstream{line};
+    auto row = std::vector<std::string>{};
+    auto item = std::string{};
+    // Get items
+    while (rowStream >> item)
+    {
+      // Check quoted item
+      if (item.starts_with('"'))
+      {
+        auto stream = std::ostringstream{item};
+        // Append text until closing quote
+        while (!stream.str().ends_with('"') && rowStream >> item)
+          stream << item;
+        // Get full item
+        item = stream.str();
+        // Remove quotes
+        item.substr(1, item.length() - 2);
+      }
+      // Add parts to line
+      row.push_back(item);
+    }
+    // Add lines
+    data.push_back(row);
+  }
+}
+
+void StoryLoader::setParticleProperties(PropertyDefinitionMap &particleProperties)
+{
+  this->particleProperties = particleProperties;
+}
+
+void StoryLoader::setSceneProperties(PropertyDefinitionMap &sceneProperties)
+{
+  this->sceneProperties = sceneProperties;
+}
+
+const StoryLoader::PropertyDefinitionMap &StoryLoader::getParticleProperties() const
+{
+  return particleProperties;
+}
+
+const StoryLoader::PropertyDefinitionMap &StoryLoader::getSceneProperties() const
+{
+  return sceneProperties;
+}
+
+int StoryLoader::getParticlePropertyCount() const
+{
+  return data.size() > 1 ? data[1].size() : 0;
+}
+
+int StoryLoader::getScenePropertyCount() const
+{
+  return data.size() > 0 ? data[0].size() : 0;
+}
+
+Story StoryLoader::parse()
 {
   auto story = Story{};
 
-  for (int frame = 1; !input.eof(); frame++)
+  // Parse scenes
+  int sceneId = 1;
+  for (auto rowIterator = data.begin(); rowIterator != data.end(); rowIterator++)
   {
-    size_t count;
-    float time;
-
-    std::string line;
-    std::getline(input, line);
-    auto lineStream = std::istringstream{line};
-
-    lineStream >> count >> time;
-
-    auto scene = loadScene(input, count);
-
-    scene.frame = frame;
-    scene.time = time;
-    scene.metadata = getMetadata(scene);
-
-    for (auto property : scene.particleProperties)
-      story.particleProperties.insert(property);
-
-    story.scenes[time] = scene;
+    auto scene = parseScene(rowIterator, sceneId++);
+    story.scenes[scene.time] = scene;
   }
 
+  // Set story data
   story.metadata = getMetadata(story);
 
   return story;
 }
 
-Scene StoryLoader::loadScene(std::istream &input, size_t particleCount)
+Scene StoryLoader::parseScene(LoadedData::iterator &rowIterator, int sceneId)
 {
+  // TODO: Property indices
+  const int countIndex = 0;
+  const int timeIndex = 1;
+
+  auto row = *rowIterator;
+
   auto scene = Scene{};
 
-  while (particleCount-- && !input.eof())
+  // Get particle count
+  int count = std::stoi(row[countIndex]);
+
+  // Parse particles
+  int particleId = 0;
+  for (; particleId < count; particleId++)
   {
-    std::string line;
-    std::getline(input, line);
-    auto lineStream = std::istringstream{line, std::ios::in};
-
-    auto particle = loadParticle(lineStream);
+    rowIterator++;
+    if (rowIterator == data.end())
+    {
+      // TODO: throw error: reached EOF
+    }
+    auto particle = parseParticle(*rowIterator, particleId);
     scene.particles.push_back(particle);
-
-    for (auto [propertyName, property] : particle.properties)
-      scene.particleProperties.insert({propertyName, property.getType()});
   }
+
+  // Set scene data
+  scene.frame = sceneId;
+  scene.time = std::stof(row[timeIndex]);
+  scene.metadata = getMetadata(scene);
 
   return scene;
 }
 
-Particle StoryLoader::loadParticle(std::istream &input)
+Particle StoryLoader::parseParticle(LoadedData::value_type &row, int particleId)
 {
-  std::vector<std::string> rawValues;
-  std::string rawValue;
+  auto properties = parseRow(row, particleProperties);
 
-  while (input >> rawValue)
-    rawValues.push_back(rawValue);
+  auto particle = Particle{properties};
 
-  auto particle = Particle{};
+  return particle;
+}
+
+PropertyMap StoryLoader::parseRow(LoadedData::value_type &row, PropertyDefinitionMap properties)
+{
+  PropertyMap propertyValues;
 
   for (auto [propertyName, definition] : properties)
   {
@@ -72,37 +144,43 @@ Particle StoryLoader::loadParticle(std::istream &input)
     case PropertyType::Scalar:
     {
       auto index = std::get<IndexType>(definition.second);
-      auto value = std::stof(rawValues[index]);
-      particle.setProperty(propertyName, ScalarProperty{value});
+      auto value = std::stof(row[index]);
+      propertyValues.emplace(propertyName, ScalarProperty{value});
       break;
     }
     case PropertyType::Vector:
     {
       auto [xIndex, yIndex, zIndex] = std::get<IndicesType>(definition.second);
-      particle.setProperty(propertyName, VectorProperty{{
-                                             std::stof(rawValues[xIndex]),
-                                             std::stof(rawValues[yIndex]),
-                                             std::stof(rawValues[zIndex]),
-                                         }});
+      propertyValues.emplace(propertyName,
+                             VectorProperty{{
+                                 std::stof(row[xIndex]),
+                                 std::stof(row[yIndex]),
+                                 std::stof(row[zIndex]),
+                             }});
       break;
     }
     case PropertyType::String:
     {
       auto index = std::get<IndexType>(definition.second);
-      auto value = rawValues[index];
-      particle.setProperty(propertyName, StringProperty{value});
+      auto value = row[index];
+      propertyValues.emplace(propertyName, StringProperty{value});
       break;
     }
     }
   }
 
-  return particle;
+  return propertyValues;
 }
 
 Scene::Metadata StoryLoader::getMetadata(const Scene &scene) const
 {
   if (scene.particles.size() == 0)
     return Scene::Metadata{};
+
+  auto particleProperties = PropertyTypeMap{};
+  for (auto particle : scene.particles)
+    for (auto [propertyName, property] : particle.properties)
+      particleProperties.emplace(propertyName, property.getType());
 
   std::vector<Particle>::const_iterator start[] = {
       std::min_element(scene.particles.begin(), scene.particles.end(), [](const Particle &a, const Particle &b)
@@ -123,7 +201,7 @@ Scene::Metadata StoryLoader::getMetadata(const Scene &scene) const
   };
 
   auto maxValues = std::map<std::string, float>{};
-  for (auto [propertyName, propertyType] : scene.particleProperties)
+  for (auto [propertyName, propertyType] : particleProperties)
   {
     switch (propertyType)
     {
@@ -181,7 +259,8 @@ Scene::Metadata StoryLoader::getMetadata(const Scene &scene) const
           end[1]->getPosition().y() + end[1]->getRadius(),
           end[2]->getPosition().z() + end[2]->getRadius(),
       },
-      .maxValues = maxValues};
+      .maxValues = maxValues,
+      .particleProperties = particleProperties};
 
   return metadata;
 }
@@ -190,6 +269,11 @@ Story::Metadata StoryLoader::getMetadata(const Story &story) const
 {
   if (story.scenes.size() == 0)
     return Story::Metadata{};
+
+  auto particleProperties = PropertyTypeMap{};
+  for (auto [_, scene] : story.scenes)
+    for (auto property : scene.metadata.particleProperties)
+      particleProperties.insert(property);
 
   std::map<double, Scene>::const_iterator start[] = {
       std::min_element(story.scenes.begin(), story.scenes.end(), [](const std::pair<double, Scene> &a, const std::pair<double, Scene> &b)
@@ -210,7 +294,7 @@ Story::Metadata StoryLoader::getMetadata(const Story &story) const
   };
 
   auto maxValues = std::map<std::string, float>{};
-  for (auto [propertyName, propertyType] : story.particleProperties)
+  for (auto [propertyName, propertyType] : particleProperties)
   {
     if (propertyType == PropertyType::String)
       continue;
@@ -244,7 +328,8 @@ Story::Metadata StoryLoader::getMetadata(const Story &story) const
       },
       .startTime = story.scenes.begin()->first,
       .endTime = std::prev(story.scenes.end())->first,
-      .maxValues = maxValues};
+      .maxValues = maxValues,
+      .particleProperties = particleProperties};
 
   return metadata;
 }

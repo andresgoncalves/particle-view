@@ -1,13 +1,13 @@
 #include "StoryLoaderPropertyGrid.h"
 
-#include <map>
-
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QScrollArea>
 #include <QtWidgets/QMessageBox>
+
+#include <widgets/shared/controls/NumericControl.h>
 
 #include "StoryLoaderAddPropertyDialog.h"
 #include "StoryLoaderScalarPropertyRow.h"
@@ -16,9 +16,22 @@
 
 StoryLoaderPropertyGrid::StoryLoaderPropertyGrid(QWidget *parent) : QWidget{parent}
 {
-  // Default properties
-  propertyRows[Particle::POSITION_PROPERTY] = new StoryLoaderVectorPropertyRow{"Posición", this};
-  propertyRows[Particle::RADIUS_PROPERTY] = new StoryLoaderScalarPropertyRow{"Radio", this};
+  auto columnControl = new NumericControl{"Cantidad de columnas", this};
+  columnControl->getLayout()->setDirection(QBoxLayout::Direction::LeftToRight);
+  columnControl->onChange<int>([&](int value)
+                               { setCount(value); });
+
+  auto addPropertyButton = new QPushButton{"Agregar variable", this};
+  auto addPropertyCallback = [=, this]
+  {
+    auto addPropertyDialog = new StoryLoaderAddPropertyDialog{this};
+    if (addPropertyDialog->exec() == QDialog::Accepted)
+    {
+      addProperty(addPropertyDialog->getProperty(), addPropertyDialog->getType());
+    }
+    addPropertyDialog->deleteLater();
+  };
+  connect(addPropertyButton, &QPushButton::clicked, this, addPropertyCallback);
 
   auto scrollArea = new QScrollArea{this};
   scrollArea->setWidget(new QWidget{this});
@@ -30,10 +43,12 @@ StoryLoaderPropertyGrid::StoryLoaderPropertyGrid(QWidget *parent) : QWidget{pare
   itemLayout->setAlignment(Qt::AlignTop);
   for (auto [_, row] : propertyRows)
     itemLayout->addWidget(row);
-  auto layout = new QVBoxLayout{this};
-  layout->addWidget(scrollArea);
 
-  setCount(0);
+  auto layout = new QVBoxLayout{this};
+  layout->setContentsMargins(8, 4, 8, 4);
+  layout->addWidget(columnControl);
+  layout->addWidget(scrollArea);
+  layout->addWidget(addPropertyButton);
 }
 
 void StoryLoaderPropertyGrid::setCount(int count)
@@ -59,7 +74,7 @@ std::map<std::string, StoryLoader::PropertyDefinition> StoryLoaderPropertyGrid::
 
   return values;
 }
-void StoryLoaderPropertyGrid::addCustomProperty(std::string property, PropertyType type)
+void StoryLoaderPropertyGrid::addProperty(std::string property, PropertyType type, bool editable)
 {
   if (propertyRows.find(property) != propertyRows.end())
   {
@@ -71,25 +86,30 @@ void StoryLoaderPropertyGrid::addCustomProperty(std::string property, PropertyTy
   switch (type)
   {
   case PropertyType::Scalar:
-    row = new StoryLoaderScalarPropertyRow{property.c_str(), true, this};
+    row = new StoryLoaderScalarPropertyRow{property.c_str(), editable, this};
     propertyRows[property] = row;
     break;
   case PropertyType::Vector:
-    row = new StoryLoaderVectorPropertyRow{property.c_str(), true, this};
+    row = new StoryLoaderVectorPropertyRow{property.c_str(), editable, this};
     propertyRows[property] = row;
     break;
   case PropertyType::String:
-    row = new StoryLoaderStringPropertyRow{property.c_str(), true, this};
+    row = new StoryLoaderStringPropertyRow{property.c_str(), editable, this};
     propertyRows[property] = row;
     break;
   }
   row->setCount(count);
-  connect(row->getDeleteButton(), &QPushButton::clicked, this, [=, this]
-          { removeCustomProperty(property); });
+
+  // TODO: if editable
+  if (editable)
+  {
+    connect(row->getDeleteButton(), &QPushButton::clicked, this, [=, this]
+            { removeProperty(property); });
+  }
   itemLayout->addWidget(row);
 }
 
-void StoryLoaderPropertyGrid::removeCustomProperty(std::string property)
+void StoryLoaderPropertyGrid::removeProperty(std::string property)
 {
   auto row = propertyRows.find(property);
   if (row != propertyRows.end())

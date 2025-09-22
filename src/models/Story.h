@@ -3,14 +3,12 @@
 
 #include <map>
 #include <string>
-#include <set>
 
 #include "Scene.h"
 
 struct Story
 {
   std::map<double, Scene> scenes;
-  std::map<std::string, PropertyType> particleProperties;
 
   struct Metadata
   {
@@ -19,6 +17,7 @@ struct Story
     double startTime;
     double endTime;
     std::map<std::string, float> maxValues;
+    PropertyTypeMap particleProperties;
   } metadata;
 
   QVector3D getOrigin() const;

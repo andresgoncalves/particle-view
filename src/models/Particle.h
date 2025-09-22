@@ -60,7 +60,7 @@ struct Particle
     properties.emplace(propertyName, property);
   }
 
-  std::map<std::string, Property> properties;
+  PropertyMap properties;
 };
 
 #endif
