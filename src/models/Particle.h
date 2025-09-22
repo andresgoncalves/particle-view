@@ -10,6 +10,8 @@ struct Particle
   inline static const std::string RADIUS_PROPERTY = "Radio";
   inline static const std::string POSITION_PROPERTY = "Posición";
 
+  PropertyMap properties;
+
   float getRadius() const
   {
     auto it = properties.find(RADIUS_PROPERTY);
@@ -59,8 +61,6 @@ struct Particle
   {
     properties.emplace(propertyName, property);
   }
-
-  PropertyMap properties;
 };
 
 #endif

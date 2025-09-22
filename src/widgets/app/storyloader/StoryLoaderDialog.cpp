@@ -20,8 +20,8 @@ StoryLoaderDialog::StoryLoaderDialog(int sceneColumnCount, int particleColumnCou
 
   scenePropertyGrid = new StoryLoaderPropertyGrid{this};
   scenePropertyGrid->setCount(sceneColumnCount);
-  scenePropertyGrid->addProperty("N° de partículas", PropertyType::Scalar, false);
-  scenePropertyGrid->addProperty("Tiempo", PropertyType::Scalar, false);
+  scenePropertyGrid->addProperty(Scene::PARTICLE_COUNT_PROPERTY, PropertyType::Scalar, false);
+  scenePropertyGrid->addProperty(Scene::TIME_PROPERTY, PropertyType::Scalar, false);
 
   particlePropertyGrid = new StoryLoaderPropertyGrid{this};
   particlePropertyGrid->setCount(particleColumnCount);

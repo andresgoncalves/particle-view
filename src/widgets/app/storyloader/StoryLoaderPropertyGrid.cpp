@@ -7,8 +7,6 @@
 #include <QtWidgets/QScrollArea>
 #include <QtWidgets/QMessageBox>
 
-#include <widgets/shared/controls/NumericControl.h>
-
 #include "StoryLoaderAddPropertyDialog.h"
 #include "StoryLoaderScalarPropertyRow.h"
 #include "StoryLoaderVectorPropertyRow.h"
@@ -16,7 +14,7 @@
 
 StoryLoaderPropertyGrid::StoryLoaderPropertyGrid(QWidget *parent) : QWidget{parent}
 {
-  auto columnControl = new NumericControl{"Cantidad de columnas", this};
+  columnControl = new NumericControl{"Cantidad de columnas", this};
   columnControl->getLayout()->setDirection(QBoxLayout::Direction::LeftToRight);
   columnControl->onChange<int>([&](int value)
                                { setCount(value); });
@@ -53,6 +51,7 @@ StoryLoaderPropertyGrid::StoryLoaderPropertyGrid(QWidget *parent) : QWidget{pare
 
 void StoryLoaderPropertyGrid::setCount(int count)
 {
+  columnControl->setValue(count);
   for (auto [_, row] : propertyRows)
     row->setCount(count);
   this->count = count;

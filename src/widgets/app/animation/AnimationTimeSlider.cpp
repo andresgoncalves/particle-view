@@ -13,7 +13,7 @@ AnimationTimeSlider::AnimationTimeSlider(AppContext &appContext, QWidget *parent
   auto sliderMovedCallback = [&appContext](int value)
   {
     double duration = appContext.animationController.getDuration();
-    double minTime = appContext.animationController.getFirstScene().time;
+    double minTime = appContext.animationController.getFirstScene().getTime();
     appContext.animationController.setTime(minTime + duration * value / 100.0);
   };
   connect(timeSlider, &QSlider::sliderMoved, this, sliderMovedCallback);
@@ -43,7 +43,7 @@ AnimationTimeSlider::AnimationTimeSlider(AppContext &appContext, QWidget *parent
     if (!timeSlider->isSliderDown())
     {
       double duration = appContext.animationController.getDuration();
-      double minTime = appContext.animationController.getFirstScene().time;
+      double minTime = appContext.animationController.getFirstScene().getTime();
       timeSlider->setValue((time - minTime) * 100.0 / duration);
     }
   };

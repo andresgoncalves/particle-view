@@ -8,6 +8,7 @@
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QVBoxLayout>
 
+#include <widgets/shared/controls/NumericControl.h>
 #include <loaders/StoryLoader.h>
 
 #include "StoryLoaderPropertyRow.h"
@@ -28,6 +29,7 @@ private:
   int count;
 
   QVBoxLayout *itemLayout;
+  NumericControl *columnControl;
 
   std::map<std::string, StoryLoaderPropertyRow *> propertyRows;
 };

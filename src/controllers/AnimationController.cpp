@@ -32,8 +32,8 @@ void AnimationController::updateTime()
 
   double duration = 1e-9 * (now - startTime).count();
 
-  auto minTime = getFirstScene().time;
-  auto maxTime = getLastScene().time;
+  auto minTime = getFirstScene().getTime();
+  auto maxTime = getLastScene().getTime();
 
   auto computedTime = minTime + duration * animationSpeed;
 
@@ -141,8 +141,8 @@ Scene AnimationController::getLastScene() const
 
 double AnimationController::getDuration() const
 {
-  auto minTime = getFirstScene().time;
-  auto maxTime = getLastScene().time;
+  auto minTime = getFirstScene().getTime();
+  auto maxTime = getLastScene().getTime();
 
   return maxTime - minTime;
 }

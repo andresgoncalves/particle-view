@@ -81,7 +81,7 @@ Story StoryLoader::parse()
   for (auto rowIterator = data.begin(); rowIterator != data.end(); rowIterator++)
   {
     auto scene = parseScene(rowIterator, sceneId++);
-    story.scenes[scene.time] = scene;
+    story.scenes[scene.getTime()] = scene;
   }
 
   // Set story data
@@ -92,20 +92,16 @@ Story StoryLoader::parse()
 
 Scene StoryLoader::parseScene(LoadedData::iterator &rowIterator, int sceneId)
 {
-  // TODO: Property indices
-  const int countIndex = 0;
-  const int timeIndex = 1;
-
   auto row = *rowIterator;
 
   auto scene = Scene{};
 
   // Get particle count
-  int count = std::stoi(row[countIndex]);
+  scene.properties = parseRow(row, sceneProperties);
 
   // Parse particles
   int particleId = 0;
-  for (; particleId < count; particleId++)
+  for (; particleId < scene.getParticleCount(); particleId++)
   {
     rowIterator++;
     if (rowIterator == data.end())
@@ -118,7 +114,6 @@ Scene StoryLoader::parseScene(LoadedData::iterator &rowIterator, int sceneId)
 
   // Set scene data
   scene.frame = sceneId;
-  scene.time = std::stof(row[timeIndex]);
   scene.metadata = getMetadata(scene);
 
   return scene;
@@ -126,9 +121,8 @@ Scene StoryLoader::parseScene(LoadedData::iterator &rowIterator, int sceneId)
 
 Particle StoryLoader::parseParticle(LoadedData::value_type &row, int particleId)
 {
-  auto properties = parseRow(row, particleProperties);
-
-  auto particle = Particle{properties};
+  auto particle = Particle{};
+  particle.properties = parseRow(row, particleProperties);
 
   return particle;
 }
@@ -144,25 +138,23 @@ PropertyMap StoryLoader::parseRow(LoadedData::value_type &row, PropertyDefinitio
     case PropertyType::Scalar:
     {
       auto index = std::get<IndexType>(definition.second);
-      auto value = std::stof(row[index]);
+      auto value = index >= 0 && index < row.size() ? std::stof(row[index]) : 0.0f;
       propertyValues.emplace(propertyName, ScalarProperty{value});
       break;
     }
     case PropertyType::Vector:
     {
       auto [xIndex, yIndex, zIndex] = std::get<IndicesType>(definition.second);
-      propertyValues.emplace(propertyName,
-                             VectorProperty{{
-                                 std::stof(row[xIndex]),
-                                 std::stof(row[yIndex]),
-                                 std::stof(row[zIndex]),
-                             }});
+      auto xValue = xIndex >= 0 && xIndex < row.size() ? std::stof(row[xIndex]) : 0.0f;
+      auto yValue = yIndex >= 0 && yIndex < row.size() ? std::stof(row[yIndex]) : 0.0f;
+      auto zValue = zIndex >= 0 && zIndex < row.size() ? std::stof(row[zIndex]) : 0.0f;
+      propertyValues.emplace(propertyName, VectorProperty{{xValue, yValue, zValue}});
       break;
     }
     case PropertyType::String:
     {
       auto index = std::get<IndexType>(definition.second);
-      auto value = row[index];
+      auto value = index >= 0 && index < row.size() ? row[index] : "";
       propertyValues.emplace(propertyName, StringProperty{value});
       break;
     }
