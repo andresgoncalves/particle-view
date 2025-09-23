@@ -15,13 +15,13 @@ public:
   void bind();
 
   /** Set color uniform */
-  virtual void setColor(QColor &color);
+  virtual void setColor(const QColor &color);
 
   /** Set color uniform */
-  virtual void setColor(QVector4D &color);
+  virtual void setColor(const QVector4D &color);
 
   /** Set matrix uniform */
-  virtual void setMatrix(QMatrix4x4 &matrix);
+  virtual void setMatrix(const QMatrix4x4 &matrix);
 
   /** Get current instance */
   static GenericShader *getInstance();

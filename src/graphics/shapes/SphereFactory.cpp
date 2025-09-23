@@ -4,7 +4,7 @@
 
 SphereFactory::SphereFactory(int divisions) : divisions{divisions} {}
 
-std::vector<float> SphereFactory::buildVertices()
+std::vector<float> SphereFactory::buildVertices() const
 {
   auto vertices = std::vector<float>{};
 
@@ -33,7 +33,7 @@ std::vector<float> SphereFactory::buildVertices()
   return vertices;
 }
 
-std::vector<int> SphereFactory::buildIndices()
+std::vector<int> SphereFactory::buildIndices() const
 {
   auto indices = std::vector<int>{};
 
@@ -57,7 +57,7 @@ std::vector<int> SphereFactory::buildIndices()
   return indices;
 }
 
-std::vector<int> SphereFactory::buildOutlineIndices()
+std::vector<int> SphereFactory::buildOutlineIndices() const
 {
   auto indices = std::vector<int>{};
 

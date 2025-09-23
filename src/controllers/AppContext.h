@@ -4,6 +4,7 @@
 #include "AnimationController.h"
 #include "TransformController.h"
 #include "ViewController.h"
+#include "ContainerController.h"
 #include "DisplayController.h"
 
 struct AppContext
@@ -13,6 +14,7 @@ struct AppContext
   AnimationController animationController;
   TransformController transformController;
   ViewController viewController;
+  ContainerController containerController;
   DisplayController displayController;
 };
 

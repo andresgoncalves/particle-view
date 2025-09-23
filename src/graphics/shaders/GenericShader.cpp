@@ -33,17 +33,17 @@ void GenericShader::bind()
   shaderProgram.bind();
 }
 
-void GenericShader::setColor(QColor &color)
+void GenericShader::setColor(const QColor &color)
 {
   shaderProgram.setUniformValue("color", color);
 }
 
-void GenericShader::setColor(QVector4D &color)
+void GenericShader::setColor(const QVector4D &color)
 {
   shaderProgram.setUniformValue("color", color);
 }
 
-void GenericShader::setMatrix(QMatrix4x4 &matrix)
+void GenericShader::setMatrix(const QMatrix4x4 &matrix)
 {
   shaderProgram.setUniformValue("matrix", matrix);
 }

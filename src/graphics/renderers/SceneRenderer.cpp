@@ -14,6 +14,7 @@ void SceneRenderer::render(const Scene &scene, RenderContext &renderContext)
 {
   auto displayParticles = renderContext.appContext.displayController.getDisplayParticles();
   auto displayVectors = renderContext.appContext.displayController.getDisplayVectors();
+  auto containers = renderContext.appContext.containerController.getContainers();
 
   renderContext.painter.beginNativePainting();
   glEnable(GL_DEPTH_TEST);
@@ -29,6 +30,17 @@ void SceneRenderer::render(const Scene &scene, RenderContext &renderContext)
     if (displayProperty.first)
       for (auto &particle : scene.particles)
         vectorRenderer->render(particle, property, renderContext);
+  }
+
+  for (auto container : containers)
+  {
+    auto containerRenderer = containerRenderers.find(container->shape);
+    if (containerRenderer == containerRenderers.end())
+    {
+      containerRenderers.emplace(container->shape, container->shape);
+      containerRenderer = containerRenderers.find(container->shape);
+    }
+    containerRenderer->second.render(*container, renderContext);
   }
 
   renderContext.painter.endNativePainting();

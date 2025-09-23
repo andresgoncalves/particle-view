@@ -9,9 +9,11 @@ add_library(graphics STATIC
   renderers/VectorRenderer.cpp
   renderers/AxesRenderer.cpp
   renderers/ColorScaleRenderer.cpp
+  renderers/ContainerRenderer.cpp
 
   shapes/ArrowFactory.cpp
   shapes/SphereFactory.cpp
+  shapes/CubeFactory.cpp
 
   shaders/GenericShader.cpp
 )

@@ -1,11 +1,15 @@
 #ifndef SCENE_RENDERER_H
 #define SCENE_RENDERER_H
 
+#include <memory>
+#include <map>
+
 #include <models/Scene.h>
 #include <controllers/ViewController.h>
 #include <controllers/ViewController.h>
 #include <graphics/renderers/ParticleRenderer.h>
 #include <graphics/renderers/VectorRenderer.h>
+#include <graphics/renderers/ContainerRenderer.h>
 
 #include "Renderer.h"
 
@@ -22,6 +26,7 @@ public:
 private:
   std::unique_ptr<ParticleRenderer> particleRenderer;
   std::unique_ptr<VectorRenderer> vectorRenderer;
+  std::map<ContainerShape, ContainerRenderer> containerRenderers;
 };
 
 #endif

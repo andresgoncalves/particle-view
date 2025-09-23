@@ -1,14 +1,14 @@
-#ifndef SPHERE_FACTORY_H
-#define SPHERE_FACTORY_H
+#ifndef CUBE_FACTORY_H
+#define CUBE_FACTORY_H
 
 #include <vector>
 
 #include "BasicShapeFactory.h"
 
-class SphereFactory : public BasicShapeFactory
+class CubeFactory : public BasicShapeFactory
 {
 public:
-  SphereFactory(int divisions);
+  CubeFactory();
 
   /** Build cube vertices */
   std::vector<float> buildVertices() const override;
@@ -16,11 +16,6 @@ public:
   std::vector<int> buildIndices() const override;
   /** Build cube skeleton indices */
   std::vector<int> buildOutlineIndices() const override;
-
-  float radius = 1.0f;
-
-private:
-  int divisions;
 };
 
 #endif
