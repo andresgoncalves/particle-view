@@ -4,19 +4,19 @@ ContainerController::ContainerController()
 {
 }
 
-const ContainerController::Containers &ContainerController::getContainers() const
+ContainerController::Containers &ContainerController::getContainers()
 {
   return containers;
 }
 
-ContainerController::Containers::iterator ContainerController::addContainer(std::shared_ptr<Container> container)
+ContainerController::Containers::iterator ContainerController::addContainer(Containers::value_type container)
 {
   containers.push_back(container);
   containersObservable.notify(containers);
   return std::prev(containers.end());
 }
 
-void ContainerController::replaceContainer(Containers::iterator it, std::shared_ptr<Container> container)
+void ContainerController::replaceContainer(Containers::iterator it, Containers::value_type container)
 {
   *it = container;
   containersObservable.notify(containers);

@@ -3,6 +3,7 @@
 #include <widgets/app/tabs/ViewTab.h>
 #include <widgets/app/tabs/AnimationTab.h>
 #include <widgets/app/tabs/DisplayTab.h>
+#include <widgets/app/tabs/ContainersTab.h>
 
 LeftPanel::LeftPanel(AppContext &appContext, QWidget *parent) : appContext{appContext}, QTabWidget{parent}
 {
@@ -17,4 +18,8 @@ LeftPanel::LeftPanel(AppContext &appContext, QWidget *parent) : appContext{appCo
   // Display tab
   auto displayTab = new DisplayTab{appContext, this};
   addTab(displayTab, "Visualización");
+
+  // Display tab
+  auto containersTab = new ContainersTab{appContext, this};
+  addTab(containersTab, "Contenedores");
 }

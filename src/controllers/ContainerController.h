@@ -6,7 +6,6 @@
 
 #include <models/Container.h>
 
-#include "ViewController.h"
 #include "Observable.h"
 
 class ContainerController
@@ -17,19 +16,19 @@ public:
   ContainerController();
 
   /** Get containers */
-  const Containers &getContainers() const;
+  Containers &getContainers();
 
   /** Add a container */
-  Containers::iterator addContainer(std::shared_ptr<Container> container);
+  Containers::iterator addContainer(Containers::value_type value);
   /** Replace a container */
-  void replaceContainer(Containers::iterator it, std::shared_ptr<Container> container);
+  void replaceContainer(Containers::iterator it, Containers::value_type value);
   /** Remove a container */
   void removeContainer(Containers::iterator it);
   /** Clear a container */
   void clearContainers();
 
   /** Containers observable */
-  BaseObservable<const Containers &> containersObservable;
+  BaseObservable<Containers &> containersObservable;
 
 private:
   Containers containers;

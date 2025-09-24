@@ -10,15 +10,15 @@ struct RenderContext
 {
   RenderContext(QSize viewportSize,
                 QPainter &painter,
-                const AppContext &appContext) : viewportSize{viewportSize},
-                                                painter{painter},
-                                                appContext{appContext}
+                AppContext &appContext) : viewportSize{viewportSize},
+                                          painter{painter},
+                                          appContext{appContext}
   {
   }
 
   const QSize viewportSize;
   QPainter &painter;
-  const AppContext &appContext;
+  AppContext &appContext;
 };
 
 #endif

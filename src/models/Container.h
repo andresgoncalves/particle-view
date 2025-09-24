@@ -1,6 +1,8 @@
 #ifndef CONTAINER_H
 #define CONTAINER_H
 
+#include <string>
+
 #include <QtGui/QColor>
 #include <QtGui/QVector3D>
 #include <QtGui/QQuaternion>
@@ -13,18 +15,13 @@ enum class ContainerShape
 
 struct Container
 {
-  /** Container center */
+  std::string name;
   QVector3D center;
-  /** Container size */
   QVector3D size;
-  /** Container rotation */
   QQuaternion rotation;
-  /** Container shape */
   ContainerShape shape;
-  /** Container color */
+  bool enabled;
   QColor color;
-  /** True if this container is enabled */
-  bool enabled = true;
 };
 
 #endif

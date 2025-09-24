@@ -16,6 +16,7 @@ public:
    * - ViewTab
    * - AnimationTab
    * - DisplayTab
+   * - ContainersTab
    */
   LeftPanel(AppContext &appContext, QWidget *parent = nullptr);
 

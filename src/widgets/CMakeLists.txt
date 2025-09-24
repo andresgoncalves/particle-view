@@ -18,6 +18,7 @@ add_library(widgets STATIC
   app/tabs/ViewTab.cpp
   app/tabs/AnimationTab.cpp
   app/tabs/DisplayTab.cpp
+  app/tabs/ContainersTab.cpp
 
   app/scene/SceneWidget.cpp
 
@@ -40,6 +41,10 @@ add_library(widgets STATIC
   app/color/ColorScaleControl.cpp
 
   app/dialogs/ColorDialog.cpp
+
+  app/containers/ContainerControls.cpp
+  app/containers/ContainerList.cpp
+  app/containers/ContainerRow.cpp
 
   app/storyloader/StoryLoaderDialog.cpp
   app/storyloader/StoryLoaderAddPropertyDialog.cpp

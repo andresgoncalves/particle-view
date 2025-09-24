@@ -20,6 +20,8 @@ SceneWidget::SceneWidget(AppContext &appContext, QWidget *parent) : appContext{a
                                                                 { update(); });
   appContext.displayController.backgroundColorObservable.subscribe(this, [&](QColor color)
                                                                    { update(); });
+  appContext.containerController.containersObservable.subscribe(this, [&](auto)
+                                                                { update(); });
 }
 
 void SceneWidget::update()
