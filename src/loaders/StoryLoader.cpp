@@ -172,7 +172,7 @@ Scene::Metadata StoryLoader::getMetadata(const Scene &scene) const
   auto particleProperties = PropertyTypeMap{};
   for (auto particle : scene.particles)
     for (auto [propertyName, property] : particle.properties)
-      particleProperties.emplace(propertyName, property.getType());
+      particleProperties.try_emplace(propertyName, property.getType());
 
   std::vector<Particle>::const_iterator start[] = {
       std::min_element(scene.particles.begin(), scene.particles.end(), [](const Particle &a, const Particle &b)
@@ -263,9 +263,14 @@ Story::Metadata StoryLoader::getMetadata(const Story &story) const
     return Story::Metadata{};
 
   auto particleProperties = PropertyTypeMap{};
+  auto sceneProperties = PropertyTypeMap{};
   for (auto [_, scene] : story.scenes)
-    for (auto property : scene.metadata.particleProperties)
-      particleProperties.insert(property);
+  {
+    for (auto [propertyName, propertyType] : scene.metadata.particleProperties)
+      particleProperties.try_emplace(propertyName, propertyType);
+    for (auto [propertyName, property] : scene.properties)
+      sceneProperties.try_emplace(propertyName, property.getType());
+  }
 
   std::map<double, Scene>::const_iterator start[] = {
       std::min_element(story.scenes.begin(), story.scenes.end(), [](const std::pair<double, Scene> &a, const std::pair<double, Scene> &b)
@@ -321,7 +326,8 @@ Story::Metadata StoryLoader::getMetadata(const Story &story) const
       .startTime = story.scenes.begin()->first,
       .endTime = std::prev(story.scenes.end())->first,
       .maxValues = maxValues,
-      .particleProperties = particleProperties};
+      .particleProperties = particleProperties,
+      .sceneProperties = sceneProperties};
 
   return metadata;
 }

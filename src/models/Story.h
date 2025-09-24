@@ -18,6 +18,7 @@ struct Story
     double endTime;
     std::map<std::string, float> maxValues;
     PropertyTypeMap particleProperties;
+    PropertyTypeMap sceneProperties;
   } metadata;
 
   QVector3D getOrigin() const;
