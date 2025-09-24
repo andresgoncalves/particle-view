@@ -64,7 +64,7 @@ add_library(widgets STATIC
   shared/controls/TextControl.cpp
   shared/controls/ColorControl.cpp
   shared/controls/NumericControl.cpp
-  
+  shared/controls/VectorControl.cpp 
 )
 
 target_link_libraries(widgets PRIVATE
