@@ -45,6 +45,7 @@ add_library(widgets STATIC
   app/containers/ContainerControls.cpp
   app/containers/ContainerList.cpp
   app/containers/ContainerRow.cpp
+  app/containers/ContainerDialog.cpp
 
   app/storyloader/StoryLoaderDialog.cpp
   app/storyloader/StoryLoaderAddPropertyDialog.cpp

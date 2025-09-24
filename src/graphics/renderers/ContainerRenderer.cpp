@@ -53,7 +53,8 @@ QMatrix4x4 ContainerRenderer::getMatrix(const Container &container, RenderContex
 {
   auto modelMatrix = QMatrix4x4{};
   modelMatrix.translate(container.center);
-  modelMatrix.scale(container.size);
+  modelMatrix.rotate(container.rotation);
+  modelMatrix.scale(0.5f * container.size);
 
   auto modelViewProjectionMatrix = renderContext.appContext.viewController.getViewProjectionMatrix() * modelMatrix;
 

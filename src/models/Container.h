@@ -20,8 +20,8 @@ struct Container
   QVector3D size;
   QQuaternion rotation;
   ContainerShape shape;
-  bool enabled;
-  QColor color;
+  QColor color = QColor{255, 255, 255};
+  bool enabled = true;
 };
 
 #endif

@@ -17,8 +17,6 @@ public:
   /** Build cube skeleton indices */
   std::vector<int> buildOutlineIndices() const override;
 
-  float radius = 1.0f;
-
 private:
   int divisions;
 };

@@ -11,6 +11,8 @@
 #include <widgets/shared/dialogs/ColorPicker.h>
 #include <widgets/shared/buttons/ColorButton.h>
 
+#include "ContainerDialog.h"
+
 ContainerRow::ContainerRow(ContainerController::Containers::iterator iterator, AppContext &appContext, QWidget *parent) : QWidget{parent}
 {
   auto container = *iterator;
@@ -44,9 +46,15 @@ ContainerRow::ContainerRow(ContainerController::Containers::iterator iterator, A
   auto actionMenu = new QMenu{this};
   auto editAction = actionMenu->addAction("Editar");
   connect(editAction, &QAction::triggered,
-          [=, &appContext]()
+          [=, &appContext, this]()
           {
-            // TODO: container dialog
+            auto dialog = new ContainerDialog{*container, appContext, this};
+            if (dialog->exec() == QDialog::Accepted)
+            {
+              auto newContainer = std::make_shared<Container>(dialog->getContainer());
+              appContext.containerController.replaceContainer(iterator, newContainer);
+            }
+            dialog->deleteLater();
           });
   auto copyAction = actionMenu->addAction("Copiar");
   connect(copyAction, &QAction::triggered,

@@ -5,15 +5,22 @@
 #include <QtWidgets/QPushButton>
 
 #include "ContainerList.h"
+#include "ContainerDialog.h"
 
 ContainerControls::ContainerControls(AppContext &appContext, QWidget *parent) : Section{"Contenedores", parent}
 {
   auto containerList = new ContainerList{appContext, this};
 
   auto addButton = new QPushButton{"Agregar", this};
-  auto addCallback = [=, &appContext]()
+  auto addCallback = [=, &appContext, this]()
   {
-    // TODO: container dialog
+    auto dialog = new ContainerDialog{appContext, this};
+    if (dialog->exec() == QDialog::Accepted)
+    {
+      auto newContainer = std::make_shared<Container>(dialog->getContainer());
+      appContext.containerController.addContainer(newContainer);
+    }
+    dialog->deleteLater();
   };
   connect(addButton, &QPushButton::clicked, this, addCallback);
 
