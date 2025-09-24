@@ -14,6 +14,11 @@ void VectorRenderer::render(const Particle &particle, std::string property, Rend
   auto vectorIt = particle.properties.find(property);
   if (vectorIt == particle.properties.end() || vectorIt->second.getType() != PropertyType::Vector)
     return;
+  // Check display rule
+  auto displayRule = renderContext.appContext.displayController.getMatchingVectorRule(particle, property);
+  if (!displayRule.isVisible())
+    return;
+
   auto vector = vectorIt->second.getValue<PropertyType::Vector>()->value;
 
   // Get colors and matrix
@@ -80,18 +85,8 @@ QSizeF VectorRenderer::getSize(QVector3D vector, std::string property, RenderCon
 
 QColor VectorRenderer::getColor(const Particle &particle, std::string property, RenderContext &renderContext) const
 {
-  // Get default color
-  auto displayParticles = renderContext.appContext.displayController.getDisplayVector(property);
-  auto color = displayParticles.second->getColor(particle);
-
-  // Get default color
-  for (auto displayRule : renderContext.appContext.displayController.getDisplayRules())
-  {
-    if (displayRule->isEnabled() && displayRule->getMatcher()->match(particle))
-      color = displayRule->getColor();
-  }
-
-  return color;
+  auto displayRule = renderContext.appContext.displayController.getMatchingVectorRule(particle, property);
+  return displayRule.getColorStrategy()->getColor(particle);
 }
 
 void VectorRenderer::initBuffers()

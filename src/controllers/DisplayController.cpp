@@ -1,83 +1,72 @@
 #include "DisplayController.h"
 
-#include <utils/color/SolidColorStrategy.h>
-
-DisplayController::DisplayController() : displayParticles{true, std::make_unique<SolidColorStrategy>(QColor{255, 255, 255})} {}
-
-void DisplayController::toggleParticles()
+void DisplayController::setParticleRule(DisplayRule rule)
 {
-  displayParticles.first = !displayParticles.first;
-  displayParticlesObservable.notify();
+  particleRule = rule;
+  particleRuleObservable.notify(particleRule);
 }
 
-void DisplayController::setDisplayParticles(bool value)
+void DisplayController::setVectorRule(std::string property, DisplayRule rule)
 {
-  displayParticles.first = value;
-  displayParticlesObservable.notify();
+  vectorRules[property] = rule;
+  vectorRulesObservable.notify(vectorRules);
 }
 
-void DisplayController::setDisplayParticles(std::shared_ptr<ColorStrategy> colorStrategy)
+DisplayController::CustomRules::iterator DisplayController::addCustomRule(CustomRules::value_type displayRule)
 {
-  displayParticles.second = colorStrategy;
-  displayParticlesObservable.notify();
+  customRules.push_back(displayRule);
+  customRulesObservable.notify(customRules);
+  return std::prev(customRules.end());
 }
 
-void DisplayController::toggleVector(std::string property)
+void DisplayController::replaceCustomRule(CustomRules::iterator it, CustomRules::value_type displayRule)
 {
-  setDisplayVector(property, !getDisplayVector(property).first);
+  *it = displayRule;
+  customRulesObservable.notify(customRules);
 }
 
-void DisplayController::setDisplayVector(std::string property, bool value)
+void DisplayController::removeCustomRule(CustomRules::iterator it)
 {
-  if (displayVectors.contains(property))
-    displayVectors[property].first = value;
-  else
-    displayVectors[property] = {value, std::make_shared<SolidColorStrategy>(QColor{0, 0, 0})};
-
-  displayVectorsObservable.notify();
+  customRules.erase(it);
+  customRulesObservable.notify(customRules);
 }
 
-void DisplayController::setDisplayVector(std::string property, std::shared_ptr<ColorStrategy> colorStrategy)
+void DisplayController::clearCustomRules()
 {
-  if (displayVectors.contains(property))
-    displayVectors[property].second = colorStrategy;
-  else
-    displayVectors[property] = {true, colorStrategy};
-
-  displayVectorsObservable.notify();
-}
-
-DisplayController::DisplayProperty DisplayController::getDisplayParticles() const
-{
-  return displayParticles;
-}
-
-DisplayController::DisplayProperty DisplayController::getDisplayVector(std::string property) const
-{
-  auto displayVector = displayVectors.find(property);
-  if (displayVector != displayVectors.end())
-    return displayVector->second;
-  return {false, std::make_shared<SolidColorStrategy>(QColor{0, 0, 0})};
-}
-
-std::map<std::string, DisplayController::DisplayProperty> DisplayController::getDisplayVectors() const
-{
-  return displayVectors;
-}
-
-DisplayController::DisplayRules DisplayController::getDisplayRules() const
-{
-  return displayRules;
-}
-
-DisplayController::DisplayRules &DisplayController::getDisplayRules()
-{
-  return displayRules;
+  customRules.clear();
+  customRulesObservable.notify(customRules);
 }
 
 void DisplayController::setBackgroundColor(QColor color)
 {
   this->backgroundColor = color;
+  backgroundColorObservable.notify();
+}
+
+DisplayRule &DisplayController::getParticleRule()
+{
+  return particleRule;
+}
+
+DisplayRule DisplayController::getVectorRule(std::string property)
+{
+  auto it = vectorRules.find(property);
+  if (it != vectorRules.end())
+    return it->second;
+
+  auto rule = DisplayRule{};
+  rule.setVisible(false);
+  return rule;
+}
+
+DisplayController::VectorRules &DisplayController::getVectorRules()
+{
+  return vectorRules;
+}
+
+DisplayController::CustomRules &DisplayController::getCustomRules()
+{
+  return customRules;
 }
 
 QColor DisplayController::getBackgroundColor() const
@@ -85,31 +74,25 @@ QColor DisplayController::getBackgroundColor() const
   return backgroundColor;
 }
 
-DisplayController::DisplayRules::iterator DisplayController::addDisplayRule(std::shared_ptr<DisplayRule> displayRule)
+DisplayRule DisplayController::getMatchingParticleRule(const Particle &particle)
 {
-  displayRules.push_back(displayRule);
-  displayRule->enabledObservable.subscribe(this, [&](bool enabled)
-                                           { displayRulesObservable.notify(); });
-  displayRulesObservable.notify();
-  return std::prev(displayRules.end());
+  auto displayRule = getMatchingCustomRule(particle);
+  return displayRule.value_or(particleRule);
 }
 
-void DisplayController::replaceDisplayRule(DisplayRules::iterator it, std::shared_ptr<DisplayRule> displayRule)
+DisplayRule DisplayController::getMatchingVectorRule(const Particle &particle, std::string property)
 {
-  *it = displayRule;
-  displayRule->enabledObservable.subscribe(this, [&](bool enabled)
-                                           { displayRulesObservable.notify(); });
-  displayRulesObservable.notify();
+  auto displayRule = getMatchingCustomRule(particle);
+  return displayRule.value_or(getVectorRule(property));
 }
 
-void DisplayController::removeDisplayRule(DisplayRules::iterator it)
+std::optional<DisplayRule> DisplayController::getMatchingCustomRule(const Particle &particle)
 {
-  displayRules.erase(it);
-  displayRulesObservable.notify();
-}
-
-void DisplayController::clearDisplayRules()
-{
-  displayRules.clear();
-  displayRulesObservable.notify();
+  auto result = std::optional<DisplayRule>{};
+  for (auto customRule : customRules)
+  {
+    if (customRule->isEnabled() && customRule->getMatcher()->match(particle))
+      result = *customRule;
+  }
+  return result;
 }

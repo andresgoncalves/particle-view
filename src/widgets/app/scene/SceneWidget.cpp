@@ -12,12 +12,12 @@ SceneWidget::SceneWidget(AppContext &appContext, QWidget *parent) : appContext{a
                                                           { update(); });
   appContext.animationController.storyObservable.subscribe(this, [&]()
                                                            { update(); });
-  appContext.displayController.displayParticlesObservable.subscribe(this, [&](DisplayController::DisplayProperty)
-                                                                    { update(); });
-  appContext.displayController.displayVectorsObservable.subscribe(this, [&](std::map<std::string, DisplayController::DisplayProperty>)
-                                                                  { update(); });
-  appContext.displayController.displayRulesObservable.subscribe(this, [&]()
+  appContext.displayController.particleRuleObservable.subscribe(this, [&](auto)
                                                                 { update(); });
+  appContext.displayController.vectorRulesObservable.subscribe(this, [&](auto)
+                                                               { update(); });
+  appContext.displayController.customRulesObservable.subscribe(this, [&](auto)
+                                                               { update(); });
   appContext.displayController.backgroundColorObservable.subscribe(this, [&](QColor color)
                                                                    { update(); });
   appContext.containerController.containersObservable.subscribe(this, [&](auto)
@@ -85,7 +85,7 @@ void SceneWidget::paintGL()
   axesRenderer->render(renderContext);
 
   // Render color scale
-  if (auto colorScaleStrategy = dynamic_cast<ColorScaleStrategy *>(appContext.displayController.getDisplayParticles().second.get()))
+  if (auto colorScaleStrategy = dynamic_cast<ColorScaleStrategy *>(appContext.displayController.getParticleRule().getColorStrategy().get()))
     colorScaleRenderer->render(*colorScaleStrategy, renderContext);
 }
 

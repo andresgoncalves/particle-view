@@ -8,19 +8,26 @@ DisplayPropertyControls::DisplayPropertyControls(AppContext &appContext, QWidget
 {
   // Create particle color control
   auto particleColorControl = new ColorControl{"Partícula", true, this};
+  particleColorControl->getCheckBox()->setChecked(appContext.displayController.getParticleRule().isVisible());
+  particleColorControl->getColorButton()->setColorStrategy(appContext.displayController.getParticleRule().getColorStrategy().get());
   // Connect checkbox callback
   connect(particleColorControl->getCheckBox(), &QCheckBox::checkStateChanged, this, [&appContext](Qt::CheckState checkState)
-          { appContext.displayController.setDisplayParticles(checkState != Qt::Unchecked); });
+          { 
+            auto updatedRule = appContext.displayController.getParticleRule();
+            updatedRule.setVisible(checkState != Qt::Unchecked);
+            appContext.displayController.setParticleRule(updatedRule); });
   // Connect color change callback
   connect(particleColorControl->getColorButton(), &ColorButton::clicked, this,
           [=, this, &appContext]()
           {
             auto colorDialog = new ColorDialog{appContext, this};
-            colorDialog->setColorStrategy(appContext.displayController.getDisplayParticles().second.get());
-
+            colorDialog->setColorStrategy(appContext.displayController.getParticleRule().getColorStrategy().get());
             if (colorDialog->exec() == QDialog::Accepted)
-              appContext.displayController.setDisplayParticles(colorDialog->getColorStrategy());
-
+            {
+              auto updatedRule = appContext.displayController.getParticleRule();
+              updatedRule.setColorStrategy(colorDialog->getColorStrategy());
+              appContext.displayController.setParticleRule(updatedRule);
+            }
             colorDialog->deleteLater();
           });
 
@@ -30,74 +37,61 @@ DisplayPropertyControls::DisplayPropertyControls(AppContext &appContext, QWidget
   layout->setSpacing(0);
   layout->setContentsMargins({});
 
-  // Add story property listener
-  auto storyCallback = [=, this, &appContext]()
+  // Add vector controls
+  for (auto [propertyName, propertyType] : appContext.animationController.getStory().metadata.particleProperties)
   {
-    // Delete previous controls
-    for (auto [property, control] : vectorColorControls)
-    {
-      layout->removeWidget(control);
-      control->deleteLater();
-    }
-    vectorColorControls.clear();
+    // Omit position vector
+    if (propertyType != PropertyType::Vector || propertyName == Particle::POSITION_PROPERTY)
+      continue;
 
-    // Create vector controls
-    auto story = appContext.animationController.getStory();
-    for (auto [propertyName, propertyType] : story.metadata.particleProperties)
-    {
-      if (propertyType != PropertyType::Vector)
-        continue;
-
-      // Omit position vector
-      if (propertyName == Particle::POSITION_PROPERTY)
-        continue;
-
-      // Create vector color control
-      auto vectorColorControl = new ColorControl{propertyName.c_str(), true, this};
-      vectorColorControl->getCheckBox()->setChecked(appContext.displayController.getDisplayVector(propertyName).first);
-      vectorColorControl->getColorButton()->setColorStrategy(appContext.displayController.getDisplayVector(propertyName).second.get());
-      // Connect checkbox callback
-      connect(vectorColorControl->getCheckBox(), &QCheckBox::checkStateChanged, this, [=, &appContext](Qt::CheckState checkState)
-              { appContext.displayController.setDisplayVector(propertyName, checkState != Qt::Unchecked); });
-      // Connect color change callback
-      connect(vectorColorControl->getColorButton(), &ColorButton::clicked, this,
-              [=, this, &appContext]()
+    auto vectorColorControl = new ColorControl{propertyName.c_str(), true, this};
+    vectorColorControl->getCheckBox()->setChecked(appContext.displayController.getVectorRule(propertyName).isVisible());
+    vectorColorControl->getColorButton()->setColorStrategy(appContext.displayController.getVectorRule(propertyName).getColorStrategy().get());
+    // Connect checkbox callback
+    connect(vectorColorControl->getCheckBox(), &QCheckBox::checkStateChanged, this, [=, &appContext](Qt::CheckState checkState)
+            { 
+            auto updatedRule =  appContext.displayController.getVectorRule(propertyName);
+            updatedRule.setVisible(checkState != Qt::Unchecked);
+            appContext.displayController.setVectorRule(propertyName, updatedRule); });
+    // Connect color change callback
+    connect(vectorColorControl->getColorButton(), &ColorButton::clicked, this,
+            [=, this, &appContext]()
+            {
+              auto originalRule = appContext.displayController.getVectorRule(propertyName);
+              auto colorDialog = new ColorDialog{appContext, this};
+              colorDialog->setColorStrategy(originalRule.getColorStrategy().get());
+              if (colorDialog->exec() == QDialog::Accepted)
               {
-                auto colorDialog = new ColorDialog{appContext, this};
-                colorDialog->setColorStrategy(appContext.displayController.getDisplayVector(propertyName).second.get());
+                auto updatedRule = originalRule;
+                updatedRule.setColorStrategy(colorDialog->getColorStrategy());
+                appContext.displayController.setVectorRule(propertyName, updatedRule);
+              }
+              colorDialog->deleteLater();
+            });
 
-                if (colorDialog->exec() == QDialog::Accepted)
-                  appContext.displayController.setDisplayVector(propertyName, colorDialog->getColorStrategy());
+    // Save checkbox
+    layout->addWidget(vectorColorControl);
+    vectorColorControls[propertyName] = vectorColorControl;
+  }
 
-                colorDialog->deleteLater();
-              });
-
-      // Save checkbox
-      layout->addWidget(vectorColorControl);
-      vectorColorControls[propertyName] = vectorColorControl;
-    }
-  };
-  storyCallback();
-  appContext.animationController.storyObservable.subscribe(this, storyCallback);
-
-  // Add display particles listener
-  auto displayParticlesCallback = [=](DisplayController::DisplayProperty displayParticles)
+  // Add particle rule listener
+  auto particleRuleCallback = [=](DisplayRule particleRule)
   {
-    particleColorControl->getCheckBox()->setChecked(displayParticles.first);
-    particleColorControl->getColorButton()->setColorStrategy(displayParticles.second.get());
+    particleColorControl->getCheckBox()->setChecked(particleRule.isVisible());
+    particleColorControl->getColorButton()->setColorStrategy(particleRule.getColorStrategy().get());
   };
-  appContext.displayController.displayParticlesObservable.subscribe(this, displayParticlesCallback, true);
+  appContext.displayController.particleRuleObservable.subscribe(this, particleRuleCallback);
 
-  // Add displayed vectors listener
-  auto displayVectorsCallback = [=, this](std::map<std::string, DisplayController::DisplayProperty> displayVectors)
+  // Add vector rules listener
+  auto displayVectorsCallback = [=, this](DisplayController::VectorRules vectorRules)
   {
     for (auto [property, control] : vectorColorControls)
     {
-      auto it = displayVectors.find(property);
-      if (it != displayVectors.end())
+      auto it = vectorRules.find(property);
+      if (it != vectorRules.end())
       {
-        control->getCheckBox()->setChecked(it->second.first);
-        control->getColorButton()->setColorStrategy(it->second.second.get());
+        control->getCheckBox()->setChecked(it->second.isVisible());
+        control->getColorButton()->setColorStrategy(it->second.getColorStrategy().get());
       }
       else
       {
@@ -105,12 +99,11 @@ DisplayPropertyControls::DisplayPropertyControls(AppContext &appContext, QWidget
       }
     }
   };
-  appContext.displayController.displayVectorsObservable.subscribe(this, displayVectorsCallback);
+  appContext.displayController.vectorRulesObservable.subscribe(this, displayVectorsCallback);
 }
 
 DisplayPropertyControls::~DisplayPropertyControls()
 {
-  appContext.animationController.storyObservable.unsubscribe(this);
-  appContext.displayController.displayParticlesObservable.unsubscribe(this);
-  appContext.displayController.displayVectorsObservable.unsubscribe(this);
+  appContext.displayController.particleRuleObservable.unsubscribe(this);
+  appContext.displayController.vectorRulesObservable.unsubscribe(this);
 }

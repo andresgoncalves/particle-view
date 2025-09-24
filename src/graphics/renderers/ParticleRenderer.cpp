@@ -49,6 +49,10 @@ void ParticleRenderer::render(const Particle &particle, RenderContext &renderCon
 
 bool ParticleRenderer::shouldRender(const Particle &particle, RenderContext &renderContext) const
 {
+  auto displayRule = renderContext.appContext.displayController.getMatchingParticleRule(particle);
+  if (!displayRule.isVisible())
+    return false;
+
   switch (renderContext.appContext.viewController.projectionMode)
   {
   case ViewController::Perspective:
@@ -69,18 +73,8 @@ bool ParticleRenderer::shouldRender(const Particle &particle, RenderContext &ren
 
 QColor ParticleRenderer::getColor(const Particle &particle, RenderContext &renderContext) const
 {
-  // Get default color
-  auto displayParticles = renderContext.appContext.displayController.getDisplayParticles();
-  auto color = displayParticles.second->getColor(particle);
-
-  // Get default color
-  for (auto displayRule : renderContext.appContext.displayController.getDisplayRules())
-  {
-    if (displayRule->isEnabled() && displayRule->getMatcher()->match(particle))
-      color = displayRule->getColor();
-  }
-
-  return color;
+  auto displayRule = renderContext.appContext.displayController.getMatchingParticleRule(particle);
+  return displayRule.getColorStrategy()->getColor(particle);
 }
 
 QMatrix4x4 ParticleRenderer::getMatrix(const Particle &particle, RenderContext &renderContext) const

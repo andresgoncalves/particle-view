@@ -1,13 +1,15 @@
 #ifndef DISPLAY_RULE_H
 #define DISPLAY_RULE_H
 
-#include <sstream>
 #include <memory>
 
 #include <QtGui/QColor>
 
 #include <controllers/Observable.h>
 #include <controllers/matchers/ParticleMatcher.h>
+#include <controllers/matchers/AnyParticleMatcher.h>
+#include <utils/color/ColorStrategy.h>
+#include <utils/color/SolidColorStrategy.h>
 #include <models/Particle.h>
 #include <models/Property.h>
 
@@ -15,33 +17,40 @@ class DisplayRule
 {
 public:
   /** Set particle matcher */
-  void setMatcher(std::unique_ptr<ParticleMatcher> matcher)
+  void setMatcher(std::shared_ptr<ParticleMatcher> matcher)
   {
-    this->matcher = std::move(matcher);
-    matcherObservable.notify(this->matcher.get());
+    this->matcher = matcher;
   }
-  /** Set color */
-  void setColor(QColor color)
+  /** Set color strategy */
+  void setColorStrategy(std::shared_ptr<ColorStrategy> colorStrategy)
   {
-    this->color = color;
-    colorObservable.notify();
+    this->colorStrategy = colorStrategy;
+  }
+  /** Set visible */
+  void setVisible(bool visible)
+  {
+    this->visible = visible;
   }
   /** Set enabled */
   void setEnabled(bool enabled)
   {
     this->enabled = enabled;
-    enabledObservable.notify();
   }
 
   /** Get particle matcher */
-  ParticleMatcher *getMatcher() const
+  std::shared_ptr<ParticleMatcher> getMatcher() const
   {
-    return matcher.get();
+    return matcher;
   }
-  /** Get color */
-  QColor getColor() const
+  /** Get color strategy */
+  std::shared_ptr<ColorStrategy> getColorStrategy() const
   {
-    return color;
+    return colorStrategy;
+  }
+  /** Get visible */
+  bool isVisible() const
+  {
+    return visible;
   }
   /** Get enabled */
   bool isEnabled() const
@@ -49,14 +58,11 @@ public:
     return enabled;
   }
 
-  BaseObservable<ParticleMatcher *> matcherObservable;
-  Observable<QColor> colorObservable = color;
-  Observable<bool> enabledObservable = enabled;
-
 private:
-  std::unique_ptr<ParticleMatcher> matcher;
-  QColor color;
+  std::shared_ptr<ParticleMatcher> matcher = std::make_shared<AnyParticleMatcher>();
+  std::shared_ptr<ColorStrategy> colorStrategy = std::make_shared<SolidColorStrategy>(QColor{255, 255, 255});
   bool enabled = true;
+  bool visible = true;
 };
 
 #endif

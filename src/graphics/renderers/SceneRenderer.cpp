@@ -12,24 +12,17 @@ SceneRenderer::SceneRenderer()
 
 void SceneRenderer::render(const Scene &scene, RenderContext &renderContext)
 {
-  auto displayParticles = renderContext.appContext.displayController.getDisplayParticles();
-  auto displayVectors = renderContext.appContext.displayController.getDisplayVectors();
+
   auto containers = renderContext.appContext.containerController.getContainers();
 
   renderContext.painter.beginNativePainting();
   glEnable(GL_DEPTH_TEST);
 
-  if (displayParticles.first)
+  for (auto &particle : scene.particles)
   {
-    for (auto &particle : scene.particles)
-      particleRenderer->render(particle, renderContext);
-  }
-
-  for (auto [property, displayProperty] : displayVectors)
-  {
-    if (displayProperty.first)
-      for (auto &particle : scene.particles)
-        vectorRenderer->render(particle, property, renderContext);
+    particleRenderer->render(particle, renderContext);
+    for (auto &property : particle.properties)
+      vectorRenderer->render(particle, property.first, renderContext);
   }
 
   for (auto container : containers)

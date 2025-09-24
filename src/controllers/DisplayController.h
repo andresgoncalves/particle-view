@@ -1,60 +1,73 @@
 #ifndef DISPLAY_CONTROLLER_H
 #define DISPLAY_CONTROLLER_H
 
-#include <set>
 #include <list>
+#include <memory>
 #include <string>
 
 #include <utils/color/ColorStrategy.h>
 
-#include "Observable.h"
-#include "display/DisplayRule.h"
+#include <controllers/display/DisplayRule.h>
+#include <controllers/Observable.h>
 
 class DisplayController
 {
 public:
-  using DisplayRules = std::list<std::shared_ptr<DisplayRule>>;
-  using DisplayProperty = std::pair<bool, std::shared_ptr<ColorStrategy>>;
+  using VectorRules = std::map<std::string, DisplayRule>;
+  using CustomRules = std::list<std::shared_ptr<DisplayRule>>;
 
-  DisplayController();
+  /** Set particle rule */
+  void setParticleRule(DisplayRule rule);
+  /** Set vector rule for property */
+  void setVectorRule(std::string property, DisplayRule rule);
 
-  void toggleParticles();
-  void setDisplayParticles(bool value);
-  void setDisplayParticles(std::shared_ptr<ColorStrategy> colorStrategy);
-
-  void toggleVector(std::string property);
-  void setDisplayVector(std::string property, bool value);
-  void setDisplayVector(std::string property, std::shared_ptr<ColorStrategy> colorStrategy);
-
-  DisplayProperty getDisplayParticles() const;
-  DisplayProperty getDisplayVector(std::string property) const;
-  std::map<std::string, DisplayProperty> getDisplayVectors() const;
-
-  DisplayRules getDisplayRules() const;
-  DisplayRules &getDisplayRules();
-
+  /** Add a display rule */
+  CustomRules::iterator addCustomRule(CustomRules::value_type value);
+  /** Replace a display rule */
+  void replaceCustomRule(CustomRules::iterator it, CustomRules::value_type value);
+  /** Remove a display rule */
+  void removeCustomRule(CustomRules::iterator it);
+  /** Clear a display rule */
+  void clearCustomRules();
+  /** Set background color */
   void setBackgroundColor(QColor color);
+
+  /** Get particle rule */
+  DisplayRule &getParticleRule();
+  /** Get vector rule for property */
+  DisplayRule getVectorRule(std::string property);
+  /** Get all  vector rules */
+  VectorRules &getVectorRules();
+  /** Get display rules */
+  CustomRules &getCustomRules();
+  /** Get background color */
   QColor getBackgroundColor() const;
 
-  DisplayRules::iterator addDisplayRule(std::shared_ptr<DisplayRule> displayRule);
-  void replaceDisplayRule(DisplayRules::iterator it, std::shared_ptr<DisplayRule> displayRule);
-  void removeDisplayRule(DisplayRules::iterator it);
-  void clearDisplayRules();
+  /** Get matching display rule for particle */
+  DisplayRule getMatchingParticleRule(const Particle &particle);
+  /** Get matching display rule for vector */
+  DisplayRule getMatchingVectorRule(const Particle &particle, std::string property);
 
-  Observable<DisplayProperty> displayParticlesObservable = displayParticles;
-  Observable<std::map<std::string, DisplayProperty>> displayVectorsObservable = displayVectors;
-
-  BaseObservable<void> displayRulesObservable;
+  /** Particle rule observable */
+  BaseObservable<DisplayRule &> particleRuleObservable;
+  /** Vector rules observable */
+  BaseObservable<VectorRules &> vectorRulesObservable;
+  /** Custom rules observable */
+  BaseObservable<CustomRules> customRulesObservable;
+  /** Background color observable */
   Observable<QColor> backgroundColorObservable = backgroundColor;
 
 private:
-  /** Particle display boolean and color rules */
-  DisplayProperty displayParticles;
-  /** Map of properties display boolean and color rules */
-  std::map<std::string, DisplayProperty> displayVectors;
+  /** Get matching display rule */
+  std::optional<DisplayRule> getMatchingCustomRule(const Particle &particle);
 
-  DisplayRules displayRules;
-
+  /** Particle rule */
+  DisplayRule particleRule;
+  /** Vector rules */
+  VectorRules vectorRules;
+  /** Custom rules */
+  CustomRules customRules;
+  /** Background color */
   QColor backgroundColor = {0, 0, 0};
 };
 
