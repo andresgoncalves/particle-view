@@ -36,6 +36,10 @@ add_library(widgets STATIC
   app/animation/AnimationStrategyControls.cpp
 
   app/display/DisplayPropertyControls.cpp
+  app/display/CustomDisplayRuleControls.cpp
+  app/display/CustomDisplayRuleList.cpp
+  app/display/CustomDisplayRuleRow.cpp
+  app/display/CustomDisplayRuleDialog.cpp
 
   app/color/SolidColorControl.cpp
   app/color/ColorScaleControl.cpp
@@ -65,7 +69,12 @@ add_library(widgets STATIC
   shared/controls/TextControl.cpp
   shared/controls/ColorControl.cpp
   shared/controls/NumericControl.cpp
-  shared/controls/VectorControl.cpp 
+  shared/controls/VectorControl.cpp
+
+  shared/controls/matcher/ParticleMatcherControl.cpp 
+  shared/controls/matcher/ScalarMatcherValueControl.cpp 
+  shared/controls/matcher/VectorMatcherValueControl.cpp 
+  shared/controls/matcher/StringMatcherValueControl.cpp 
 )
 
 target_link_libraries(widgets PRIVATE

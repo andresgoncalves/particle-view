@@ -14,12 +14,27 @@ public:
       std::string propertyName,
       std::string symbol,
       float referenceValue,
-      VectorComponent vectorComponent = VectorComponent::Magnitude, )
-      : AbstractBinaryParticleMatcher{propertyName,
-                                      symbol,
-                                      referenceValue},
-        vectorComponent{vectorComponent},
+      VectorComponent vectorComponent = VectorComponent::Magnitude)
+      : BinaryParticleMatcher{propertyName,
+                              symbol,
+                              referenceValue},
+        vectorComponent{vectorComponent}
   {
+    switch (vectorComponent)
+    {
+    case VectorComponent::Magnitude:
+      this->propertyName += " (Magnitud)";
+      break;
+    case VectorComponent::X:
+      this->propertyName += " (Componente X)";
+      break;
+    case VectorComponent::Y:
+      this->propertyName += " (Componente Y)";
+      break;
+    case VectorComponent::Z:
+      this->propertyName += " (Componente Z)";
+      break;
+    }
   }
 
   VectorComponent getVectorComponent() const
@@ -28,7 +43,6 @@ public:
   }
 
 private:
-  Comparator compare;
   VectorComponent vectorComponent;
 };
 
@@ -67,7 +81,7 @@ private:
     if (it != particle.properties.end())
     {
       auto property =
-          it->second.getValue<PropertyType::Vector>();
+          it->second.template getValue<PropertyType::Vector>();
 
       if (property != nullptr)
         return property->getComponent(vectorComponent);
@@ -86,32 +100,32 @@ public:
   {
   }
 
-  constexpr std::unique_ptr<AbstractVectorParticleMatcher> equal(float value) const
+  std::unique_ptr<AbstractVectorBinaryParticleMatcher> equal(float value) const
   {
     return std::make_unique<VectorBinaryParticleMatcher<std::equal_to<float>>>(propertyName, "=", value, vectorComponent);
   }
 
-  constexpr std::unique_ptr<AbstractVectorParticleMatcher> notEqual(float value) const
+  std::unique_ptr<AbstractVectorBinaryParticleMatcher> notEqual(float value) const
   {
     return std::make_unique<VectorBinaryParticleMatcher<std::not_equal_to<float>>>(propertyName, "≠", value, vectorComponent);
   }
 
-  constexpr std::unique_ptr<AbstractVectorParticleMatcher> less(float value) const
+  std::unique_ptr<AbstractVectorBinaryParticleMatcher> less(float value) const
   {
     return std::make_unique<VectorBinaryParticleMatcher<std::less<float>>>(propertyName, "<", value, vectorComponent);
   }
 
-  constexpr std::unique_ptr<AbstractVectorParticleMatcher> greater(float value) const
+  std::unique_ptr<AbstractVectorBinaryParticleMatcher> greater(float value) const
   {
     return std::make_unique<VectorBinaryParticleMatcher<std::greater<float>>>(propertyName, ">", value, vectorComponent);
   }
 
-  constexpr std::unique_ptr<AbstractVectorParticleMatcher> lessOrEqual(float value) const
+  std::unique_ptr<AbstractVectorBinaryParticleMatcher> lessOrEqual(float value) const
   {
     return std::make_unique<VectorBinaryParticleMatcher<std::less_equal<float>>>(propertyName, "≤", value, vectorComponent);
   }
 
-  constexpr std::unique_ptr<AbstractVectorParticleMatcher> greaterOrEqual(float value) const
+  std::unique_ptr<AbstractVectorBinaryParticleMatcher> greaterOrEqual(float value) const
   {
     return std::make_unique<VectorBinaryParticleMatcher<std::greater_equal<float>>>(propertyName, "≥", value, vectorComponent);
   }

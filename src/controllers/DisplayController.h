@@ -53,7 +53,7 @@ public:
   /** Vector rules observable */
   BaseObservable<VectorRules &> vectorRulesObservable;
   /** Custom rules observable */
-  BaseObservable<CustomRules> customRulesObservable;
+  BaseObservable<CustomRules &> customRulesObservable;
   /** Background color observable */
   Observable<QColor> backgroundColorObservable = backgroundColor;
 

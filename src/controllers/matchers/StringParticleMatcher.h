@@ -10,22 +10,16 @@
 class AbstractStringBinaryParticleMatcher : public BinaryParticleMatcher<std::string>
 {
 public:
-  bool match(const Particle &particle) const override
-  {
-    auto currentValue = getValue(particle);
-    return currentValue.has_value() && compare(currentValue.value(), referenceValue);
-  }
-
   AbstractStringBinaryParticleMatcher(
       std::string propertyName,
       std::string symbol,
       std::string referenceValue)
-      : AbstractBinaryParticleMatcher{propertyName,
-                                      symbol,
-                                      referenceValue}
+      : BinaryParticleMatcher{propertyName,
+                              symbol,
+                              referenceValue}
   {
   }
-}
+};
 
 /** Compare a string property */
 template <typename Comparator>
@@ -59,7 +53,7 @@ private:
     if (it != particle.properties.end())
     {
       auto property =
-          it->second.getValue<PropertyType::String>();
+          it->second.template getValue<PropertyType::String>();
 
       if (property != nullptr)
         return property->value;
@@ -77,12 +71,12 @@ public:
   {
   }
 
-  constexpr std::uniquer_ptr<AbstractStringBinaryParticleMatcher> equal(std::string value) const
+  std::unique_ptr<AbstractStringBinaryParticleMatcher> equal(std::string value) const
   {
     return std::make_unique<StringBinaryParticleMatcher<std::equal_to<std::string>>>(propertyName, "=", value);
   }
 
-  constexpr std::uniquer_ptr<AbstractStringBinaryParticleMatcher> notEqual(std::string value) const
+  std::unique_ptr<AbstractStringBinaryParticleMatcher> notEqual(std::string value) const
   {
     return std::make_unique<StringBinaryParticleMatcher<std::not_equal_to<std::string>>>(propertyName, "≠", value);
   }

@@ -3,10 +3,12 @@
 #include <QtWidgets/QVBoxLayout>
 
 #include <widgets/app/display/DisplayPropertyControls.h>
+#include <widgets/app/display/CustomDisplayRuleControls.h>
 
 DisplayTab::DisplayTab(AppContext &appContext, QWidget *parent) : appContext{appContext}, QScrollArea{parent}
 {
   auto displayPropertyControls = new DisplayPropertyControls{appContext, this};
+  auto customDisplayRuleControls = new CustomDisplayRuleControls{appContext, this};
 
   auto widget = new QWidget{this};
   setWidget(widget);
@@ -15,5 +17,6 @@ DisplayTab::DisplayTab(AppContext &appContext, QWidget *parent) : appContext{app
   auto layout = new QVBoxLayout{widget};
   layout->setAlignment(Qt::AlignTop);
   layout->addWidget(displayPropertyControls);
+  layout->addWidget(customDisplayRuleControls);
   layout->setContentsMargins(0, 8, 0, 8);
 }

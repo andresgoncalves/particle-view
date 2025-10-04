@@ -82,8 +82,11 @@ DisplayRule DisplayController::getMatchingParticleRule(const Particle &particle)
 
 DisplayRule DisplayController::getMatchingVectorRule(const Particle &particle, std::string property)
 {
+  auto vectorRule = getVectorRule(property);
+  if (!vectorRule.isVisible())
+    return vectorRule;
   auto displayRule = getMatchingCustomRule(particle);
-  return displayRule.value_or(getVectorRule(property));
+  return displayRule.value_or(vectorRule);
 }
 
 std::optional<DisplayRule> DisplayController::getMatchingCustomRule(const Particle &particle)

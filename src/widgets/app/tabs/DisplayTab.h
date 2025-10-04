@@ -11,6 +11,7 @@ class DisplayTab : public QScrollArea
 public:
   /** Creates the display application controls,composed by:
    * - DisplayPropertyControls
+   * - CustomDisplayRuleControls
    */
   DisplayTab(AppContext &appContext, QWidget *parent);
 

@@ -38,7 +38,7 @@ struct VectorProperty : public BaseProperty<QVector3D>
 {
   VectorProperty(QVector3D value) : BaseProperty{value} {}
 
-  constexpr float getComponent(VectorComponent component) const
+  float getComponent(VectorComponent component) const
   {
     switch (component)
     {
