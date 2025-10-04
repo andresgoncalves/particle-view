@@ -21,6 +21,12 @@ StringMatcherValueControl::StringMatcherValueControl(QWidget *parent) : QWidget{
   layout->setContentsMargins({});
 }
 
+void StringMatcherValueControl::setMatcher(const AbstractStringBinaryParticleMatcher *matcher)
+{
+  matcherTypeComboBox->setCurrentText(matcher->getSymbol().c_str());
+  valueControl->setValue(matcher->getReferenceValue());
+}
+
 std::unique_ptr<ParticleMatcher> StringMatcherValueControl::getMatcher(std::string propertyName) const
 {
   auto matcherFactory = StringParticleMatcherFactory{propertyName};

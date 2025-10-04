@@ -25,6 +25,21 @@ public:
   {
   }
 
+  std::string getPropertyName() const
+  {
+    return propertyName;
+  }
+
+  std::string getSymbol() const
+  {
+    return symbol;
+  }
+
+  T getReferenceValue() const
+  {
+    return referenceValue;
+  }
+
 protected:
   std::string propertyName;
   std::string symbol;

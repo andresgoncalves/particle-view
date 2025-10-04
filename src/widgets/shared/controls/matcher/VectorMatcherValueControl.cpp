@@ -25,6 +25,12 @@ VectorMatcherValueControl::VectorMatcherValueControl(QWidget *parent) : QWidget{
   layout->setContentsMargins({});
 }
 
+void VectorMatcherValueControl::setMatcher(const AbstractVectorBinaryParticleMatcher *matcher)
+{
+  matcherTypeComboBox->setCurrentText(matcher->getSymbol().c_str());
+  valueControl->setValue(matcher->getReferenceValue());
+}
+
 std::unique_ptr<ParticleMatcher> VectorMatcherValueControl::getMatcher(std::string propertyName, VectorComponent vectorComponent) const
 {
   auto matcherFactory = VectorParticleMatcherFactory{propertyName, vectorComponent};

@@ -5,12 +5,15 @@
 #include <QtWidgets/QComboBox>
 
 #include <controllers/AppContext.h>
+#include <controllers/matchers/ScalarParticleMatcher.h>
 #include <widgets/shared/controls/NumericControl.h>
 
 class ScalarMatcherValueControl : public QWidget
 {
 public:
   ScalarMatcherValueControl(QWidget *parent = nullptr);
+
+  void setMatcher(const AbstractScalarBinaryParticleMatcher *matcher);
 
   std::unique_ptr<ParticleMatcher> getMatcher(std::string propertyName) const;
 

@@ -3,6 +3,7 @@
 
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QComboBox>
+#include <QtWidgets/QStackedWidget>
 
 #include <controllers/AppContext.h>
 #include "ScalarMatcherValueControl.h"
@@ -14,6 +15,8 @@ class ParticleMatcherControl : public QWidget
 public:
   ParticleMatcherControl(const PropertyTypeMap &properties, QWidget *parent = nullptr);
 
+  void setMatcher(const ParticleMatcher *matcher);
+
   std::unique_ptr<ParticleMatcher> getMatcher() const;
 
 private:
@@ -21,6 +24,7 @@ private:
   ScalarMatcherValueControl *scalarMatcherValueControl;
   VectorMatcherValueControl *vectorMatcherValueControl;
   StringMatcherValueControl *stringMatcherValueControl;
+  QStackedWidget *stackedValueControls;
 
   /** Property combo box values */
   std::vector<std::tuple<std::string, PropertyType, VectorComponent>> propertyValues;

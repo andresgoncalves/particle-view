@@ -76,6 +76,8 @@ QColor DisplayController::getBackgroundColor() const
 
 DisplayRule DisplayController::getMatchingParticleRule(const Particle &particle)
 {
+  if (!particleRule.isVisible())
+    return particleRule;
   auto displayRule = getMatchingCustomRule(particle);
   return displayRule.value_or(particleRule);
 }

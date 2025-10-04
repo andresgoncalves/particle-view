@@ -12,13 +12,9 @@ CustomDisplayRuleDialog::CustomDisplayRuleDialog(AppContext &appContext, QWidget
 CustomDisplayRuleDialog::CustomDisplayRuleDialog(const DisplayRule &displayRule, AppContext &appContext, QWidget *parent) : CustomDisplayRuleDialog{true, appContext, parent}
 {
   originalDisplayRule = displayRule;
-  // nameControl->setValue(displayRule.name);
-  // centerControl->setValue(displayRule.center);
-  // sizeControl->setValue(displayRule.size);
-  // rotationControl->setValue(displayRule.rotation.toEulerAngles());
-  // auto shapeIndex = shapeComboBox->findData(static_cast<int>(displayRule.shape));
-  // if (shapeIndex >= 0)
-  //   shapeComboBox->setCurrentIndex(shapeIndex);
+  particleMatcherControl->setMatcher(displayRule.getMatcher().get());
+  selectedColorStrategy = displayRule.getColorStrategy();
+  colorButton->setColorStrategy(selectedColorStrategy.get());
 }
 
 CustomDisplayRuleDialog::CustomDisplayRuleDialog(bool edit, AppContext &appContext, QWidget *parent) : QDialog{parent}
@@ -34,8 +30,8 @@ CustomDisplayRuleDialog::CustomDisplayRuleDialog(bool edit, AppContext &appConte
             auto color = ColorPicker::getColor(this);
             if (color.has_value())
             {
-              selectedColor = color.value();
-              colorButton->setSolidColor(selectedColor);
+              selectedColorStrategy = std::make_shared<SolidColorStrategy>(color.value());
+              colorButton->setColorStrategy(selectedColorStrategy.get());
             }
           });
   auto colorControl = new Control{"Color", colorButton, QBoxLayout::LeftToRight, this};
@@ -70,7 +66,7 @@ DisplayRule CustomDisplayRuleDialog::getDisplayRule() const
 {
   auto displayRule = originalDisplayRule.value_or(DisplayRule{});
   displayRule.setMatcher(particleMatcherControl->getMatcher());
-  displayRule.setColorStrategy(std::make_shared<SolidColorStrategy>(selectedColor));
+  displayRule.setColorStrategy(selectedColorStrategy);
   displayRule.setVisible(true);
   return displayRule;
 }

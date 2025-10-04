@@ -1,8 +1,13 @@
 #include "ParticleMatcherControl.h"
 
+#include <algorithm>
+
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QStackedWidget>
+
+#include <controllers/matchers/ScalarParticleMatcher.h>
+#include <controllers/matchers/VectorParticleMatcher.h>
+#include <controllers/matchers/StringParticleMatcher.h>
 
 ParticleMatcherControl::ParticleMatcherControl(const PropertyTypeMap &properties, QWidget *parent) : QWidget{parent}
 {
@@ -12,7 +17,7 @@ ParticleMatcherControl::ParticleMatcherControl(const PropertyTypeMap &properties
   stringMatcherValueControl = new StringMatcherValueControl{this};
 
   // Stacked widget
-  auto stackedValueControls = new QStackedWidget{this};
+  stackedValueControls = new QStackedWidget{this};
   stackedValueControls->addWidget(scalarMatcherValueControl);
   stackedValueControls->addWidget(vectorMatcherValueControl);
   stackedValueControls->addWidget(stringMatcherValueControl);
@@ -47,29 +52,61 @@ ParticleMatcherControl::ParticleMatcherControl(const PropertyTypeMap &properties
     }
   }
   // Change value controls with property type
-  connect(propertyComboBox, &QComboBox::currentIndexChanged, this,
-          [=, this](int index)
-          {
-            auto [propertyName, propertyType, vectorComponent] = propertyValues[index];
-            switch (propertyType)
-            {
-            case PropertyType::Scalar:
-              stackedValueControls->setCurrentWidget(scalarMatcherValueControl);
-              break;
-            case PropertyType::Vector:
-              stackedValueControls->setCurrentWidget(vectorMatcherValueControl);
-              break;
-            case PropertyType::String:
-              stackedValueControls->setCurrentWidget(stringMatcherValueControl);
-              break;
-            }
-          });
+  auto propertyChangeCallback = [=, this](int index)
+  {
+    auto [propertyName, propertyType, vectorComponent] = propertyValues[index];
+    switch (propertyType)
+    {
+    case PropertyType::Scalar:
+      stackedValueControls->setCurrentWidget(scalarMatcherValueControl);
+      break;
+    case PropertyType::Vector:
+      stackedValueControls->setCurrentWidget(vectorMatcherValueControl);
+      break;
+    case PropertyType::String:
+      stackedValueControls->setCurrentWidget(stringMatcherValueControl);
+      break;
+    }
+  };
+  connect(propertyComboBox, &QComboBox::currentIndexChanged, this, propertyChangeCallback);
+  // Use default index
+  propertyChangeCallback(0);
 
   auto layout = new QHBoxLayout{this};
   layout->setAlignment(Qt::AlignVCenter);
   layout->addWidget(propertyComboBox);
   layout->addWidget(stackedValueControls);
   layout->setContentsMargins({});
+}
+
+void ParticleMatcherControl::setMatcher(const ParticleMatcher *matcher)
+{
+  int index = 0;
+  if (auto scalarMatcher = dynamic_cast<const AbstractScalarBinaryParticleMatcher *>(matcher))
+  {
+    scalarMatcherValueControl->setMatcher(scalarMatcher);
+    stackedValueControls->setCurrentWidget(scalarMatcherValueControl);
+
+    auto iterator = std::find(propertyValues.begin(), propertyValues.end(), std::make_tuple(scalarMatcher->getPropertyName(), PropertyType::Scalar, VectorComponent{}));
+    index = iterator != propertyValues.end() ? std::distance(propertyValues.begin(), iterator) : 0;
+  }
+  else if (auto vectorMatcher = dynamic_cast<const AbstractVectorBinaryParticleMatcher *>(matcher))
+  {
+    vectorMatcherValueControl->setMatcher(vectorMatcher);
+    stackedValueControls->setCurrentWidget(vectorMatcherValueControl);
+
+    auto iterator = std::find(propertyValues.begin(), propertyValues.end(), std::make_tuple(vectorMatcher->getPropertyName(), PropertyType::Vector, vectorMatcher->getVectorComponent()));
+    index = iterator != propertyValues.end() ? std::distance(propertyValues.begin(), iterator) : 0;
+  }
+  else if (auto stringMatcher = dynamic_cast<const AbstractStringBinaryParticleMatcher *>(matcher))
+  {
+    stringMatcherValueControl->setMatcher(stringMatcher);
+    stackedValueControls->setCurrentWidget(stringMatcherValueControl);
+
+    auto iterator = std::find(propertyValues.begin(), propertyValues.end(), std::make_tuple(stringMatcher->getPropertyName(), PropertyType::String, VectorComponent{}));
+    index = iterator != propertyValues.end() ? std::distance(propertyValues.begin(), iterator) : 0;
+  }
+  propertyComboBox->setCurrentIndex(index);
 }
 
 std::unique_ptr<ParticleMatcher> ParticleMatcherControl::getMatcher() const

@@ -25,6 +25,12 @@ ScalarMatcherValueControl::ScalarMatcherValueControl(QWidget *parent) : QWidget{
   layout->setContentsMargins({});
 }
 
+void ScalarMatcherValueControl::setMatcher(const AbstractScalarBinaryParticleMatcher *matcher)
+{
+  matcherTypeComboBox->setCurrentText(matcher->getSymbol().c_str());
+  valueControl->setValue(matcher->getReferenceValue());
+}
+
 std::unique_ptr<ParticleMatcher> ScalarMatcherValueControl::getMatcher(std::string propertyName) const
 {
   auto matcherFactory = ScalarParticleMatcherFactory{propertyName};

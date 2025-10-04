@@ -5,12 +5,15 @@
 #include <QtWidgets/QComboBox>
 
 #include <controllers/AppContext.h>
+#include <controllers/matchers/StringParticleMatcher.h>
 #include <widgets/shared/controls/TextControl.h>
 
 class StringMatcherValueControl : public QWidget
 {
 public:
   StringMatcherValueControl(QWidget *parent = nullptr);
+
+  void setMatcher(const AbstractStringBinaryParticleMatcher *matcher);
 
   std::unique_ptr<ParticleMatcher> getMatcher(std::string propertyName) const;
 

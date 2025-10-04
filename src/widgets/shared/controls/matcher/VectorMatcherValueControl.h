@@ -5,12 +5,15 @@
 #include <QtWidgets/QComboBox>
 
 #include <controllers/AppContext.h>
+#include <controllers/matchers/VectorParticleMatcher.h>
 #include <widgets/shared/controls/NumericControl.h>
 
 class VectorMatcherValueControl : public QWidget
 {
 public:
   VectorMatcherValueControl(QWidget *parent = nullptr);
+
+  void setMatcher(const AbstractVectorBinaryParticleMatcher *matcher);
 
   std::unique_ptr<ParticleMatcher> getMatcher(std::string propertyName, VectorComponent vectorComponent) const;
 

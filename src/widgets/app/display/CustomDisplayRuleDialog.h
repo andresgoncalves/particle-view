@@ -28,7 +28,7 @@ private:
 
   ParticleMatcherControl *particleMatcherControl;
   ColorButton *colorButton;
-  QColor selectedColor;
+  std::shared_ptr<ColorStrategy> selectedColorStrategy;
 };
 
 #endif
