@@ -6,6 +6,7 @@
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QComboBox>
+#include <QtWidgets/QRadioButton>
 
 #include <controllers/AppContext.h>
 #include <widgets/shared/buttons/ColorButton.h>
@@ -28,6 +29,9 @@ private:
 
   ParticleMatcherControl *particleMatcherControl;
   ColorButton *colorButton;
+  QRadioButton *visibilityTrueButton;
+  QRadioButton *visibilityFalseButton;
+
   std::shared_ptr<ColorStrategy> selectedColorStrategy;
 };
 

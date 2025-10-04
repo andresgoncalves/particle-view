@@ -12,9 +12,16 @@ CustomDisplayRuleDialog::CustomDisplayRuleDialog(AppContext &appContext, QWidget
 CustomDisplayRuleDialog::CustomDisplayRuleDialog(const DisplayRule &displayRule, AppContext &appContext, QWidget *parent) : CustomDisplayRuleDialog{true, appContext, parent}
 {
   originalDisplayRule = displayRule;
+  // Matcher control
   particleMatcherControl->setMatcher(displayRule.getMatcher().get());
+  // Color control
   selectedColorStrategy = displayRule.getColorStrategy();
   colorButton->setColorStrategy(selectedColorStrategy.get());
+  // Visiblity buttons
+  if (displayRule.isVisible())
+    visibilityTrueButton->setChecked(true);
+  else
+    visibilityFalseButton->setChecked(true);
 }
 
 CustomDisplayRuleDialog::CustomDisplayRuleDialog(bool edit, AppContext &appContext, QWidget *parent) : QDialog{parent}
@@ -36,9 +43,20 @@ CustomDisplayRuleDialog::CustomDisplayRuleDialog(bool edit, AppContext &appConte
           });
   auto colorControl = new Control{"Color", colorButton, QBoxLayout::LeftToRight, this};
 
+  visibilityTrueButton = new QRadioButton{"Mostrar", this};
+  visibilityFalseButton = new QRadioButton{"Ocultar", this};
+  visibilityTrueButton->setChecked(true);
+
+  auto visibilityLayout = new QHBoxLayout{};
+  visibilityLayout->addWidget(visibilityTrueButton);
+  visibilityLayout->addWidget(visibilityFalseButton);
+  visibilityLayout->setContentsMargins(8, 8, 8, 8);
+
   auto controlLayout = new QVBoxLayout{};
   controlLayout->addWidget(particleMatcherControl);
+  controlLayout->addLayout(visibilityLayout);
   controlLayout->addWidget(colorControl);
+  controlLayout->setAlignment(visibilityLayout, Qt::AlignHCenter);
   controlLayout->setAlignment(colorControl, Qt::AlignHCenter);
   controlLayout->setContentsMargins(8, 8, 8, 8);
 
@@ -67,6 +85,6 @@ DisplayRule CustomDisplayRuleDialog::getDisplayRule() const
   auto displayRule = originalDisplayRule.value_or(DisplayRule{});
   displayRule.setMatcher(particleMatcherControl->getMatcher());
   displayRule.setColorStrategy(selectedColorStrategy);
-  displayRule.setVisible(true);
+  displayRule.setVisible(visibilityTrueButton->isChecked());
   return displayRule;
 }
