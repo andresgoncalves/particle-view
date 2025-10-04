@@ -32,7 +32,7 @@ private:
   QRadioButton *visibilityTrueButton;
   QRadioButton *visibilityFalseButton;
 
-  std::shared_ptr<ColorStrategy> selectedColorStrategy;
+  std::shared_ptr<ColorStrategy> selectedColorStrategy = std::make_shared<SolidColorStrategy>(QColor{255, 255, 255});
 };
 
 #endif

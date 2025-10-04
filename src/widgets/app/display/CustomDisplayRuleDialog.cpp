@@ -31,6 +31,7 @@ CustomDisplayRuleDialog::CustomDisplayRuleDialog(bool edit, AppContext &appConte
   particleMatcherControl = new ParticleMatcherControl{appContext.animationController.getStory().metadata.particleProperties, this};
 
   colorButton = new ColorButton{this};
+  colorButton->setColorStrategy(selectedColorStrategy.get());
   connect(colorButton, &QPushButton::clicked,
           [=, this]()
           {
