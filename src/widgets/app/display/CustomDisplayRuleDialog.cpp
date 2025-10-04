@@ -47,6 +47,9 @@ CustomDisplayRuleDialog::CustomDisplayRuleDialog(bool edit, AppContext &appConte
   visibilityTrueButton = new QRadioButton{"Mostrar", this};
   visibilityFalseButton = new QRadioButton{"Ocultar", this};
   visibilityTrueButton->setChecked(true);
+  connect(visibilityTrueButton, &QRadioButton::toggled,
+          [=](bool visible)
+          { colorControl->setVisible(visible); });
 
   auto visibilityLayout = new QHBoxLayout{};
   visibilityLayout->addWidget(visibilityTrueButton);
@@ -59,6 +62,7 @@ CustomDisplayRuleDialog::CustomDisplayRuleDialog(bool edit, AppContext &appConte
   controlLayout->addWidget(colorControl);
   controlLayout->setAlignment(visibilityLayout, Qt::AlignHCenter);
   controlLayout->setAlignment(colorControl, Qt::AlignHCenter);
+  controlLayout->addStretch();
   controlLayout->setContentsMargins(8, 8, 8, 8);
 
   auto acceptButton = new QPushButton{"Aceptar", this};

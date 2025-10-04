@@ -31,6 +31,7 @@ CustomDisplayRuleRow::CustomDisplayRuleRow(DisplayController::CustomRules::itera
 
   auto colorButton = new ColorButton{this};
   colorButton->setColorStrategy(displayRule->getColorStrategy().get());
+  colorButton->setVisible(displayRule->isVisible());
   connect(colorButton, &QPushButton::clicked,
           [=, &appContext, this]()
           {
