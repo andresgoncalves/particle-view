@@ -3,6 +3,7 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QFileDialog>
 
 #include "GraphWidget.h"
 #include "GraphWindow.h"
@@ -19,6 +20,20 @@ GraphRow::GraphRow(GraphController::Graphs::iterator iterator, AppContext &appCo
   connect(openAction, &QAction::triggered,
           [=, this]()
           { graphWindow->show(); });
+  auto exportAction = actionMenu->addAction("Exportar");
+  connect(exportAction, &QAction::triggered,
+          [=, &appContext, this]()
+          {
+            auto fileName = QFileDialog::getSaveFileName(parent ? parent : this, "Seleccionar archivo", "", "Imagen PNG (*.png);;Todos los archivos (*)").toStdString();
+            if (!fileName.empty())
+            {
+              if (!fileName.ends_with(".png"))
+                fileName += ".png";
+              // Render to image
+              auto image = graphWindow->renderToImage({1280, 720}, *graph, appContext);
+              image.save(fileName.c_str());
+            }
+          });
   auto editAction = actionMenu->addAction("Editar");
   connect(editAction, &QAction::triggered,
           [=, &appContext, this]()

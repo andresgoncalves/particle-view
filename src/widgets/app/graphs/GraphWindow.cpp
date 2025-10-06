@@ -10,7 +10,46 @@ GraphWindow::GraphWindow(const Graph &graph, AppContext &appContext, QWidget *pa
 {
   setWindowTitle(("Gráfico - " + graph.getTitle()).c_str());
 
-  auto series = new QScatterSeries{this};
+  auto chart = new QChart{};
+  buildChart(chart, graph, appContext);
+
+  auto chartView = new QChartView{chart, this};
+  chartView->setRenderHint(QPainter::Antialiasing);
+  chartView->setContentsMargins({});
+
+  auto layout = new QVBoxLayout{this};
+  layout->addWidget(chartView);
+  layout->setContentsMargins({});
+
+  setMinimumSize(400, 300);
+}
+
+QImage GraphWindow::renderToImage(QSize size, const Graph &graph, AppContext &appContext) const
+{
+  auto chart = new QChart{};
+  buildChart(chart, graph, appContext);
+  chart->setBackgroundRoundness(0);
+  chart->resize(size);
+
+  // Render to image
+  auto image = QImage{size, QImage::Format_ARGB32};
+  image.fill(Qt::transparent);
+
+  auto painter = QPainter{&image};
+  painter.setRenderHint(QPainter::Antialiasing, true);
+  painter.setRenderHint(QPainter::TextAntialiasing, true);
+
+  auto graphicsScene = QGraphicsScene{};
+  graphicsScene.addItem(chart);
+  graphicsScene.setSceneRect({{}, size});
+  graphicsScene.render(&painter);
+
+  return image;
+}
+
+void GraphWindow::buildChart(QChart *chart, const Graph &graph, AppContext &appContext) const
+{
+  auto series = new QScatterSeries{chart};
   for (auto &[time, scene] : appContext.animationController.getStory().scenes)
   {
     auto value = graph.getValue(scene);
@@ -19,15 +58,14 @@ GraphWindow::GraphWindow(const Graph &graph, AppContext &appContext, QWidget *pa
   }
   series->setBorderColor(QColor{0, 0, 0, 0});
 
-  auto xAxis = new QValueAxis{this};
+  auto xAxis = new QValueAxis{chart};
   xAxis->setTitleText(graph.getXAxis()->getText().c_str());
   xAxis->setRange(graph.getXAxis()->getRange().first, graph.getXAxis()->getRange().second);
 
-  auto yAxis = new QValueAxis{this};
+  auto yAxis = new QValueAxis{chart};
   yAxis->setTitleText(graph.getYAxis()->getText().c_str());
   yAxis->setRange(graph.getYAxis()->getRange().first, graph.getYAxis()->getRange().second);
 
-  auto chart = new QChart{};
   chart->addSeries(series);
   chart->addAxis(xAxis, Qt::AlignBottom);
   chart->addAxis(yAxis, Qt::AlignLeft);
@@ -36,13 +74,4 @@ GraphWindow::GraphWindow(const Graph &graph, AppContext &appContext, QWidget *pa
 
   series->attachAxis(xAxis);
   series->attachAxis(yAxis);
-
-  auto chartView = new QChartView{chart, this};
-  chartView->setContentsMargins({});
-
-  auto layout = new QVBoxLayout{this};
-  layout->addWidget(chartView);
-  layout->setContentsMargins({});
-
-  setMinimumSize(400, 300);
 }
