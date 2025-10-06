@@ -8,6 +8,10 @@
 
 LeftPanel::LeftPanel(AppContext &appContext, QWidget *parent) : appContext{appContext}, QTabWidget{parent}
 {
+  // Set tab behavior
+  setUsesScrollButtons(true);
+  setElideMode(Qt::TextElideMode::ElideNone);
+
   // View tab
   auto viewTab = new ViewTab{appContext, this};
   addTab(viewTab, "Vista");
@@ -20,11 +24,11 @@ LeftPanel::LeftPanel(AppContext &appContext, QWidget *parent) : appContext{appCo
   auto displayTab = new DisplayTab{appContext, this};
   addTab(displayTab, "Visualización");
 
-  // Display tab
-  auto containersTab = new ContainersTab{appContext, this};
-  addTab(containersTab, "Contenedores");
-
   // Graphs tab
   auto graphsTab = new GraphsTab{appContext, this};
   addTab(graphsTab, "Gráficos");
+
+  // Display tab
+  auto containersTab = new ContainersTab{appContext, this};
+  addTab(containersTab, "Contenedores");
 }

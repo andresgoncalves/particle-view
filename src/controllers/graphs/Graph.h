@@ -4,20 +4,36 @@
 #include "GraphAxis.h"
 
 #include <optional>
+#include <string>
 
 class Graph
 {
 public:
   Graph(
-      std::shared_ptr<GraphAxis<float>> xAxis,
-      std::shared_ptr<GraphAxis<float>> yAxis) : xAxis{xAxis}, yAxis{yAxis} {}
+      std::shared_ptr<GraphAxis> xAxis,
+      std::shared_ptr<GraphAxis> yAxis) : Graph{"", xAxis, yAxis} {}
 
-  std::shared_ptr<GraphAxis<float>> getXAxis() const
+  Graph(
+      std::string title,
+      std::shared_ptr<GraphAxis> xAxis,
+      std::shared_ptr<GraphAxis> yAxis) : title{title}, xAxis{xAxis}, yAxis{yAxis} {}
+
+  void setTitle(std::string title)
+  {
+    this->title = title;
+  }
+
+  std::string getTitle() const
+  {
+    return title;
+  }
+
+  std::shared_ptr<GraphAxis> getXAxis() const
   {
     return xAxis;
   }
 
-  std::shared_ptr<GraphAxis<float>> getYAxis() const
+  std::shared_ptr<GraphAxis> getYAxis() const
   {
     return yAxis;
   }
@@ -32,8 +48,9 @@ public:
   }
 
 private:
-  std::shared_ptr<GraphAxis<float>> xAxis;
-  std::shared_ptr<GraphAxis<float>> yAxis;
+  std::string title;
+  std::shared_ptr<GraphAxis> xAxis;
+  std::shared_ptr<GraphAxis> yAxis;
 };
 
 #endif

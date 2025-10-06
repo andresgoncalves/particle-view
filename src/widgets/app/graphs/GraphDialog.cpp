@@ -15,6 +15,13 @@ GraphDialog::GraphDialog(const Graph &graph, AppContext &appContext, QWidget *pa
 {
   originalGraph = graph;
 
+  titleControl->setValue(graph.getTitle());
+
+  xRangeMin->setValue(graph.getXAxis()->getRange().first);
+  xRangeMax->setValue(graph.getXAxis()->getRange().second);
+  yRangeMin->setValue(graph.getYAxis()->getRange().first);
+  yRangeMax->setValue(graph.getYAxis()->getRange().second);
+
   // Set X axis property
   if (auto scalarXAxis = dynamic_cast<ScalarSceneGraphAxis *>(graph.getXAxis().get()))
     xPropertyControl->setValue({scalarXAxis->getPropertyName(), PropertyType::Scalar, {}});
@@ -32,12 +39,29 @@ GraphDialog::GraphDialog(bool edit, AppContext &appContext, QWidget *parent) : Q
 {
   setWindowTitle(edit ? "Editar gráfico" : "Agregar gráfico");
 
+  titleControl = new TextControl{"Título del gráfico", this};
+
+  xRangeMin = new NumericControl{"Min:", QBoxLayout::Direction::LeftToRight, this};
+  xRangeMax = new NumericControl{"Max:", QBoxLayout::Direction::LeftToRight, this};
+  yRangeMin = new NumericControl{"Min:", QBoxLayout::Direction::LeftToRight, this};
+  yRangeMax = new NumericControl{"Max:", QBoxLayout::Direction::LeftToRight, this};
+
+  auto xRangeLayout = new QHBoxLayout{};
+  xRangeLayout->addWidget(xRangeMin);
+  xRangeLayout->addWidget(xRangeMax);
+  auto yRangeLayout = new QHBoxLayout{};
+  yRangeLayout->addWidget(yRangeMin);
+  yRangeLayout->addWidget(yRangeMax);
+
   xPropertyControl = new PropertyControl{"Eje X:", appContext.animationController.getStory().metadata.sceneProperties, this};
   yPropertyControl = new PropertyControl{"Eje Y:", appContext.animationController.getStory().metadata.sceneProperties, this};
 
   auto controlLayout = new QVBoxLayout{};
+  controlLayout->addWidget(titleControl);
   controlLayout->addWidget(xPropertyControl);
+  controlLayout->addLayout(xRangeLayout);
   controlLayout->addWidget(yPropertyControl);
+  controlLayout->addLayout(yRangeLayout);
   controlLayout->addStretch();
   controlLayout->setContentsMargins(8, 8, 8, 8);
 
@@ -63,18 +87,22 @@ GraphDialog::GraphDialog(bool edit, AppContext &appContext, QWidget *parent) : Q
 
 Graph GraphDialog::getGraph() const
 {
+  auto title = titleControl->getValue();
   auto xProperty = xPropertyControl->getValue();
   auto yProperty = yPropertyControl->getValue();
 
   auto xAxis = getGraphAxis(std::get<0>(xProperty), std::get<1>(xProperty), std::get<2>(xProperty));
-  auto yAxis = getGraphAxis(std::get<0>(yProperty), std::get<1>(yProperty), std::get<2>(yProperty));
+  xAxis->setRange({xRangeMin->getValue<float>(), xRangeMax->getValue<float>()});
 
-  auto graph = Graph{std::move(xAxis), std::move(yAxis)};
+  auto yAxis = getGraphAxis(std::get<0>(yProperty), std::get<1>(yProperty), std::get<2>(yProperty));
+  yAxis->setRange({yRangeMin->getValue<float>(), yRangeMax->getValue<float>()});
+
+  auto graph = Graph{title, std::move(xAxis), std::move(yAxis)};
 
   return graph;
 }
 
-std::unique_ptr<GraphAxis<float>> GraphDialog::getGraphAxis(std::string propertyName, PropertyType propertyType, VectorComponent vectorComponent) const
+std::unique_ptr<GraphAxis> GraphDialog::getGraphAxis(std::string propertyName, PropertyType propertyType, VectorComponent vectorComponent) const
 {
   switch (propertyType)
   {

@@ -25,12 +25,17 @@ public:
 private:
   GraphDialog(bool edit, AppContext &appContext, QWidget *parent = nullptr);
 
-  std::unique_ptr<GraphAxis<float>> getGraphAxis(std::string propertyName, PropertyType propertyType, VectorComponent vectorComponent = VectorComponent::Magnitude) const;
+  std::unique_ptr<GraphAxis> getGraphAxis(std::string propertyName, PropertyType propertyType, VectorComponent vectorComponent = VectorComponent::Magnitude) const;
 
   std::optional<Graph> originalGraph;
 
+  TextControl *titleControl;
   PropertyControl *xPropertyControl;
   PropertyControl *yPropertyControl;
+  NumericControl *xRangeMin;
+  NumericControl *xRangeMax;
+  NumericControl *yRangeMin;
+  NumericControl *yRangeMax;
 };
 
 #endif

@@ -1,4 +1,4 @@
-#include "GraphWidget.h"
+#include "GraphWindow.h"
 
 #include <QtCharts/QChart>
 #include <QtCharts/QChartView>
@@ -6,10 +6,12 @@
 #include <QtCharts/QValueAxis>
 #include <QtWidgets/QVBoxLayout>
 
-GraphWidget::GraphWidget(const Graph &graph, const Story &story, QWidget *parent) : QWidget{parent}
+GraphWindow::GraphWindow(const Graph &graph, AppContext &appContext, QWidget *parent) : graph{graph}
 {
+  setWindowTitle(("Gráfico - " + graph.getTitle()).c_str());
+
   auto series = new QScatterSeries{this};
-  for (auto &[time, scene] : story.scenes)
+  for (auto &[time, scene] : appContext.animationController.getStory().scenes)
   {
     auto value = graph.getValue(scene);
     if (value.has_value())
@@ -20,18 +22,16 @@ GraphWidget::GraphWidget(const Graph &graph, const Story &story, QWidget *parent
   auto xAxis = new QValueAxis{this};
   xAxis->setTitleText(graph.getXAxis()->getText().c_str());
   xAxis->setRange(graph.getXAxis()->getRange().first, graph.getXAxis()->getRange().second);
-  xAxis->setTickCount(3);
 
   auto yAxis = new QValueAxis{this};
   yAxis->setTitleText(graph.getYAxis()->getText().c_str());
   yAxis->setRange(graph.getYAxis()->getRange().first, graph.getYAxis()->getRange().second);
-  yAxis->setTickCount(3);
 
   auto chart = new QChart{};
   chart->addSeries(series);
   chart->addAxis(xAxis, Qt::AlignBottom);
   chart->addAxis(yAxis, Qt::AlignLeft);
-  chart->setContentsMargins({});
+  chart->setTitle(graph.getTitle().c_str());
   chart->legend()->hide();
 
   series->attachAxis(xAxis);
@@ -43,4 +43,6 @@ GraphWidget::GraphWidget(const Graph &graph, const Story &story, QWidget *parent
   auto layout = new QVBoxLayout{this};
   layout->addWidget(chartView);
   layout->setContentsMargins({});
+
+  setMinimumSize(400, 300);
 }

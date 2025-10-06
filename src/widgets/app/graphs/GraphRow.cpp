@@ -1,17 +1,24 @@
 #include "GraphRow.h"
 
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QPushButton>
+#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QMenu>
+#include <QtWidgets/QLabel>
 
 #include "GraphWidget.h"
+#include "GraphWindow.h"
 #include "GraphDialog.h"
 
 GraphRow::GraphRow(GraphController::Graphs::iterator iterator, AppContext &appContext, QWidget *parent) : QWidget{parent}
 {
   auto graph = *iterator;
 
+  auto graphWindow = new GraphWindow{*graph, appContext, this};
+
   auto actionMenu = new QMenu{this};
+  auto openAction = actionMenu->addAction("Abrir");
+  connect(openAction, &QAction::triggered,
+          [=, this]()
+          { graphWindow->show(); });
   auto editAction = actionMenu->addAction("Editar");
   connect(editAction, &QAction::triggered,
           [=, &appContext, this]()
@@ -43,11 +50,12 @@ GraphRow::GraphRow(GraphController::Graphs::iterator iterator, AppContext &appCo
   connect(graphWidget, &QWidget::customContextMenuRequested, this, [=, this](QPoint position)
           { actionMenu->popup(mapToGlobal(position)); });
 
-  auto layout = new QGridLayout{this};
-  layout->setAlignment(Qt::AlignTop);
-  layout->addWidget(graphWidget, 0, 0);
+  auto label = new QLabel{graph->getTitle().c_str(), this};
+
+  auto layout = new QVBoxLayout{this};
+  layout->addWidget(label);
+  layout->addWidget(graphWidget);
   layout->setContentsMargins({});
 
-  layout->setColumnStretch(0, 1);
-  layout->setHorizontalSpacing(16);
+  setFixedHeight(320);
 }

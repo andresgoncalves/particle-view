@@ -48,6 +48,7 @@ add_library(widgets STATIC
   app/graphs/GraphRow.cpp
   app/graphs/GraphDialog.cpp
   app/graphs/GraphWidget.cpp
+  app/graphs/GraphWindow.cpp
 
   app/color/SolidColorControl.cpp
   app/color/ColorScaleControl.cpp

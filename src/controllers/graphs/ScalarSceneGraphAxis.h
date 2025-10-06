@@ -4,7 +4,7 @@
 #include "GraphAxis.h"
 
 /** Graph a scalar property */
-class ScalarSceneGraphAxis : public GraphAxis<float>
+class ScalarSceneGraphAxis : public GraphAxis
 {
 public:
   ScalarSceneGraphAxis(std::string propertyName)

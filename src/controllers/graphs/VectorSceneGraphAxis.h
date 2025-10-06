@@ -4,7 +4,7 @@
 #include "GraphAxis.h"
 
 /** Graph a vector property */
-class VectorSceneGraphAxis : public GraphAxis<float>
+class VectorSceneGraphAxis : public GraphAxis
 {
 public:
   VectorSceneGraphAxis(std::string propertyName, VectorComponent vectorComponent = VectorComponent::Magnitude)
