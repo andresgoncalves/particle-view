@@ -20,20 +20,20 @@ public:
                               referenceValue},
         vectorComponent{vectorComponent}
   {
+  }
+
+  std::string getText() const override
+  {
     switch (vectorComponent)
     {
     case VectorComponent::Magnitude:
-      this->propertyName += " (Magnitud)";
-      break;
+      return this->propertyName + " (Magnitud)";
     case VectorComponent::X:
-      this->propertyName += " (Componente X)";
-      break;
+      return this->propertyName + " (Componente X)";
     case VectorComponent::Y:
-      this->propertyName += " (Componente Y)";
-      break;
+      return this->propertyName + " (Componente Y)";
     case VectorComponent::Z:
-      this->propertyName += " (Componente Z)";
-      break;
+      return this->propertyName + " (Componente Z)";
     }
   }
 

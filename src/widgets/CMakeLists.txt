@@ -2,6 +2,7 @@ find_package(Qt6 REQUIRED COMPONENTS
   Gui
   Widgets
   OpenGLWidgets
+  Charts
 )
 
 add_library(widgets STATIC
@@ -19,6 +20,7 @@ add_library(widgets STATIC
   app/tabs/AnimationTab.cpp
   app/tabs/DisplayTab.cpp
   app/tabs/ContainersTab.cpp
+  app/tabs/GraphsTab.cpp
 
   app/scene/SceneWidget.cpp
 
@@ -40,6 +42,12 @@ add_library(widgets STATIC
   app/display/CustomDisplayRuleList.cpp
   app/display/CustomDisplayRuleRow.cpp
   app/display/CustomDisplayRuleDialog.cpp
+
+  app/graphs/GraphControls.cpp
+  app/graphs/GraphList.cpp
+  app/graphs/GraphRow.cpp
+  app/graphs/GraphDialog.cpp
+  app/graphs/GraphWidget.cpp
 
   app/color/SolidColorControl.cpp
   app/color/ColorScaleControl.cpp
@@ -70,6 +78,7 @@ add_library(widgets STATIC
   shared/controls/ColorControl.cpp
   shared/controls/NumericControl.cpp
   shared/controls/VectorControl.cpp
+  shared/controls/PropertyControl.cpp
 
   shared/controls/matcher/ParticleMatcherControl.cpp 
   shared/controls/matcher/ScalarMatcherValueControl.cpp 
@@ -81,4 +90,5 @@ target_link_libraries(widgets PRIVATE
   Qt6::Gui
   Qt6::Widgets
   Qt6::OpenGLWidgets
+  Qt6::Charts
 )

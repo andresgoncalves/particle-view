@@ -9,6 +9,7 @@ add_library(controllers STATIC
   TransformController.cpp
   DisplayController.cpp
   ContainerController.cpp
+  GraphController.cpp
 
   animation/StepAnimationStrategy.cpp
   animation/LinearAnimationStrategy.cpp

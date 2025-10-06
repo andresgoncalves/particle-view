@@ -13,7 +13,7 @@
 class PropertyControl : public Control<QComboBox>
 {
 public:
-  using PropertyControlValue = std::pair<std::string, VectorComponent>;
+  using PropertyControlValue = std::tuple<std::string, PropertyType, VectorComponent>;
 
   /** Creates a vertical control without title */
   PropertyControl(const PropertyTypeMap &properties, QWidget *parent = nullptr);

@@ -58,7 +58,7 @@ AppWindow::AppWindow(AppContext &appContext, QWidget *parent) : appContext{appCo
   setStatusBar(statusBar);
 
   // Set window size
-  resize(800, 600);
+  setMinimumSize(800, 600);
 
   // Start animation
   QTimer *timer = new QTimer(this);

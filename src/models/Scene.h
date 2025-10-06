@@ -41,6 +41,14 @@ struct Scene
     return 0.0;
   }
 
+  std::optional<Property> getProperty(std::string propertyName) const
+  {
+    auto it = properties.find(propertyName);
+    if (it != properties.end())
+      return it->second;
+    return std::nullopt;
+  }
+
   void setTime(float time)
   {
     properties.emplace(TIME_PROPERTY, ScalarProperty{time});

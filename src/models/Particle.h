@@ -40,11 +40,7 @@ struct Particle
   {
     auto it = properties.find(propertyName);
     if (it != properties.end())
-    {
-      auto property = it->second.getValue<PropertyType::Vector>();
-      if (property != nullptr)
-        return *property;
-    }
+      return it->second;
     return std::nullopt;
   }
 

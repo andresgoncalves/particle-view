@@ -6,6 +6,7 @@
 #include "ViewController.h"
 #include "ContainerController.h"
 #include "DisplayController.h"
+#include "GraphController.h"
 
 struct AppContext
 {
@@ -16,6 +17,7 @@ struct AppContext
   ViewController viewController;
   ContainerController containerController;
   DisplayController displayController;
+  GraphController graphController;
 };
 
 #endif

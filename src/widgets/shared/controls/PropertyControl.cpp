@@ -13,11 +13,11 @@ PropertyControl::PropertyControl(const char *title, QBoxLayout::Direction direct
     switch (propertyType)
     {
     case PropertyType::Scalar:
+    case PropertyType::String:
       // Add items
-      values.push_back({propertyName.c_str(), {}});
+      values.push_back({propertyName.c_str(), propertyType, {}});
       // Add values
       widget->addItem(propertyName.c_str());
-
       break;
 
     case PropertyType::Vector:
@@ -27,13 +27,10 @@ PropertyControl::PropertyControl(const char *title, QBoxLayout::Direction direct
       widget->addItem((propertyName + " (Componente Y)").c_str());
       widget->addItem((propertyName + " (Componente Z)").c_str());
       // Add values
-      values.push_back({propertyName.c_str(), VectorComponent::Magnitude});
-      values.push_back({propertyName.c_str(), VectorComponent::X});
-      values.push_back({propertyName.c_str(), VectorComponent::Y});
-      values.push_back({propertyName.c_str(), VectorComponent::Z});
-
-      break;
-    case PropertyType::String:
+      values.push_back({propertyName.c_str(), propertyType, VectorComponent::Magnitude});
+      values.push_back({propertyName.c_str(), propertyType, VectorComponent::X});
+      values.push_back({propertyName.c_str(), propertyType, VectorComponent::Y});
+      values.push_back({propertyName.c_str(), propertyType, VectorComponent::Z});
       break;
     }
   }
