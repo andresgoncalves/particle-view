@@ -1,6 +1,9 @@
 #ifndef COLOR_SCALE_RENDERER_H
 #define COLOR_SCALE_RENDERER_H
 
+#include <optional>
+
+#include <QtCore/QPointF>
 #include <QtCore/QRectF>
 
 #include <QtOpenGL/QOpenGLBuffer>
@@ -20,6 +23,11 @@ public:
 
   /** Render color scale */
   void render(const ColorScaleStrategy &colorScaleStrategy, RenderContext &renderContext);
+
+  /** Get value at point */
+  std::optional<float> getValueAt(QPointF point, const ColorScaleStrategy &colorScaleStrategy, QSize viewportSize) const;
+
+  QRectF getRect(QSize viewportSize) const;
 
 private:
   /** Paint color scale */

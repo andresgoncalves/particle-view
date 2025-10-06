@@ -8,20 +8,42 @@ ColorScaleRenderer::ColorScaleRenderer()
 
 void ColorScaleRenderer::render(const ColorScaleStrategy &colorScaleStrategy, RenderContext &renderContext)
 {
-  // Get size
-  auto colorScaleSize = QSizeF{32.0, renderContext.viewportSize.height() * 0.75};
-
-  // Calculate rect
-  auto colorScaleRect = QRectF{
-      renderContext.viewportSize.width() - 2 * colorScaleSize.width(),
-      (renderContext.viewportSize.height() - colorScaleSize.height()) / 2,
-      colorScaleSize.width(),
-      colorScaleSize.height()};
+  // Get rectangle
+  auto colorScaleRect = getRect(renderContext.viewportSize);
 
   // Paint color scale
   paintColorScale(colorScaleRect, colorScaleStrategy, renderContext);
   // Paint labels
   paintLabels(colorScaleRect, colorScaleStrategy, renderContext);
+}
+
+std::optional<float> ColorScaleRenderer::getValueAt(QPointF point, const ColorScaleStrategy &colorScaleStrategy, QSize viewportSize) const
+{
+  // Get rectangle
+  auto colorScaleRect = getRect(viewportSize);
+
+  if (!colorScaleRect.contains(point))
+    return std::nullopt;
+
+  auto normalizedValue = 1.0f - (point.y() - colorScaleRect.y()) / colorScaleRect.height();
+  auto value = colorScaleStrategy.getStart().first + normalizedValue * (colorScaleStrategy.getEnd().first - colorScaleStrategy.getStart().first);
+
+  return value;
+}
+
+QRectF ColorScaleRenderer::getRect(QSize viewportSize) const
+{
+  // Get size
+  auto colorScaleSize = QSizeF{32.0, viewportSize.height() * 0.75};
+
+  // Calculate rect
+  auto colorScaleRect = QRectF{
+      viewportSize.width() - 2 * colorScaleSize.width(),
+      (viewportSize.height() - colorScaleSize.height()) / 2,
+      colorScaleSize.width(),
+      colorScaleSize.height()};
+
+  return colorScaleRect;
 }
 
 void ColorScaleRenderer::paintColorScale(QRectF colorScaleRect, const ColorScaleStrategy &colorScaleStrategy, RenderContext &renderContext)

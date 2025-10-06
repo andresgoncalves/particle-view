@@ -1,10 +1,15 @@
 #include "SceneWidget.h"
 
+#include <QtWidgets/QToolTip>
+
 #include <models/Particle.h>
 #include <models/Scene.h>
 
 SceneWidget::SceneWidget(AppContext &appContext, QWidget *parent) : appContext{appContext}, QOpenGLWidget{parent}
 {
+  setMouseTracking(true);
+  setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+
   // Subscribe to triggers
   appContext.viewController.viewObservable.subscribe(this, [&]()
                                                      { update(); });
@@ -109,6 +114,16 @@ void SceneWidget::mouseMoveEvent(QMouseEvent *event)
   {
     appContext.transformController.move(screenToView(QVector2D{event->position()}));
     update();
+  }
+
+  if (auto colorScaleStrategy = dynamic_cast<ColorScaleStrategy *>(appContext.displayController.getParticleRule().getColorStrategy().get()))
+  {
+    auto colorScaleValue = colorScaleRenderer->getValueAt(event->position(), *colorScaleStrategy, size());
+    if (colorScaleValue.has_value())
+    {
+      auto rect = colorScaleRenderer->getRect(size());
+      QToolTip::showText(event->globalPosition().toPoint(), QString::number(colorScaleValue.value(), 'f', 3), this, QRectF{mapToGlobal(rect.topLeft()), mapToGlobal(rect.bottomRight())}.toRect());
+    }
   }
 }
 
