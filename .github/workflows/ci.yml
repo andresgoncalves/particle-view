@@ -31,6 +31,9 @@ jobs:
       - name: Build with CMake
         run: cmake --build build/Release
 
+      - name: Bundle Qt libraries
+        run: ./bundle-qt.sh
+
       - name: Prepare artifact
         id: prepare_artifact
         run: |
@@ -45,10 +48,9 @@ jobs:
           fi
 
           echo "artifact_name=$NAME" >> $GITHUB_OUTPUT
-          cp build/Release/main particle-view
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.prepare_artifact.outputs.artifact_name }}
-          path: particle-view
+          path: particle-view-bundle.tar.gz
