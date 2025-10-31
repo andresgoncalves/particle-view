@@ -86,7 +86,7 @@ public:
   }
 };
 
-using PropertyMap = std::map<std::string, Property>;
-using PropertyTypeMap = std::map<std::string, PropertyType>;
+using PropertyMap = std::unordered_map<std::string, Property>;
+using PropertyTypeMap = std::unordered_map<std::string, PropertyType>;
 
 #endif

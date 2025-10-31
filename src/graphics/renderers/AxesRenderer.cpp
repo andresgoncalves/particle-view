@@ -17,6 +17,7 @@ void AxesRenderer::render(RenderContext &renderContext)
   renderContext.painter.beginNativePainting();
   vertexArray.bind();
   shader->bind();
+  glEnable(GL_DEPTH_TEST);
 
   // Paint axes
   for (int i = 0; i < 3; i++)
@@ -27,6 +28,7 @@ void AxesRenderer::render(RenderContext &renderContext)
   }
 
   // End GL painting
+  glDisable(GL_DEPTH_TEST);
   vertexArray.release();
   renderContext.painter.endNativePainting();
 

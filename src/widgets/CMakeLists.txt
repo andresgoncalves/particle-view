@@ -54,12 +54,12 @@ add_library(widgets STATIC
   app/color/ColorScaleControl.cpp
 
   app/dialogs/ColorDialog.cpp
-
+  
   app/containers/ContainerControls.cpp
   app/containers/ContainerList.cpp
   app/containers/ContainerRow.cpp
   app/containers/ContainerDialog.cpp
-
+  
   app/storyloader/StoryLoaderDialog.cpp
   app/storyloader/StoryLoaderAddPropertyDialog.cpp
   app/storyloader/StoryLoaderPropertyGrid.cpp
@@ -67,6 +67,8 @@ add_library(widgets STATIC
   app/storyloader/StoryLoaderScalarPropertyRow.cpp
   app/storyloader/StoryLoaderVectorPropertyRow.cpp
   app/storyloader/StoryLoaderStringPropertyRow.cpp
+
+  app/export/ExportDialog.cpp
 
   app/menu/FileMenu.cpp
 

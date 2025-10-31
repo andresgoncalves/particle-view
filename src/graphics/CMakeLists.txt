@@ -10,10 +10,12 @@ add_library(graphics STATIC
   renderers/AxesRenderer.cpp
   renderers/ColorScaleRenderer.cpp
   renderers/ContainerRenderer.cpp
+  renderers/TimeRenderer.cpp
 
   shapes/ArrowFactory.cpp
   shapes/SphereFactory.cpp
   shapes/CubeFactory.cpp
+  shapes/CircleFactory.cpp
 
   shaders/GenericShader.cpp
 )

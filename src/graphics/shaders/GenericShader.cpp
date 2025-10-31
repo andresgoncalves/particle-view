@@ -3,7 +3,6 @@
 inline const char *vertexShaderSource =
     "#version 330 core\n"
     "layout (location = 0) in vec3 position;\n"
-    "uniform vec3 color;\n"
     "uniform mat4 matrix;\n"
     "void main()\n"
     "{\n"

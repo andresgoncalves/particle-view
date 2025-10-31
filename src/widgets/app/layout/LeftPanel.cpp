@@ -29,6 +29,6 @@ LeftPanel::LeftPanel(AppContext &appContext, QWidget *parent) : appContext{appCo
   addTab(graphsTab, "Gráficos");
 
   // Display tab
-  auto containersTab = new ContainersTab{appContext, this};
-  addTab(containersTab, "Contenedores");
+  // auto containersTab = new ContainersTab{appContext, this};
+  // addTab(containersTab, "Contenedores");
 }

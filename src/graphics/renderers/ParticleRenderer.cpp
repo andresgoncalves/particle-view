@@ -1,6 +1,7 @@
 #include "ParticleRenderer.h"
 
 #include <graphics/shapes/SphereFactory.h>
+#include <graphics/shapes/CircleFactory.h>
 #include <graphics/shaders/GenericShader.h>
 
 ParticleRenderer::ParticleRenderer()

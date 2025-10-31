@@ -12,6 +12,15 @@ SceneRenderer::SceneRenderer()
 
 void SceneRenderer::render(const Scene &scene, RenderContext &renderContext)
 {
+  // Clear buffers
+  renderContext.painter.beginNativePainting();
+  glClearColor(
+      renderContext.appContext.displayController.getBackgroundColor().redF(),
+      renderContext.appContext.displayController.getBackgroundColor().greenF(),
+      renderContext.appContext.displayController.getBackgroundColor().blueF(),
+      1.0f);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  renderContext.painter.endNativePainting();
 
   auto containers = renderContext.appContext.containerController.getContainers();
 

@@ -8,6 +8,7 @@
 #include <graphics/renderers/AxesRenderer.h>
 #include <graphics/renderers/SceneRenderer.h>
 #include <graphics/renderers/ColorScaleRenderer.h>
+#include <graphics/renderers/TimeRenderer.h>
 #include <controllers/AppContext.h>
 #include <models/Scene.h>
 #include <utils/color/ColorScaleStrategy.h>
@@ -52,6 +53,9 @@ private:
   /** Renderer used for drawing color scale */
   std::unique_ptr<ColorScaleRenderer>
       colorScaleRenderer;
+  /** Renderer used for drawing time */
+  std::unique_ptr<TimeRenderer>
+      timeRenderer;
 
   /** Application context */
   AppContext &appContext;

@@ -45,6 +45,7 @@ void SceneWidget::initializeGL()
   sceneRenderer = std::make_unique<SceneRenderer>();
   axesRenderer = std::make_unique<AxesRenderer>();
   colorScaleRenderer = std::make_unique<ColorScaleRenderer>();
+  timeRenderer = std::make_unique<TimeRenderer>();
 }
 
 void SceneWidget::resizeGL(int width, int height)
@@ -73,21 +74,14 @@ void SceneWidget::paintGL()
       appContext,
   };
 
-  // Clear buffers
-  painter.beginNativePainting();
-  glClearColor(
-      appContext.displayController.getBackgroundColor().redF(),
-      appContext.displayController.getBackgroundColor().greenF(),
-      appContext.displayController.getBackgroundColor().blueF(),
-      1.0f);
-  glClear(GL_COLOR_BUFFER_BIT);
-  painter.endNativePainting();
-
   // Render scene
   sceneRenderer->render(scene, renderContext);
 
   // Render axes
   axesRenderer->render(renderContext);
+
+  // Render time
+  timeRenderer->render(appContext.animationController.getTime(), renderContext);
 
   // Render color scale
   if (auto colorScaleStrategy = dynamic_cast<ColorScaleStrategy *>(appContext.displayController.getParticleRule().getColorStrategy().get()))

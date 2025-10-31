@@ -24,17 +24,27 @@ public:
 
   std::string getText() const override
   {
+    auto stream = std::stringstream{};
+    stream << propertyName;
+
     switch (vectorComponent)
     {
     case VectorComponent::Magnitude:
-      return this->propertyName + " (Magnitud)";
+      stream << " (Magnitud) ";
+      break;
     case VectorComponent::X:
-      return this->propertyName + " (Componente X)";
+      stream << " (Componente X) ";
+      break;
     case VectorComponent::Y:
-      return this->propertyName + " (Componente Y)";
+      stream << " (Componente Y) ";
+      break;
     case VectorComponent::Z:
-      return this->propertyName + " (Componente Z)";
+      stream << " (Componente Z) ";
+      break;
     }
+
+    stream << symbol << " " << referenceValue;
+    return stream.str();
   }
 
   VectorComponent getVectorComponent() const
@@ -65,18 +75,18 @@ public:
       Comparator compare = {})
       : AbstractVectorBinaryParticleMatcher{propertyName,
                                             symbol,
-                                            referenceValue},
-        vectorComponent{vectorComponent},
+                                            referenceValue,
+                                            vectorComponent},
         compare{compare}
   {
   }
 
 private:
   Comparator compare;
-  VectorComponent vectorComponent;
 
   std::optional<float> getValue(const Particle &particle) const
   {
+    auto vectorComponent = getVectorComponent();
     auto it = particle.properties.find(propertyName);
     if (it != particle.properties.end())
     {
