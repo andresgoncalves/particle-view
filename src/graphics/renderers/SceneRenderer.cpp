@@ -1,5 +1,9 @@
 #include <QtGui/QMatrix4x4>
 
+#include <QtOpenGL/QOpenGLFramebufferObject>
+#include <QtOpenGL/QOpenGLFramebufferObjectFormat>
+#include <QtOpenGL/QOpenGLPaintDevice>
+
 #include "SceneRenderer.h"
 #include "ParticleRenderer.h"
 #include "VectorRenderer.h"
@@ -8,6 +12,9 @@ SceneRenderer::SceneRenderer()
 {
   particleRenderer = std::make_unique<ParticleRenderer>();
   vectorRenderer = std::make_unique<VectorRenderer>();
+  timeRenderer = std::make_unique<TimeRenderer>();
+  axesRenderer = std::make_unique<AxesRenderer>();
+  colorScaleRenderer = std::make_unique<ColorScaleRenderer>();
 }
 
 void SceneRenderer::render(const Scene &scene, RenderContext &renderContext)
@@ -27,6 +34,7 @@ void SceneRenderer::render(const Scene &scene, RenderContext &renderContext)
   renderContext.painter.beginNativePainting();
   glEnable(GL_DEPTH_TEST);
 
+  // Render scene
   for (auto &particle : scene.particles)
   {
     particleRenderer->render(particle, renderContext);
@@ -34,16 +42,25 @@ void SceneRenderer::render(const Scene &scene, RenderContext &renderContext)
       vectorRenderer->render(particle, property.first, renderContext);
   }
 
-  for (auto container : containers)
-  {
-    auto containerRenderer = containerRenderers.find(container->shape);
-    if (containerRenderer == containerRenderers.end())
-    {
-      containerRenderers.emplace(container->shape, container->shape);
-      containerRenderer = containerRenderers.find(container->shape);
-    }
-    containerRenderer->second.render(*container, renderContext);
-  }
-
+  // for (auto container : containers)
+  // {
+  //   auto containerRenderer = containerRenderers.find(container->shape);
+  //   if (containerRenderer == containerRenderers.end())
+  //   {
+  //     containerRenderers.emplace(container->shape, container->shape);
+  //     containerRenderer = containerRenderers.find(container->shape);
+  //   }
+  //   containerRenderer->second.render(*container, renderContext);
+  // }
   renderContext.painter.endNativePainting();
+
+  // Render axes
+  axesRenderer->render(renderContext);
+
+  // Render time
+  timeRenderer->render(scene.getTime(), renderContext);
+
+  // Render color scale
+  if (auto colorScaleStrategy = dynamic_cast<ColorScaleStrategy *>(renderContext.appContext.displayController.getParticleRule().getColorStrategy().get()))
+    colorScaleRenderer->render(*colorScaleStrategy, renderContext);
 }

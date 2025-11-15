@@ -82,7 +82,7 @@ const Story &AnimationController::getStory() const
 
 void AnimationController::setTime(double time)
 {
-  startTime = std::chrono::steady_clock::now() - std::chrono::nanoseconds(static_cast<long long>(1e9 * time / animationSpeed));
+  startTime = std::chrono::steady_clock::now() - std::chrono::nanoseconds(static_cast<long long>(1e9 * (time - getFirstScene().getTime()) / animationSpeed));
   pauseTime = playing ? std::chrono::steady_clock::time_point{} : std::chrono::steady_clock::now();
   updateTime();
 }

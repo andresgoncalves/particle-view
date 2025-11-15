@@ -103,11 +103,13 @@ Scene StoryLoader::parseScene(LoadedData::iterator &rowIterator, int sceneId)
   int particleId = 0;
   for (; particleId < scene.getParticleCount(); particleId++)
   {
-    rowIterator++;
-    if (rowIterator == data.end())
+    auto nextIterator = rowIterator + 1;
+    if (nextIterator == data.end())
     {
       // TODO: throw error: reached EOF
+      break;
     }
+    rowIterator = nextIterator;
     auto particle = parseParticle(*rowIterator, particleId);
     scene.particles.push_back(particle);
   }

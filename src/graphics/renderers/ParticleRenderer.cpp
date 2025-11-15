@@ -6,7 +6,10 @@
 
 ParticleRenderer::ParticleRenderer()
 {
-  initBuffers();
+  auto sphereFactory = SphereFactory{24};
+  auto circleFactory = CircleFactory{24};
+  initBuffers(sphere, &sphereFactory);
+  initBuffers(circle, &circleFactory);
 }
 
 void ParticleRenderer::render(const Particle &particle, RenderContext &renderContext)
@@ -19,9 +22,12 @@ void ParticleRenderer::render(const Particle &particle, RenderContext &renderCon
   auto color = getColor(particle, renderContext);
   auto matrix = getMatrix(particle, renderContext);
 
+  // Get shape
+  auto &shape = sphere;
+
   // Start painting
   auto shader = GenericShader::getInstance();
-  vertexArray.bind();
+  shape.vertexArray.bind();
   shader->bind();
 
   // Set uniforms
@@ -32,20 +38,20 @@ void ParticleRenderer::render(const Particle &particle, RenderContext &renderCon
   {
   // Draw solid sphere
   case ViewController::Solid:
-    indexBuffers.solid.bind();
-    glDrawElements(GL_TRIANGLES, indexBuffers.solid.size(), GL_UNSIGNED_INT, nullptr);
+    shape.indexBuffers.solid.bind();
+    glDrawElements(GL_TRIANGLES, shape.indexBuffers.solid.size(), GL_UNSIGNED_INT, nullptr);
     // Draw black skeleton
     color = QColor{};
     shader->setColor(color);
   // Draw sphere skeleton
   case ViewController::Skeleton:
-    indexBuffers.skeleton.bind();
-    glDrawElements(GL_LINES, indexBuffers.skeleton.size(), GL_UNSIGNED_INT, nullptr);
+    shape.indexBuffers.skeleton.bind();
+    glDrawElements(GL_LINES, shape.indexBuffers.skeleton.size(), GL_UNSIGNED_INT, nullptr);
     break;
   }
 
   // End painting
-  vertexArray.release();
+  shape.vertexArray.release();
 }
 
 bool ParticleRenderer::shouldRender(const Particle &particle, RenderContext &renderContext) const
@@ -89,33 +95,31 @@ QMatrix4x4 ParticleRenderer::getMatrix(const Particle &particle, RenderContext &
   return modelViewProjectionMatrix;
 }
 
-void ParticleRenderer::initBuffers()
+void ParticleRenderer::initBuffers(Shape &shape, BasicShapeFactory *shapeFactory)
 {
-  auto sphereFactory = SphereFactory{24};
+  shape.vertexArray.create();
+  shape.vertexArray.bind();
 
-  vertexArray.create();
-  vertexArray.bind();
+  auto vertices = shapeFactory->buildVertices();
 
-  auto vertices = sphereFactory.buildVertices();
+  shape.vertexBuffer.create();
+  shape.vertexBuffer.bind();
+  shape.vertexBuffer.allocate(vertices.data(), vertices.size() * sizeof(vertices[0]));
 
-  vertexBuffer.create();
-  vertexBuffer.bind();
-  vertexBuffer.allocate(vertices.data(), vertices.size() * sizeof(vertices[0]));
+  auto solidIndices = shapeFactory->buildIndices();
 
-  auto solidIndices = sphereFactory.buildIndices();
+  shape.indexBuffers.solid.create();
+  shape.indexBuffers.solid.bind();
+  shape.indexBuffers.solid.allocate(solidIndices.data(), solidIndices.size() * sizeof(solidIndices[0]));
 
-  indexBuffers.solid.create();
-  indexBuffers.solid.bind();
-  indexBuffers.solid.allocate(solidIndices.data(), solidIndices.size() * sizeof(solidIndices[0]));
+  auto skeletonIndices = shapeFactory->buildOutlineIndices();
 
-  auto skeletonIndices = sphereFactory.buildOutlineIndices();
-
-  indexBuffers.skeleton.create();
-  indexBuffers.skeleton.bind();
-  indexBuffers.skeleton.allocate(skeletonIndices.data(), skeletonIndices.size() * sizeof(skeletonIndices[0]));
+  shape.indexBuffers.skeleton.create();
+  shape.indexBuffers.skeleton.bind();
+  shape.indexBuffers.skeleton.allocate(skeletonIndices.data(), skeletonIndices.size() * sizeof(skeletonIndices[0]));
 
   glEnableVertexAttribArray(0);
   glVertexAttribPointer(0, 3, GL_FLOAT, false, 3 * sizeof(vertices[0]), nullptr);
 
-  vertexArray.release();
+  shape.vertexArray.release();
 }

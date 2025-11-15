@@ -54,49 +54,50 @@ FileMenu::FileMenu(AppContext &appContext, QWidget *parent) : QMenu{"Archivo", p
               auto directoryName = QFileDialog::getExistingDirectory(parent ? parent : this, "Seleccionar directorio", "").toStdString();
               if (!directoryName.empty())
               {
+                QSize size = exportDialog->getSize();
+
                 // Render to image
                 auto oldViewport = appContext.viewController.getViewport();
-                appContext.viewController.setViewport({1.0f, 720.0f / 1280.0f});
+
+                if (size.width() > size.height())
+                  appContext.viewController.setViewport({1.0f, static_cast<float>(size.height()) / size.width()});
+                else
+                  appContext.viewController.setViewport({static_cast<float>(size.width()) / size.height(), 1.0f});
+
                 appContext.viewController.updateViewProjectionMatrix();
                 glPushAttrib(GL_VIEWPORT_BIT);
-                glViewport(0, 0, 1280, 720);
+                glViewport(0, 0, size.width(), size.height());
 
                 QOpenGLFramebufferObjectFormat frameBufferFormat;
                 frameBufferFormat.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
                 frameBufferFormat.setTextureTarget(GL_TEXTURE_2D);
                 frameBufferFormat.setInternalTextureFormat(GL_RGBA);
 
-                auto frameBuffer = QOpenGLFramebufferObject{{1280, 720}, frameBufferFormat};
+                auto frameBuffer = QOpenGLFramebufferObject{size, frameBufferFormat};
                 frameBuffer.bind();
 
-                float timeStep = 1.0f / 2.0f;
-                float animationSpeed = 100.0f;
-
+                float timeStep = exportDialog->getAnimationSpeed() / exportDialog->getFramesPerSecond();
                 auto minTime = appContext.animationController.getFirstScene().getTime();
                 auto maxTime = appContext.animationController.getLastScene().getTime();
 
-                auto paintDevice = QOpenGLPaintDevice{};
+                auto paintDevice = QOpenGLPaintDevice{size};
                 auto painter = QPainter{&paintDevice};
                 auto renderContext = RenderContext{frameBuffer.size(), painter, appContext};
 
-                float time = 0.0f;
                 float computedTime = minTime;
                 int frame = 1;
                 auto renderer = SceneRenderer{};
                 do
                 {
                   auto scene = appContext.animationController.getScene(computedTime);
-
                   renderer.render(scene, renderContext);
 
                   auto image = frameBuffer.toImage();
                   image.save(QString("%1/%2.png").arg(directoryName.c_str()).arg(frame, 5, 10, QChar('0')));
 
                   frame += 1;
-                  time += timeStep;
-                  computedTime = minTime + time * animationSpeed;
+                  computedTime += timeStep;
                 } while (computedTime <= maxTime);
-
                 frameBuffer.release();
                 appContext.viewController.setViewport(oldViewport);
                 appContext.viewController.updateViewProjectionMatrix();

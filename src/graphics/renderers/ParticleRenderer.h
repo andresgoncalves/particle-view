@@ -8,6 +8,7 @@
 #include <QtOpenGL/QOpenGLVertexArrayObject>
 
 #include <graphics/RenderContext.h>
+#include <graphics/shapes/BasicShapeFactory.h>
 #include <models/Particle.h>
 
 #include "Renderer.h"
@@ -15,6 +16,8 @@
 /** Particle renderer */
 class ParticleRenderer : protected Renderer
 {
+  struct Shape;
+
 public:
   /** Create particle renderer */
   ParticleRenderer();
@@ -24,7 +27,7 @@ public:
 
 private:
   /** Initialize buffers */
-  void initBuffers();
+  void initBuffers(Shape &shape, BasicShapeFactory *shapeFactory);
 
   /** Check if particle should render  */
   bool shouldRender(const Particle &particle, RenderContext &renderContext) const;
@@ -33,16 +36,19 @@ private:
   /** Get particle matrix */
   QMatrix4x4 getMatrix(const Particle &particle, RenderContext &renderContext) const;
 
-  /** Shape vertex array object */
-  QOpenGLVertexArrayObject vertexArray;
-  /** Shape vertex buffer */
-  QOpenGLBuffer vertexBuffer{QOpenGLBuffer::VertexBuffer};
-  /** Shape index buffers */
-  struct IndexBuffers
+  struct Shape
   {
-    QOpenGLBuffer solid{QOpenGLBuffer::IndexBuffer};
-    QOpenGLBuffer skeleton{QOpenGLBuffer::IndexBuffer};
-  } indexBuffers;
+    /** Shape vertex array object */
+    QOpenGLVertexArrayObject vertexArray;
+    /** Shape vertex buffer */
+    QOpenGLBuffer vertexBuffer{QOpenGLBuffer::VertexBuffer};
+    /** Shape index buffers */
+    struct IndexBuffers
+    {
+      QOpenGLBuffer solid{QOpenGLBuffer::IndexBuffer};
+      QOpenGLBuffer skeleton{QOpenGLBuffer::IndexBuffer};
+    } indexBuffers;
+  } sphere, circle;
 };
 
 #endif

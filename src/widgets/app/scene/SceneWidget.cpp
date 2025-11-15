@@ -76,16 +76,6 @@ void SceneWidget::paintGL()
 
   // Render scene
   sceneRenderer->render(scene, renderContext);
-
-  // Render axes
-  axesRenderer->render(renderContext);
-
-  // Render time
-  timeRenderer->render(appContext.animationController.getTime(), renderContext);
-
-  // Render color scale
-  if (auto colorScaleStrategy = dynamic_cast<ColorScaleStrategy *>(appContext.displayController.getParticleRule().getColorStrategy().get()))
-    colorScaleRenderer->render(*colorScaleStrategy, renderContext);
 }
 
 void SceneWidget::mousePressEvent(QMouseEvent *event)

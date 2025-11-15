@@ -11,6 +11,7 @@ AxesRenderer::AxesRenderer()
 void AxesRenderer::render(RenderContext &renderContext)
 {
   auto matrices = getMatrices(renderContext);
+  int dimensions = 3;
 
   // Start GL painting
   auto shader = GenericShader::getInstance();
@@ -20,7 +21,7 @@ void AxesRenderer::render(RenderContext &renderContext)
   glEnable(GL_DEPTH_TEST);
 
   // Paint axes
-  for (int i = 0; i < 3; i++)
+  for (int i = 0; i < dimensions; i++)
   {
     shader->setMatrix(matrices[i]);
     shader->setColor(axisColors[i]);
@@ -36,7 +37,7 @@ void AxesRenderer::render(RenderContext &renderContext)
   renderContext.painter.setRenderHint(QPainter::Antialiasing);
   renderContext.painter.setFont(QFont("Helvetica", 20));
   auto fontMetrics = QFontMetricsF{renderContext.painter.font()};
-  for (int i = 0; i < 3; i++)
+  for (int i = 0; i < dimensions; i++)
   {
     auto normalizedPoint = (matrices[i].map({0.0f, 1.25f, 0.0f}) + QVector3D{1.0f, 1.0f, 1.0f}) / 2.0f;
     auto textRect = fontMetrics.boundingRect(axisLabels[i]);
