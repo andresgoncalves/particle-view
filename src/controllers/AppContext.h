@@ -11,6 +11,7 @@
 struct AppContext
 {
   AppContext();
+  ~AppContext();
 
   AnimationController animationController;
   TransformController transformController;

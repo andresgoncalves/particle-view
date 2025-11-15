@@ -11,7 +11,7 @@ AxesRenderer::AxesRenderer()
 void AxesRenderer::render(RenderContext &renderContext)
 {
   auto matrices = getMatrices(renderContext);
-  int dimensions = 3;
+  int dimensions = renderContext.appContext.viewController.getDimensionality() == ViewController::Dimensionality::Dimension2D ? 2 : 3;
 
   // Start GL painting
   auto shader = GenericShader::getInstance();

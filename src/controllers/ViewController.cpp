@@ -194,6 +194,12 @@ void ViewController::updateViewProjectionMatrix()
   viewProjectionMatrix = getProjectionMatrix() * getViewMatrix();
 }
 
+void ViewController::setDimensionality(ViewController::Dimensionality dimensionality)
+{
+  this->dimensionality = dimensionality;
+  dimensionalityObservable.notify();
+}
+
 QVector3D ViewController::getOrigin() const
 {
   return originVector;
@@ -300,4 +306,9 @@ QMatrix4x4 ViewController::getProjectionMatrix(ProjectionMode mode) const
 QMatrix4x4 ViewController::getViewProjectionMatrix() const
 {
   return viewProjectionMatrix;
+}
+
+ViewController::Dimensionality ViewController::getDimensionality() const
+{
+  return dimensionality;
 }

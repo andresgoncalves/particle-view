@@ -23,6 +23,8 @@ void AnimationController::pause()
 void AnimationController::reset()
 {
   startTime = pauseTime = std::chrono::steady_clock::now();
+  playing = false;
+  playingObservable.notify();
   updateTime();
 }
 

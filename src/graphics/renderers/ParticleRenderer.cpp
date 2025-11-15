@@ -23,7 +23,7 @@ void ParticleRenderer::render(const Particle &particle, RenderContext &renderCon
   auto matrix = getMatrix(particle, renderContext);
 
   // Get shape
-  auto &shape = sphere;
+  auto &shape = renderContext.appContext.viewController.getDimensionality() == ViewController::Dimensionality::Dimension2D ? circle : sphere;
 
   // Start painting
   auto shader = GenericShader::getInstance();

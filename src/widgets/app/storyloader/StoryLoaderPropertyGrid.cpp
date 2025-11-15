@@ -14,11 +14,6 @@
 
 StoryLoaderPropertyGrid::StoryLoaderPropertyGrid(QWidget *parent) : QWidget{parent}
 {
-  columnControl = new NumericControl{"Cantidad de columnas", this};
-  columnControl->getLayout()->setDirection(QBoxLayout::Direction::LeftToRight);
-  columnControl->onChange<int>([&](int value)
-                               { setCount(value); });
-
   auto addPropertyButton = new QPushButton{"Agregar variable", this};
   auto addPropertyCallback = [=, this]
   {
@@ -44,14 +39,12 @@ StoryLoaderPropertyGrid::StoryLoaderPropertyGrid(QWidget *parent) : QWidget{pare
 
   auto layout = new QVBoxLayout{this};
   layout->setContentsMargins(8, 4, 8, 4);
-  layout->addWidget(columnControl);
   layout->addWidget(scrollArea);
   layout->addWidget(addPropertyButton);
 }
 
 void StoryLoaderPropertyGrid::setCount(int count)
 {
-  columnControl->setValue(count);
   for (auto [_, row] : propertyRows)
     row->setCount(count);
   this->count = count;

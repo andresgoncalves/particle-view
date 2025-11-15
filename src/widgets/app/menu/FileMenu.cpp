@@ -35,10 +35,8 @@ FileMenu::FileMenu(AppContext &appContext, QWidget *parent) : QMenu{"Archivo", p
 
                 auto story = storyLoader.parse();
 
+                appContext.viewController.setDimensionality(storyLoaderDialog->getDimensionality());
                 appContext.animationController.setStory(story);
-                appContext.animationController.setAnimationSpeed(6.0 * (story.metadata.endTime - story.metadata.startTime) / story.scenes.size());
-                appContext.viewController.setOrigin(story.getOrigin());
-                appContext.viewController.setBaseScale(story.getBaseScale());
               }
               storyLoaderDialog->deleteLater();
             }

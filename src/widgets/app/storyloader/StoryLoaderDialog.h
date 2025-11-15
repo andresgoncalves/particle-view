@@ -3,6 +3,7 @@
 
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QLineEdit>
+#include <QtWidgets/QRadioButton>
 
 #include <controllers/AppContext.h>
 
@@ -19,10 +20,15 @@ public:
   StoryLoader::PropertyDefinitionMap getParticleProperties() const;
   /** Get scene row properties */
   StoryLoader::PropertyDefinitionMap getSceneProperties() const;
+  /** Get dimensionality */
+  ViewController::Dimensionality getDimensionality() const;
 
 private:
   StoryLoaderPropertyGrid *particlePropertyGrid;
   StoryLoaderPropertyGrid *scenePropertyGrid;
+
+  QRadioButton *dimensionality2DButton;
+  QRadioButton *dimensionality3DButton;
 
   AppContext &appContext;
 };

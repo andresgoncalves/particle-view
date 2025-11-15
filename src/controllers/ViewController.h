@@ -27,6 +27,12 @@ public:
     Skeleton,
   };
 
+  enum class Dimensionality
+  {
+    Dimension2D,
+    Dimension3D,
+  };
+
   ViewController();
 
   void rotate(const QVector3D &angles, ReferenceFrame referenceFrame = Model);
@@ -61,6 +67,8 @@ public:
 
   void setViewport(const QVector2D &scale);
 
+  void setDimensionality(Dimensionality dimensionality);
+
   void updateViewProjectionMatrix();
 
   QVector2D getViewport() const;
@@ -80,6 +88,8 @@ public:
   QMatrix4x4 getProjectionMatrix(ProjectionMode mode) const;
   QMatrix4x4 getViewProjectionMatrix() const;
 
+  Dimensionality getDimensionality() const;
+
   ProjectionMode projectionMode = Perspective;
   ParticleShape particleShape = Solid;
 
@@ -93,6 +103,7 @@ public:
   Observable<QVector3D> originObservable = originVector;
   Observable<float> scaleObservable = scaleFactor;
   Observable<float> baseScaleObservable = baseScaleFactor;
+  Observable<Dimensionality> dimensionalityObservable = dimensionality;
 
   BaseObservable<void> viewObservable;
 
@@ -109,6 +120,8 @@ private:
 
   float minScaleFactor = 1e-2f;
   float maxScaleFactor = 1e3f;
+
+  Dimensionality dimensionality = Dimensionality::Dimension3D;
 };
 
 #endif

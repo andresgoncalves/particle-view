@@ -14,14 +14,14 @@ void TransformController::move(const QVector2D &point, bool alt)
 {
   if (transformType == TransformType::Rotation)
   {
-    if (alt)
+    if (alt || viewController.getDimensionality() == ViewController::Dimensionality::Dimension2D)
       rotateZ(point);
     else
       rotateXY(point);
   }
   else if (transformType == TransformType::Translation)
   {
-    if (alt)
+    if (alt && viewController.getDimensionality() == ViewController::Dimensionality::Dimension3D)
       translateZ(point);
     else
       translateXY(point);

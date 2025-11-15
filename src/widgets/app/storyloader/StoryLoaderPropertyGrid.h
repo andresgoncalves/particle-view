@@ -29,7 +29,6 @@ private:
   int count;
 
   QVBoxLayout *itemLayout;
-  NumericControl *columnControl;
 
   std::map<std::string, StoryLoaderPropertyRow *> propertyRows;
 };
