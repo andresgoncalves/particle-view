@@ -3,6 +3,7 @@
 #include <fstream>
 
 #include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
 #include <QtOpenGL/QOpenGLFramebufferObject>
 #include <QtOpenGL/QOpenGLPaintDevice>
 
@@ -28,6 +29,11 @@ FileMenu::FileMenu(AppContext &appContext, QWidget *parent) : QMenu{"Archivo", p
               auto storyLoaderDialog = new StoryLoaderDialog{storyLoader.getScenePropertyCount(), storyLoader.getParticlePropertyCount(), appContext, dialogParent};
               if (storyLoaderDialog->exec() == QDialog::Accepted)
               {
+                // Open status dialog
+                auto statusMessageBox = QMessageBox{QMessageBox::Icon::NoIcon, "Cargando datos", "Cargando datos...", QMessageBox::NoButton, parent ? parent : this};
+                statusMessageBox.setWindowModality(Qt::WindowModality::WindowModal);
+                statusMessageBox.show();
+
                 auto particleProperties = storyLoaderDialog->getParticleProperties();
                 auto sceneProperties = storyLoaderDialog->getSceneProperties();
                 storyLoader.setParticleProperties(particleProperties);
@@ -37,6 +43,9 @@ FileMenu::FileMenu(AppContext &appContext, QWidget *parent) : QMenu{"Archivo", p
 
                 appContext.viewController.setDimensionality(storyLoaderDialog->getDimensionality());
                 appContext.animationController.setStory(story);
+
+                // Close status dialog
+                statusMessageBox.close();
               }
               storyLoaderDialog->deleteLater();
             }
@@ -85,6 +94,12 @@ FileMenu::FileMenu(AppContext &appContext, QWidget *parent) : QMenu{"Archivo", p
                 float computedTime = minTime;
                 int frame = 1;
                 auto renderer = SceneRenderer{};
+
+                // Open status dialog
+                auto statusMessageBox = QMessageBox{QMessageBox::Icon::NoIcon, "Exportando animación", "Exportando animación...", QMessageBox::NoButton, parent ? parent : this};
+                statusMessageBox.setWindowModality(Qt::WindowModality::WindowModal);
+                statusMessageBox.show();
+
                 do
                 {
                   auto scene = appContext.animationController.getScene(computedTime);
@@ -96,6 +111,10 @@ FileMenu::FileMenu(AppContext &appContext, QWidget *parent) : QMenu{"Archivo", p
                   frame += 1;
                   computedTime += timeStep;
                 } while (computedTime <= maxTime);
+
+                // Close status dialog
+                statusMessageBox.close();
+
                 frameBuffer.release();
                 appContext.viewController.setViewport(oldViewport);
                 appContext.viewController.updateViewProjectionMatrix();
