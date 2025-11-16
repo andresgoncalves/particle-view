@@ -13,7 +13,7 @@ AnimationTab::AnimationTab(AppContext &appContext, QWidget *parent) : appContext
   // Create speed controls
   auto animationSpeedControls = new AnimationSpeedControls{appContext, this};
   // Create animation strategy controls
-  auto animationStrategyControls = new AnimationStrategyControls{appContext, this};
+  // auto animationStrategyControls = new AnimationStrategyControls{appContext, this};
 
   // Set content widget
   auto widget = new QWidget{this};
@@ -25,6 +25,6 @@ AnimationTab::AnimationTab(AppContext &appContext, QWidget *parent) : appContext
   layout->setAlignment(Qt::AlignTop);
   layout->addWidget(animationTimeControls);
   layout->addWidget(animationSpeedControls);
-  layout->addWidget(animationStrategyControls);
+  // layout->addWidget(animationStrategyControls);
   layout->setContentsMargins(0, 8, 0, 8);
 }
