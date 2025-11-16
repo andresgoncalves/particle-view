@@ -61,6 +61,11 @@ FileMenu::FileMenu(AppContext &appContext, QWidget *parent) : QMenu{"Archivo", p
               auto directoryName = QFileDialog::getExistingDirectory(parent ? parent : this, "Seleccionar directorio", "").toStdString();
               if (!directoryName.empty())
               {
+                // Open status dialog
+                auto statusMessageBox = QMessageBox{QMessageBox::Icon::NoIcon, "Exportando animación", "Exportando animación...", QMessageBox::NoButton, parent ? parent : this};
+                statusMessageBox.setWindowModality(Qt::WindowModality::WindowModal);
+                statusMessageBox.show();
+
                 QSize size = exportDialog->getSize();
 
                 // Render to image
@@ -95,11 +100,6 @@ FileMenu::FileMenu(AppContext &appContext, QWidget *parent) : QMenu{"Archivo", p
                 int frame = 1;
                 auto renderer = SceneRenderer{};
 
-                // Open status dialog
-                auto statusMessageBox = QMessageBox{QMessageBox::Icon::NoIcon, "Exportando animación", "Exportando animación...", QMessageBox::NoButton, parent ? parent : this};
-                statusMessageBox.setWindowModality(Qt::WindowModality::WindowModal);
-                statusMessageBox.show();
-
                 do
                 {
                   auto scene = appContext.animationController.getScene(computedTime);
@@ -112,13 +112,13 @@ FileMenu::FileMenu(AppContext &appContext, QWidget *parent) : QMenu{"Archivo", p
                   computedTime += timeStep;
                 } while (computedTime <= maxTime);
 
-                // Close status dialog
-                statusMessageBox.close();
-
                 frameBuffer.release();
                 appContext.viewController.setViewport(oldViewport);
                 appContext.viewController.updateViewProjectionMatrix();
                 glPopAttrib();
+
+                // Close status dialog
+                statusMessageBox.close();
               }
             }
             exportDialog->deleteLater();

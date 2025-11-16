@@ -10,10 +10,10 @@ ExportDialog::ExportDialog(AppContext &appContext, QWidget *parent) : appContext
   setWindowTitle("Exportar animación");
 
   widthControl = new NumericControl("Ancho", this);
-  widthControl->setValue(1280);
+  widthControl->setValue(2560);
 
   heightControl = new NumericControl("Alto", this);
-  heightControl->setValue(720);
+  heightControl->setValue(1440);
 
   auto sizeLayout = new QHBoxLayout{};
   sizeLayout->setContentsMargins(0, 4, 0, 4);
