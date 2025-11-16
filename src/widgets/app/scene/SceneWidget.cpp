@@ -27,6 +27,13 @@ SceneWidget::SceneWidget(AppContext &appContext, QWidget *parent) : appContext{a
                                                                    { update(); });
   appContext.containerController.containersObservable.subscribe(this, [&](auto)
                                                                 { update(); });
+
+  // Set viewport
+  auto [width, height] = size();
+  if (width > height)
+    appContext.viewController.setViewport({1.0f, static_cast<float>(height) / width});
+  else
+    appContext.viewController.setViewport({static_cast<float>(width) / height, 1.0f});
 }
 
 void SceneWidget::update()
@@ -96,7 +103,7 @@ void SceneWidget::mouseMoveEvent(QMouseEvent *event)
 {
   if (appContext.transformController.isTransforming())
   {
-    appContext.transformController.move(screenToView(QVector2D{event->position()}));
+    appContext.transformController.move(screenToView(QVector2D{event->position()}), event->modifiers().testFlag(Qt::ShiftModifier));
     update();
   }
 
@@ -121,7 +128,7 @@ QVector2D SceneWidget::screenToView(const QVector2D &screenPoint) const
 {
   auto viewPoint = appContext.viewController.getViewport() *
                    QVector2D{
-                       (screenPoint.x() / window()->width()) * 2.0f - 1.0f,
-                       1.0f - (screenPoint.y() / window()->height()) * 2.0f};
+                       (screenPoint.x() / width()) * 2.0f - 1.0f,
+                       1.0f - (screenPoint.y() / height()) * 2.0f};
   return viewPoint;
 }
