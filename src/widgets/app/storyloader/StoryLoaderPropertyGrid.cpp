@@ -5,6 +5,7 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QScrollArea>
+#include <QtWidgets/QMenu>
 #include <QtWidgets/QMessageBox>
 
 #include "StoryLoaderAddPropertyDialog.h"
@@ -95,8 +96,16 @@ void StoryLoaderPropertyGrid::addProperty(std::string property, PropertyType typ
   // TODO: if editable
   if (editable)
   {
-    connect(row->getDeleteButton(), &QPushButton::clicked, this, [=, this]
+    auto actionMenu = new QMenu{this};
+    auto deleteAction = actionMenu->addAction("Eliminar");
+    connect(deleteAction, &QAction::triggered,
+            [=, this]()
             { removeProperty(property); });
+
+    auto actionsButton = row->getActionsButton();
+    connect(actionsButton, &QPushButton::clicked,
+            [=, this]()
+            { actionMenu->popup(mapToGlobal(actionsButton->pos() + QPoint{0, actionsButton->height()})); });
   }
   itemLayout->addWidget(row);
 }

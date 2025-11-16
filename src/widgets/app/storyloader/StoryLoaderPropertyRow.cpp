@@ -5,7 +5,7 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QGridLayout>
 
-StoryLoaderPropertyRow::StoryLoaderPropertyRow(const char *title, bool canDelete, QWidget *parent) : QWidget{parent}
+StoryLoaderPropertyRow::StoryLoaderPropertyRow(const char *title, bool withActionsButton, QWidget *parent) : QWidget{parent}
 {
   auto label = new QLabel{title, this};
   widget = new QWidget{this};
@@ -17,15 +17,15 @@ StoryLoaderPropertyRow::StoryLoaderPropertyRow(const char *title, bool canDelete
   layout->setContentsMargins({});
 
   layout->setColumnStretch(0, 1);
-  layout->setColumnStretch(1, 1);
+  layout->setColumnStretch(1, 0);
   layout->setColumnStretch(2, 0);
-  layout->setColumnMinimumWidth(2, 64);
+  layout->setColumnMinimumWidth(2, 48);
   layout->setHorizontalSpacing(8);
 
-  if (canDelete)
+  if (withActionsButton)
   {
-    deleteButton = new QPushButton{"X", this};
-    layout->addWidget(deleteButton, 0, 2);
+    actionsButton = new QPushButton{"⋮", this};
+    layout->addWidget(actionsButton, 0, 2);
   }
   else
   {
@@ -33,9 +33,9 @@ StoryLoaderPropertyRow::StoryLoaderPropertyRow(const char *title, bool canDelete
   }
 }
 
-QPushButton *StoryLoaderPropertyRow::getDeleteButton() const
+QPushButton *StoryLoaderPropertyRow::getActionsButton() const
 {
-  return deleteButton;
+  return actionsButton;
 };
 
 void StoryLoaderPropertyRow::setWidget(QWidget *widget)

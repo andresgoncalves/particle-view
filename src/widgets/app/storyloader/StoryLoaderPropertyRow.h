@@ -9,17 +9,17 @@ class StoryLoaderPropertyRow : public QWidget
 {
 public:
   virtual void setCount(int count) = 0;
-  QPushButton *getDeleteButton() const;
+  QPushButton *getActionsButton() const;
 
 protected:
-  StoryLoaderPropertyRow(const char *title, bool canDelete, QWidget *parent = nullptr);
+  StoryLoaderPropertyRow(const char *title, bool withActionsButton, QWidget *parent = nullptr);
 
   void setWidget(QWidget *widget);
 
 private:
   QWidget *widget;
   QGridLayout *layout;
-  QPushButton *deleteButton;
+  QPushButton *actionsButton;
 };
 
 #endif
