@@ -93,7 +93,6 @@ void StoryLoaderPropertyGrid::addProperty(std::string property, PropertyType typ
   }
   row->setCount(count);
 
-  // TODO: if editable
   if (editable)
   {
     auto actionMenu = new QMenu{this};
@@ -118,5 +117,14 @@ void StoryLoaderPropertyGrid::removeProperty(std::string property)
     itemLayout->removeWidget(row->second);
     row->second->deleteLater();
     propertyRows.erase(row);
+  }
+}
+
+void StoryLoaderPropertyGrid::setVisibleComponents(std::array<bool, 3> components)
+{
+  for (auto [_, row] : propertyRows)
+  {
+    if (auto vectorRow = dynamic_cast<StoryLoaderVectorPropertyRow *>(row))
+      vectorRow->setVisibleComponents(components);
   }
 }

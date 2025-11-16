@@ -25,6 +25,9 @@ public:
   void addProperty(std::string property, PropertyType type, bool editable = true);
   void removeProperty(std::string property);
 
+  /** Set which components should be visible in vector rows */
+  void setVisibleComponents(std::array<bool, 3> components);
+
 private:
   int count;
 

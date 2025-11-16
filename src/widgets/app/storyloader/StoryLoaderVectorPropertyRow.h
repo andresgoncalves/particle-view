@@ -8,6 +8,7 @@
 #include <QtWidgets/QPushButton>
 
 #include <loaders/StoryLoader.h>
+#include <widgets/shared/controls/Control.h>
 
 #include "StoryLoaderPropertyRow.h"
 
@@ -19,10 +20,13 @@ public:
 
   void setCount(int count) override;
 
+  /** Set which components should be visible */
+  void setVisibleComponents(std::array<bool, 3> components);
+
   StoryLoader::IndicesType getValues() const;
 
 private:
-  std::array<QComboBox *, 3> comboBoxes;
+  std::array<Control<QComboBox> *, 3> controls;
 };
 
 #endif

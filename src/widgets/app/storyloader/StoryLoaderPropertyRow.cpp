@@ -1,7 +1,6 @@
 #include "StoryLoaderPropertyRow.h"
 
 #include <map>
-
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QGridLayout>
 
