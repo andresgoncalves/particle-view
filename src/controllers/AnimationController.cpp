@@ -92,6 +92,7 @@ void AnimationController::setTime(double time)
 void AnimationController::setAnimationSpeed(double animationSpeed)
 {
   this->animationSpeed = animationSpeed;
+  animationSpeedObservable.notify();
 }
 
 void AnimationController::setAnimationStrategy(std::unique_ptr<AnimationStrategy> animationStrategy)
