@@ -26,6 +26,9 @@ public:
   /** Creates a vertical control with custom title and subtitles */
   VectorControl(const char *title, std::array<const char *, 3> subtitles, QWidget *parent = nullptr);
 
+  /** Set which components should be visible */
+  void setVisibleComponents(std::array<bool, 3> components);
+
   /** Set control value */
   void setValue(QVector3D value);
 

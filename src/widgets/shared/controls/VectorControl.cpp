@@ -54,3 +54,9 @@ void VectorControl::onChange(std::function<void(QVector3D)> callback) const
   controls[1]->onChange<float>(changeHandler);
   controls[2]->onChange<float>(changeHandler);
 }
+
+void VectorControl::setVisibleComponents(std::array<bool, 3> components)
+{
+  for (int i = 0; i < 3; i++)
+    controls[i]->setVisible(components[i]);
+}
