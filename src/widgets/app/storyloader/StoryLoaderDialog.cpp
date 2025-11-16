@@ -47,16 +47,36 @@ StoryLoaderDialog::StoryLoaderDialog(int sceneColumnCount, int particleColumnCou
   tabWidget->addTab(scenePropertyGrid, "Encabezado");
   tabWidget->addTab(particlePropertyGrid, "Partículas");
 
-  auto loadButton = new QPushButton{"Cargar", this};
+  // Continue button when in scene tab
+  auto continueButton = new QPushButton{"Continuar", this};
+  connect(continueButton, &QPushButton::clicked, this, [=, this]
+          { tabWidget->setCurrentWidget(particlePropertyGrid); });
+
+  // Load button when in particle tab
+  auto loadButton = new QPushButton{"Cargar datos", this};
   connect(loadButton, &QPushButton::clicked, this, &QDialog::accept);
+  loadButton->hide();
+
+  // Change button based on tab
+  connect(tabWidget, &QTabWidget::currentChanged, this,
+          [=, this](int index)
+          {
+            continueButton->setVisible(index == 0);
+            loadButton->setVisible(index == 1);
+          });
 
   auto buttonsLayout = new QHBoxLayout{};
   buttonsLayout->setContentsMargins(8, 4, 8, 4);
   buttonsLayout->setAlignment(Qt::AlignRight);
+  buttonsLayout->addWidget(continueButton);
   buttonsLayout->addWidget(loadButton);
+
+  auto label = new QLabel{"Indica las columnas correspondientes a cada propiedad", this};
+  label->setMargin(16);
 
   auto verticalLayout = new QVBoxLayout{this};
   verticalLayout->setContentsMargins(0, 4, 0, 4);
+  verticalLayout->addWidget(label);
   verticalLayout->addLayout(dimensionalityLayout);
   verticalLayout->addWidget(tabWidget);
   verticalLayout->addLayout(buttonsLayout);

@@ -14,7 +14,7 @@
 
 StoryLoaderPropertyGrid::StoryLoaderPropertyGrid(QWidget *parent) : QWidget{parent}
 {
-  auto addPropertyButton = new QPushButton{"Agregar variable", this};
+  auto addPropertyButton = new QPushButton{"Agregar propiedad", this};
   auto addPropertyCallback = [=, this]
   {
     auto addPropertyDialog = new StoryLoaderAddPropertyDialog{this};
@@ -70,7 +70,7 @@ void StoryLoaderPropertyGrid::addProperty(std::string property, PropertyType typ
 {
   if (propertyRows.find(property) != propertyRows.end())
   {
-    QMessageBox{QMessageBox::Icon::NoIcon, "Error", "Ya declaraste esta variable"}.exec();
+    QMessageBox{QMessageBox::Icon::NoIcon, "Error", "Ya declaraste esta propiedad"}.exec();
     return;
   }
 
