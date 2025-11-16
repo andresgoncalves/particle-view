@@ -104,7 +104,7 @@ void StoryLoaderPropertyGrid::addProperty(std::string property, PropertyType typ
     auto actionsButton = row->getActionsButton();
     connect(actionsButton, &QPushButton::clicked,
             [=, this]()
-            { actionMenu->popup(mapToGlobal(actionsButton->pos() + QPoint{0, actionsButton->height()})); });
+            { actionMenu->popup(row->mapToGlobal(actionsButton->pos() + QPoint{0, actionsButton->height()})); });
   }
   itemLayout->addWidget(row);
 }
