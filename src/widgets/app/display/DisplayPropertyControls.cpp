@@ -38,41 +38,61 @@ DisplayPropertyControls::DisplayPropertyControls(AppContext &appContext, QWidget
   layout->setContentsMargins({});
 
   // Add vector controls
-  for (auto [propertyName, propertyType] : appContext.animationController.getStory().metadata.particleProperties)
+  auto addVectorControls = [=, this, &appContext]()
   {
-    // Omit position vector
-    if (propertyType != PropertyType::Vector || propertyName == Particle::POSITION_PROPERTY)
-      continue;
+    for (auto [propertyName, propertyType] : appContext.animationController.getStory().metadata.particleProperties)
+    {
+      // Omit position vector
+      if (propertyType != PropertyType::Vector || propertyName == Particle::POSITION_PROPERTY)
+        continue;
 
-    auto vectorColorControl = new ColorControl{propertyName.c_str(), true, this};
-    vectorColorControl->getCheckBox()->setChecked(appContext.displayController.getVectorRule(propertyName).isVisible());
-    vectorColorControl->getColorButton()->setColorStrategy(appContext.displayController.getVectorRule(propertyName).getColorStrategy().get());
-    // Connect checkbox callback
-    connect(vectorColorControl->getCheckBox(), &QCheckBox::checkStateChanged, this, [=, &appContext](Qt::CheckState checkState)
-            { 
+      auto vectorColorControl = new ColorControl{propertyName.c_str(), true, this};
+      vectorColorControl->getCheckBox()->setChecked(appContext.displayController.getVectorRule(propertyName).isVisible());
+      vectorColorControl->getColorButton()->setColorStrategy(appContext.displayController.getVectorRule(propertyName).getColorStrategy().get());
+      // Connect checkbox callback
+      connect(vectorColorControl->getCheckBox(), &QCheckBox::checkStateChanged, this, [=, &appContext](Qt::CheckState checkState)
+              { 
             auto updatedRule =  appContext.displayController.getVectorRule(propertyName);
             updatedRule.setVisible(checkState != Qt::Unchecked);
             appContext.displayController.setVectorRule(propertyName, updatedRule); });
-    // Connect color change callback
-    connect(vectorColorControl->getColorButton(), &ColorButton::clicked, this,
-            [=, this, &appContext]()
-            {
-              auto originalRule = appContext.displayController.getVectorRule(propertyName);
-              auto colorDialog = new ColorDialog{appContext, this};
-              colorDialog->setColorStrategy(originalRule.getColorStrategy().get());
-              if (colorDialog->exec() == QDialog::Accepted)
+      // Connect color change callback
+      connect(vectorColorControl->getColorButton(), &ColorButton::clicked, this,
+              [=, this, &appContext]()
               {
-                auto updatedRule = originalRule;
-                updatedRule.setColorStrategy(colorDialog->getColorStrategy());
-                appContext.displayController.setVectorRule(propertyName, updatedRule);
-              }
-              colorDialog->deleteLater();
-            });
+                auto originalRule = appContext.displayController.getVectorRule(propertyName);
+                auto colorDialog = new ColorDialog{appContext, this};
+                colorDialog->setColorStrategy(originalRule.getColorStrategy().get());
+                if (colorDialog->exec() == QDialog::Accepted)
+                {
+                  auto updatedRule = originalRule;
+                  updatedRule.setColorStrategy(colorDialog->getColorStrategy());
+                  appContext.displayController.setVectorRule(propertyName, updatedRule);
+                }
+                colorDialog->deleteLater();
+              });
 
-    // Save checkbox
-    layout->addWidget(vectorColorControl);
-    vectorColorControls[propertyName] = vectorColorControl;
-  }
+      // Save checkbox
+      layout->addWidget(vectorColorControl);
+      vectorColorControls[propertyName] = vectorColorControl;
+    }
+  };
+  // Init vector controls once
+  addVectorControls();
+  // Reset vector controls on story change
+  appContext.animationController.storyObservable.subscribe(this,
+                                                           [=, this]()
+                                                           {
+                                                             // Remove widgets
+                                                             for (auto [_, vectorControl] : vectorColorControls)
+                                                             {
+                                                               layout->removeWidget(vectorControl);
+                                                               vectorControl->deleteLater();
+                                                             }
+                                                             // Clear map
+                                                             vectorColorControls.clear();
+                                                             // Reset controls
+                                                             addVectorControls();
+                                                           });
 
   // Add particle rule listener
   auto particleRuleCallback = [=](DisplayRule particleRule)
