@@ -83,9 +83,13 @@ void StoryLoaderPropertyGrid::addProperty(std::string property, PropertyType typ
     propertyRows[property] = row;
     break;
   case PropertyType::Vector:
-    row = new StoryLoaderVectorPropertyRow{property.c_str(), editable, this};
+  {
+    auto vectorRow = new StoryLoaderVectorPropertyRow{property.c_str(), editable, this};
+    vectorRow->setVisibleComponents(visibleComponents);
+    row = vectorRow;
     propertyRows[property] = row;
     break;
+  }
   case PropertyType::String:
     row = new StoryLoaderStringPropertyRow{property.c_str(), editable, this};
     propertyRows[property] = row;
@@ -122,6 +126,7 @@ void StoryLoaderPropertyGrid::removeProperty(std::string property)
 
 void StoryLoaderPropertyGrid::setVisibleComponents(std::array<bool, 3> components)
 {
+  this->visibleComponents = components;
   for (auto [_, row] : propertyRows)
   {
     if (auto vectorRow = dynamic_cast<StoryLoaderVectorPropertyRow *>(row))

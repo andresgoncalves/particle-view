@@ -34,6 +34,7 @@ private:
   QVBoxLayout *itemLayout;
 
   std::map<std::string, StoryLoaderPropertyRow *> propertyRows;
+  std::array<bool, 3> visibleComponents = {true, true, true};
 };
 
 #endif
