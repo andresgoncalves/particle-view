@@ -57,6 +57,7 @@ void GraphWindow::buildChart(QChart *chart, const Graph &graph, AppContext &appC
       series->append(value.value().first, value.value().second);
   }
   series->setBorderColor(QColor{0, 0, 0, 0});
+  series->setMarkerSize(4);
 
   auto xAxis = new QValueAxis{chart};
   xAxis->setTitleText(graph.getXAxis()->getText().c_str());
@@ -71,6 +72,10 @@ void GraphWindow::buildChart(QChart *chart, const Graph &graph, AppContext &appC
   chart->addAxis(yAxis, Qt::AlignLeft);
   chart->setTitle(graph.getTitle().c_str());
   chart->legend()->hide();
+
+  auto titleFont = chart->titleFont();
+  titleFont.setPointSize(24);
+  chart->setTitleFont(titleFont);
 
   series->attachAxis(xAxis);
   series->attachAxis(yAxis);
