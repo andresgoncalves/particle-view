@@ -93,6 +93,10 @@ void AnimationController::setAnimationSpeed(double animationSpeed)
 {
   this->animationSpeed = animationSpeed;
   animationSpeedObservable.notify();
+
+  // Update time marks
+  startTime = std::chrono::steady_clock::now() - std::chrono::nanoseconds(static_cast<long long>(1e9 * (time - getFirstScene().getTime()) / animationSpeed));
+  pauseTime = playing ? std::chrono::steady_clock::time_point{} : std::chrono::steady_clock::now();
 }
 
 void AnimationController::setAnimationStrategy(std::unique_ptr<AnimationStrategy> animationStrategy)
