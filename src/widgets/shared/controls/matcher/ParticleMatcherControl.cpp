@@ -69,8 +69,10 @@ ParticleMatcherControl::ParticleMatcherControl(const PropertyTypeMap &properties
     }
   };
   connect(propertyComboBox, &QComboBox::currentIndexChanged, this, propertyChangeCallback);
-  // Use default index
-  propertyChangeCallback(0);
+
+  // Use default index if available
+  if (propertyValues.size() > 0)
+    propertyChangeCallback(0);
 
   auto layout = new QHBoxLayout{this};
   layout->setAlignment(Qt::AlignVCenter);

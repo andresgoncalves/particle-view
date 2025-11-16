@@ -3,6 +3,7 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QMessageBox>
 
 #include "GraphList.h"
 #include "GraphDialog.h"
@@ -14,6 +15,13 @@ GraphControls::GraphControls(AppContext &appContext, QWidget *parent) : Section{
   auto addButton = new QPushButton{"Agregar", this};
   auto addCallback = [=, &appContext, this]()
   {
+    // Check that scenes have defined properties
+    if (appContext.animationController.getStory().metadata.sceneProperties.empty())
+    {
+      QMessageBox{QMessageBox::Icon::NoIcon, "Error", "No hay propiedades para mostrar"}.exec();
+      return;
+    }
+
     auto dialog = new GraphDialog{appContext, this};
     if (dialog->exec() == QDialog::Accepted)
     {

@@ -3,6 +3,7 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QMessageBox>
 
 #include "CustomDisplayRuleList.h"
 #include "CustomDisplayRuleDialog.h"
@@ -14,6 +15,13 @@ CustomDisplayRuleControls::CustomDisplayRuleControls(AppContext &appContext, QWi
   auto addButton = new QPushButton{"Agregar", this};
   auto addCallback = [=, &appContext, this]()
   {
+    // Check that particles have defined properties
+    if (appContext.animationController.getStory().metadata.particleProperties.empty())
+    {
+      QMessageBox{QMessageBox::Icon::NoIcon, "Error", "No hay propiedades para mostrar"}.exec();
+      return;
+    }
+
     auto dialog = new CustomDisplayRuleDialog{appContext, this};
     if (dialog->exec() == QDialog::Accepted)
     {
